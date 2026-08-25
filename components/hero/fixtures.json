@@ -1,0 +1,22 @@
+[
+  {
+    "id": "default",
+    "label": "数字",
+    "beat": {
+      "kicker": "产能变化",
+      "title": "同一套流程可以稳定复用",
+      "number": "10×",
+      "body": "数字是证据，不是装饰。"
+    }
+  },
+  {
+    "id": "mixed",
+    "label": "中英混排",
+    "beat": {
+      "kicker": "阶段标记",
+      "title": "从手工剪辑进入 Agent 工作流",
+      "number": "V2",
+      "body": "短代号同样可以成为视觉锚点。"
+    }
+  }
+]

@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "factory-proof",
+  "label": "工厂现场证明",
+  "description": "黑白重字与信号黄强调，优先展示仓库、质检、发货等真实证据。",
+  "theme": "trade-proof",
+  "compatibleProfiles": ["factory-acquisition"],
+  "compatibleLayouts": ["vertical", "horizontal"],
+  "caption": {
+    "maxCharsPerLine": 32,
+    "singleLine": false
+  },
+  "brollPolicy": {
+    "maxCoverage": 0.25,
+    "defaultMode": "fullscreen-pip",
+    "proofFirst": true
+  },
+  "audioPolicy": {
+    "musicBedRequired": true,
+    "maxSemanticCues": 5
+  }
+}

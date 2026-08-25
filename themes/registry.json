@@ -1,0 +1,9 @@
+{
+  "default": "warm-glass",
+  "themes": ["warm-glass", "warm-minimal", "pastel-ledger", "field-notes", "signal-yellow", "steel-blueprint", "neon-forest", "editorial-stage", "trade-proof"],
+  "rules": [
+    "风格只能从这里选,不许逐 job 手搓新配色/新模板。",
+    "要新增风格 = 新建 themes/<id>/theme.json,走 docs/theme-replication.md 的授权参考素材分析流程。",
+    "要演进现有风格 = 改该主题 tokens 并在 description 里记录版本,不逐条视频漂移。"
+  ]
+}

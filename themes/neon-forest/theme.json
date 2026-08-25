@@ -1,0 +1,43 @@
+{
+  "id": "neon-forest",
+  "label": "墨绿霓虹",
+  "description": "深墨绿底 + 荧光青绿高亮 + 琥珀次强调，适合技术与制造业解释卡。",
+  "source": "public design tokens",
+  "fonts": [
+    { "family": "Inter", "file": "Inter-700-latin.woff2", "weight": 700 },
+    { "family": "LXGWWenKaiTC", "file": "LXGWWenKaiTC-400-latin.woff2", "weight": 400 }
+  ],
+  "tokens": {
+    "pageBg": "#07110f",
+    "text": "#f5f7ef",
+    "textBody": "#e8eee4",
+    "fontHead": "Inter, \"Noto Sans SC\", \"Helvetica Neue\", Arial, sans-serif",
+    "fontBody": "Inter, \"Noto Sans SC\", \"PingFang SC\", sans-serif",
+    "radius": "8px",
+    "kicker": "#2ef2a2",
+    "accent": "#ffcb5c",
+    "accentFillBg": "#2ef2a2",
+    "accentFillText": "#07110f",
+    "accentFillBorder": "rgba(46, 242, 162, 0.96)",
+    "cardBg": "linear-gradient(135deg, rgba(7, 17, 15, 0.92), rgba(7, 17, 15, 0.72))",
+    "cardBorder": "rgba(245, 247, 239, 0.22)",
+    "cardShadow": "0 22px 62px rgba(0, 0, 0, 0.24)",
+    "cardTopline": "linear-gradient(90deg, #2ef2a2, #baf7dd, #ffcb5c)",
+    "cardBlur": "5px",
+    "chipBg": "rgba(245, 247, 239, 0.12)",
+    "chipBorder": "rgba(245, 247, 239, 0.22)",
+    "chipText": "#f7f9f0",
+    "heroNumber": "rgba(46, 242, 162, 0.22)",
+    "boxBg": "rgba(7, 17, 15, 0.82)",
+    "boxHotBg": "rgba(7, 17, 15, 0.82)",
+    "boxHotBorder": "rgba(46, 242, 162, 0.40)",
+    "boxLabel": "#6dffc2",
+    "mutedText": "rgba(232, 238, 228, 0.48)",
+    "mutedBorder": "rgba(245, 247, 239, 0.16)",
+    "mutedBg": "rgba(7, 17, 15, 0.46)",
+    "scrim": "linear-gradient(180deg, rgba(7, 17, 15, 0), rgba(7, 17, 15, 0) 58%, rgba(4, 10, 8, 0.78))",
+    "vignette": "radial-gradient(circle at 50% 78%, rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.24))",
+    "captionText": "#f7f9f0",
+    "captionShadow": "0 3px 0 rgba(0, 0, 0, 0.92), 0 7px 22px rgba(0, 0, 0, 0.88)"
+  }
+}

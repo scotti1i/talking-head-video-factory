@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "duel",
+  "order": 60,
+  "label": "取舍对决",
+  "kind": "component",
+  "category": "comparison",
+  "description": "划掉错误方向，同时强调正确选择。",
+  "version": "1.0.0",
+  "lifecycle": "published",
+  "compatibility": "supported",
+  "formats": ["portrait", "landscape"],
+  "requiredFields": ["bad", "good", "body"],
+  "optionalFields": [],
+  "promptHint": "bad, good, body（划掉 bad，强调 good）",
+  "tags": ["取舍", "对决", "纠错"],
+  "source": "beats-v2/face-safe",
+  "apply": { "mode": "beat", "type": "duel" },
+  "preview": { "duration": 4, "defaultFixture": "default" }
+}

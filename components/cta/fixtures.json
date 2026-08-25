@@ -1,0 +1,24 @@
+[
+  {
+    "id": "default",
+    "label": "双行动",
+    "beat": {
+      "kicker": "下一步",
+      "title": "先把第一条稳定跑通",
+      "body": "不要同时重做所有环节。",
+      "primary": "开始制作",
+      "secondary": "保存模板"
+    }
+  },
+  {
+    "id": "long",
+    "label": "长行动",
+    "beat": {
+      "kicker": "继续了解",
+      "title": "关注真实可运行的 Agent 工作流",
+      "body": "每次只讲一个经过验证的落地结果。",
+      "primary": "订阅 YouTube 频道",
+      "secondary": "查看完整案例"
+    }
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "id": "default",
+    "label": "工具名",
+    "beat": {
+      "kicker": "制作链路",
+      "title": "这些工具各自只做一件事",
+      "chips": ["Codex", "Whisper", "HyperFrames", "ffmpeg"],
+      "body": "工具之间由稳定的数据合同连接。"
+    }
+  },
+  {
+    "id": "mixed",
+    "label": "中英混排",
+    "beat": {
+      "kicker": "关键词",
+      "title": "中英文专有名词要能快速扫读",
+      "chips": ["A-roll 母版", "word cache", "语义 EDL", "final QA"],
+      "body": "观众需要看清拼写，而不是记住装饰。"
+    }
+  }
+]

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "trio",
+  "order": 80,
+  "label": "三要素",
+  "kind": "component",
+  "category": "summary",
+  "description": "把结论归纳成三根并列支柱。",
+  "version": "1.0.0",
+  "lifecycle": "published",
+  "compatibility": "supported",
+  "formats": ["portrait", "landscape"],
+  "requiredFields": ["columns", "body"],
+  "optionalFields": [],
+  "promptHint": "columns[]（恰好 3 列）, body",
+  "tags": ["三栏", "归纳", "总结"],
+  "source": "beats-v2/face-safe",
+  "apply": { "mode": "beat", "type": "trio" },
+  "preview": { "duration": 4, "defaultFixture": "default" }
+}

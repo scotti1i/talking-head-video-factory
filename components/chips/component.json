@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "chips",
+  "order": 40,
+  "label": "关键词组",
+  "kind": "component",
+  "category": "taxonomy",
+  "description": "并列展示工具名、产品名或概念关键词。",
+  "version": "1.0.0",
+  "lifecycle": "published",
+  "compatibility": "supported",
+  "formats": ["portrait", "landscape"],
+  "requiredFields": ["chips", "body"],
+  "optionalFields": [],
+  "promptHint": "chips[], body（工具名、产品名或关键词组）",
+  "tags": ["标签", "工具", "关键词"],
+  "source": "beats-v2/face-safe",
+  "apply": { "mode": "beat", "type": "chips" },
+  "preview": { "duration": 4, "defaultFixture": "default" }
+}

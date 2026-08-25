@@ -1,0 +1,135 @@
+/* 深色编辑舞台：版式服务口播与真实录屏，不模拟平台 UI。 */
+#main {
+  --primary-stage-bg: #050608;
+  --primary-stage-divider: #20252b;
+  --primary-pip-border: #f3f0ea;
+  --primary-pip-shadow: 0 18px 42px rgba(0, 0, 0, 0.42);
+  --primary-pip-left: 64px;
+  --primary-pip-top: 300px;
+  --primary-pip-size: 264px;
+}
+
+/* 字幕必须高于圆形讲者画面；gallery 模块会更早声明较低层级。 */
+#card-host {
+  z-index: 10;
+}
+
+.broll-fullscreen {
+  object-fit: contain;
+  background: #050608;
+}
+
+.broll-floating-frame {
+  inset: auto;
+  top: 300px;
+  bottom: auto;
+  width: 260px;
+  height: 260px;
+  margin: 0;
+  overflow: hidden;
+  border: 3px solid rgba(247, 245, 240, 0.92);
+  border-radius: 18px;
+  background: #0a0c0f;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.48), 0 8px 24px rgba(0, 0, 0, 0.34);
+  transform-origin: 50% 50%;
+  will-change: transform, opacity;
+}
+
+.broll-floating-frame[data-placement="left"] {
+  left: 68px;
+  right: auto;
+}
+
+.broll-floating-frame[data-placement="right"] {
+  left: 650px;
+  right: auto;
+}
+
+.broll-floating-media {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 14px;
+  will-change: transform;
+}
+
+.beat {
+  left: 64px;
+  right: 180px;
+  bottom: 360px;
+  max-height: 350px;
+  padding: 22px 24px 20px;
+  border-width: 1px;
+}
+
+.beat::before {
+  height: 2px;
+}
+
+.kicker {
+  margin-bottom: 10px;
+  font-family: Inter, FactoryCJK, sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-shadow: none;
+}
+
+h2 {
+  font-size: 42px;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+}
+
+p {
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+.caption,
+.caption-over-card {
+  left: 180px;
+  right: auto;
+  top: 1435px;
+  bottom: auto;
+  z-index: 30;
+  width: 720px;
+  color: #fff;
+  font-family: FactoryCJK, "Hiragino Sans GB", sans-serif;
+  font-size: 60px;
+  line-height: 1.08;
+  font-weight: 900;
+  text-align: center;
+  white-space: nowrap;
+  -webkit-text-stroke: 1.8px rgba(0, 0, 0, 0.94);
+  paint-order: stroke fill;
+  text-shadow: 0 3px 5px rgba(0, 0, 0, 0.72);
+}
+
+.caption-over-card {
+  top: auto;
+  bottom: 720px;
+  box-sizing: border-box;
+  padding: 8px 18px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  background: #050608;
+  box-shadow: 0 0 0 6px #050608, 0 12px 30px rgba(0, 0, 0, 0.28);
+  font-size: 54px;
+}
+
+.caption-primary {
+  top: 1435px;
+  font-size: 60px;
+}
+
+.caption-primary-pip {
+  left: 180px;
+  top: 1435px;
+  width: 720px;
+  font-size: 60px;
+  transform: none;
+}

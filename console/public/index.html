@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>口播工厂控制台</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="library.css" />
+</head>
+<body>
+  <header id="topbar">
+    <div class="brand">
+      <span class="brand-mark">▶</span>
+      <div>
+        <h1>口播工厂控制台</h1>
+        <p class="boundary">全部在本机运行,素材与成片不出这台电脑;判断类工序生成任务卡交给 Claude Code。</p>
+      </div>
+    </div>
+    <nav class="workspace-nav" aria-label="工作区">
+      <button id="nav-library" class="workspace-tab active" aria-current="page">视觉库</button>
+      <button id="nav-projects" class="workspace-tab">视频项目</button>
+    </nav>
+    <div class="top-actions">
+      <button id="btn-doctor" class="ghost">环境体检</button>
+      <button id="btn-refresh" class="ghost">刷新</button>
+    </div>
+  </header>
+
+  <div id="library-layout">
+    <aside id="library-sidebar" aria-label="视觉套装">
+      <div class="library-side-head">
+        <div>
+          <span class="eyebrow">视觉套装</span>
+          <strong id="library-family-count">扫描中</strong>
+        </div>
+        <button id="library-refresh" class="icon-button" title="重新扫描视觉库" aria-label="重新扫描视觉库">↻</button>
+      </div>
+      <nav id="library-family-list" aria-label="视觉套装列表">
+        <div class="library-skeleton family-skeleton"></div>
+        <div class="library-skeleton family-skeleton"></div>
+        <div class="library-skeleton family-skeleton"></div>
+      </nav>
+      <div class="library-side-foot">
+        <span>新增组件走 Codex / Claude / CLI</span>
+        <button id="library-copy-create" class="ghost small">复制新增指令</button>
+      </div>
+    </aside>
+
+    <main id="library-main">
+      <section class="library-heading" aria-labelledby="library-title">
+        <div class="library-title-block">
+          <div class="library-title-line">
+            <h2 id="library-title">视觉库</h2>
+            <span id="library-lifecycle" class="status-chip"></span>
+          </div>
+          <p id="library-description" class="dim">正在扫描主题、组件与历史视觉套装…</p>
+          <div id="library-family-meta" class="library-meta"></div>
+        </div>
+        <div class="library-heading-actions">
+          <label class="job-picker">
+            <span>应用到</span>
+            <select id="library-job"></select>
+          </label>
+          <div class="aspect-switch" role="group" aria-label="预览画幅">
+            <button id="aspect-portrait" data-aspect="portrait" class="active" aria-pressed="true">▯ 竖屏 9:16</button>
+            <button id="aspect-landscape" data-aspect="landscape" aria-pressed="false">▭ 横屏 16:9</button>
+          </div>
+          <button id="library-open-compare" class="compare-button" disabled>◫ 对比 <span id="compare-count">0</span></button>
+        </div>
+      </section>
+
+      <section class="library-toolbar" aria-label="视觉组件筛选">
+        <label class="search-control">
+          <span aria-hidden="true">⌕</span>
+          <input id="library-search" type="search" placeholder="搜索组件、用途或 ID" autocomplete="off" />
+        </label>
+        <label><span class="sr-only">主题</span><select id="library-theme"><option value="">全部主题</option></select></label>
+        <label><span class="sr-only">生命周期</span><select id="library-filter-lifecycle"><option value="">全部生命周期</option></select></label>
+        <label><span class="sr-only">兼容性</span><select id="library-filter-compatibility"><option value="">全部兼容性</option></select></label>
+        <label><span class="sr-only">健康状态</span><select id="library-filter-health"><option value="">全部状态</option></select></label>
+        <span id="library-result-count" class="result-count"></span>
+      </section>
+
+      <div id="library-alert" class="library-alert hidden" role="status"></div>
+      <section id="library-grid" class="library-grid" aria-live="polite" aria-busy="true">
+        <div class="library-skeleton card-skeleton"></div>
+        <div class="library-skeleton card-skeleton"></div>
+        <div class="library-skeleton card-skeleton"></div>
+        <div class="library-skeleton card-skeleton"></div>
+      </section>
+      <div id="library-empty" class="library-empty hidden">
+        <strong>没有符合条件的组件</strong>
+        <p>调整筛选条件；历史、损坏和不支持的资产不会被自动隐藏。</p>
+        <button id="library-reset-filters">清除筛选</button>
+      </div>
+    </main>
+  </div>
+
+  <div id="layout" class="hidden">
+    <aside id="sidebar">
+      <div class="side-head">
+        <h2>视频 Job</h2>
+        <button id="btn-new-job" class="accent small">＋ 新建</button>
+      </div>
+      <div id="new-job-form" class="hidden">
+        <input id="nj-slug" placeholder="slug(如 ai-cost-20260707)" />
+        <input id="nj-title" placeholder="视频标题" />
+        <input id="nj-source" placeholder="口播原片绝对路径(可选)" />
+        <div class="row-gap">
+          <button id="nj-create" class="accent small">创建</button>
+          <button id="nj-cancel" class="ghost small">取消</button>
+        </div>
+      </div>
+      <ul id="job-list"></ul>
+    </aside>
+
+    <main id="main">
+      <div id="empty-hint">
+        <h3>从一条口播开始</h3>
+        <p class="dim">流水线固定五步:素材 → 剪辑 → 字幕 → 包装 → 出片。</p>
+        <ol>
+          <li>点左上 <b>＋ 新建</b>,填 slug,粘上拍摄原片路径;</li>
+          <li>先玩样例:<b>「样例 · 模板巡礼」</b>里有 10 种拍型的真渲染成片;</li>
+          <li>判断类工序(精剪/校准/排拍)复制 <b>Claude 任务卡</b> 去 Claude Code 跑。</li>
+        </ol>
+      </div>
+      <div id="job-view" class="hidden">
+        <div id="job-head">
+          <div>
+            <h2 id="job-title"></h2>
+            <p id="job-meta" class="dim"></p>
+          </div>
+          <div id="stage-rail"></div>
+        </div>
+        <div id="stations"></div>
+      </div>
+    </main>
+  </div>
+
+  <div id="library-detail-backdrop" class="library-overlay hidden">
+    <aside id="library-detail" class="library-panel" role="dialog" aria-modal="true" aria-labelledby="detail-title">
+      <div class="library-panel-head">
+        <div>
+          <span id="detail-kind" class="eyebrow"></span>
+          <h2 id="detail-title"></h2>
+        </div>
+        <button id="detail-close" class="ghost" aria-label="关闭详情">关闭</button>
+      </div>
+      <div id="detail-body" class="library-panel-body"></div>
+    </aside>
+  </div>
+
+  <div id="compare-backdrop" class="library-overlay hidden">
+    <section id="compare-panel" class="compare-panel" role="dialog" aria-modal="true" aria-labelledby="compare-title">
+      <div class="library-panel-head">
+        <div>
+          <span class="eyebrow">同条件动态预览 · 最多四项</span>
+          <h2 id="compare-title">组件对比</h2>
+        </div>
+        <button id="compare-close" class="ghost" aria-label="关闭对比">关闭</button>
+      </div>
+      <div id="compare-body" class="compare-body"></div>
+    </section>
+  </div>
+
+  <section id="run-drawer" class="hidden" aria-live="polite">
+    <div id="run-head">
+      <span id="run-status-dot"></span>
+      <span id="run-title">运行</span>
+      <span id="run-step" class="dim"></span>
+      <span class="spacer"></span>
+      <button id="run-cancel" class="ghost small">取消</button>
+      <button id="run-close" class="ghost small">收起</button>
+    </div>
+    <pre id="run-log"></pre>
+  </section>
+  <button id="run-pill" class="hidden">
+    <span class="p-dot"></span><span id="run-pill-text">运行中</span>
+  </button>
+
+  <div id="modal-backdrop" class="hidden">
+    <div id="modal">
+      <div id="modal-head">
+        <h3 id="modal-title"></h3>
+        <button id="modal-close" class="ghost small">关闭</button>
+      </div>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script src="library.js"></script>
+</body>
+</html>

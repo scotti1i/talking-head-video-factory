@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "statement",
+  "order": 10,
+  "label": "金句判断",
+  "kind": "component",
+  "category": "emphasis",
+  "description": "用一句判断和一个高亮短语压实观点。",
+  "version": "1.0.0",
+  "lifecycle": "published",
+  "compatibility": "supported",
+  "formats": ["portrait", "landscape"],
+  "requiredFields": ["body", "accent"],
+  "optionalFields": [],
+  "promptHint": "body, accent（accent 是高亮短语）",
+  "tags": ["金句", "判断", "强调"],
+  "source": "beats-v2/face-safe",
+  "apply": { "mode": "beat", "type": "statement" },
+  "preview": { "duration": 4, "defaultFixture": "default" }
+}

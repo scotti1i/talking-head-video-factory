@@ -1,0 +1,16 @@
+{
+  "name": "talking-head-job",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "npm run lint && npm run validate && npm run inspect",
+    "lint": "../../node_modules/.bin/hyperframes lint",
+    "validate": "../../node_modules/.bin/hyperframes validate",
+    "inspect": "../../node_modules/.bin/hyperframes inspect --samples 20 --timeout 60000",
+    "render:review": "../../node_modules/.bin/hyperframes render --fps 30 --quality draft --workers 4 --video-bitrate 8M --output renders/review-30fps.mp4",
+    "render:final": "../../node_modules/.bin/hyperframes render --fps 60 --quality standard --workers 8 --video-bitrate 24M --output renders/final-60fps.mp4"
+  },
+  "dependencies": {
+    "hyperframes": "0.5.6"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "id": "warm-glass",
+  "label": "Claude 暖玻璃",
+  "description": "深棕暖色玻璃卡与底部安全区包装，不挡脸并保留完整字幕。",
+  "source": "public theme tokens",
+  "fonts": [
+    { "family": "Inter", "file": "Inter-700-latin.woff2", "weight": 700 },
+    { "family": "LXGWWenKaiTC", "file": "LXGWWenKaiTC-400-latin.woff2", "weight": 400 }
+  ],
+  "tokens": {
+    "pageBg": "#211712",
+    "text": "#fff6e8",
+    "textBody": "#ffe9c7",
+    "fontHead": "Inter, LXGWWenKaiTC, \"PingFang SC\", sans-serif",
+    "fontBody": "LXGWWenKaiTC, \"PingFang SC\", sans-serif",
+    "radius": "8px",
+    "kicker": "#ffe0b2",
+    "accent": "#f6c07f",
+    "accentFillBg": "#5f351c",
+    "accentFillText": "#fff6e8",
+    "accentFillBorder": "#f6c07f",
+    "cardBg": "linear-gradient(135deg, rgba(74, 45, 27, 0.72), rgba(24, 15, 10, 0.58))",
+    "cardBorder": "rgba(255, 236, 205, 0.28)",
+    "cardShadow": "0 26px 90px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.16)",
+    "cardTopline": "linear-gradient(90deg, #f4b36d, #fff0cf, #b98350)",
+    "cardBlur": "10px",
+    "chipBg": "rgba(255, 244, 226, 0.13)",
+    "chipBorder": "rgba(255, 236, 205, 0.24)",
+    "chipText": "#fff3df",
+    "heroNumber": "rgba(255, 234, 196, 0.35)",
+    "boxBg": "rgba(35, 22, 15, 0.48)",
+    "boxHotBg": "rgba(95, 57, 30, 0.38)",
+    "boxHotBorder": "rgba(246, 192, 127, 0.48)",
+    "boxLabel": "#f0b173",
+    "mutedText": "rgba(255, 232, 208, 0.48)",
+    "mutedBorder": "rgba(255, 232, 208, 0.16)",
+    "mutedBg": "rgba(38, 24, 17, 0.46)",
+    "scrim": "linear-gradient(180deg, rgba(28, 17, 10, 0), rgba(28, 17, 10, 0) 58%, rgba(18, 11, 7, 0.76))",
+    "vignette": "linear-gradient(180deg, rgba(255, 242, 218, 0.01), rgba(0, 0, 0, 0.18))",
+    "captionText": "#fff8ef",
+    "captionShadow": "0 3px 0 rgba(35, 19, 8, 0.92), 0 8px 24px rgba(0, 0, 0, 0.75)"
+  }
+}

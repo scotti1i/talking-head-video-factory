@@ -1,0 +1,43 @@
+{
+  "id": "field-notes",
+  "label": "牛皮档案",
+  "description": "米黄档案纸、墨黑重衬线、砖红马克笔与胶带贴片，采用直角硬裁边和记者手账质感。",
+  "source": "public theme tokens",
+  "fonts": [
+    { "family": "Inter", "file": "Inter-700-latin.woff2", "weight": 700 },
+    { "family": "LXGWWenKaiTC", "file": "LXGWWenKaiTC-400-latin.woff2", "weight": 400 }
+  ],
+  "tokens": {
+    "pageBg": "#171310",
+    "text": "#1B1510",
+    "textBody": "#4A4234",
+    "fontHead": "\"Songti SC\", \"STSong\", Georgia, \"PingFang SC\", serif",
+    "fontBody": "\"PingFang SC\", \"Noto Sans SC\", sans-serif",
+    "radius": "2px",
+    "kicker": "#6B6252",
+    "accent": "#C23A2B",
+    "accentFillBg": "#C23A2B",
+    "accentFillText": "#F5EDDA",
+    "accentFillBorder": "#A32E22",
+    "cardBg": "rgba(236, 227, 206, 0.97)",
+    "cardBorder": "rgba(27, 21, 16, 0.18)",
+    "cardShadow": "0 10px 26px rgba(0, 0, 0, 0.45)",
+    "cardTopline": "linear-gradient(90deg, #C23A2B, #C23A2B)",
+    "cardBlur": "0px",
+    "chipBg": "rgba(27, 21, 16, 0.07)",
+    "chipBorder": "rgba(27, 21, 16, 0.24)",
+    "chipText": "#1B1510",
+    "heroNumber": "rgba(194, 58, 43, 0.28)",
+    "boxBg": "rgba(255, 252, 244, 0.85)",
+    "boxHotBg": "rgba(194, 58, 43, 0.10)",
+    "boxHotBorder": "rgba(194, 58, 43, 0.50)",
+    "boxLabel": "#8C4A3A",
+    "mutedText": "rgba(27, 21, 16, 0.45)",
+    "mutedBorder": "rgba(27, 21, 16, 0.18)",
+    "mutedBg": "rgba(27, 21, 16, 0.05)",
+    "scrim": "linear-gradient(180deg, rgba(20, 14, 8, 0.08), rgba(20, 14, 8, 0.02) 45%, rgba(20, 14, 8, 0.5))",
+    "vignette": "radial-gradient(circle at 50% 40%, rgba(0, 0, 0, 0), rgba(20, 14, 8, 0.3))",
+    "captionText": "#FFF8EC",
+    "captionShadow": "0 2px 0 rgba(25, 17, 8, 0.8), 0 7px 20px rgba(0, 0, 0, 0.7)"
+  }
+}

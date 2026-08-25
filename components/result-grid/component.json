@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "result-grid",
+  "order": 86,
+  "label": "成果总览墙",
+  "kind": "component",
+  "category": "proof",
+  "description": "把六到九张真实生成结果同时平铺成一张无旁白全屏成果墙，不逐张弹出。",
+  "version": "1.0.0",
+  "lifecycle": "published",
+  "compatibility": "supported",
+  "captionMode": "overlay",
+  "formats": ["portrait", "landscape"],
+  "requiredFields": ["items"],
+  "optionalFields": [],
+  "promptHint": "items[6..9]{src,label,alt?}, title（title 仅作语义元数据，画面只展示成果）",
+  "tags": ["成果墙", "生成结果", "平铺", "作品集"],
+  "source": "meitu-feedback-20260811",
+  "apply": { "mode": "beat", "type": "result-grid" },
+  "preview": { "duration": 4, "defaultFixture": "nine-results" }
+}

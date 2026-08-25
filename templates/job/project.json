@@ -1,0 +1,79 @@
+{
+  "title": "未命名口播视频",
+  "slug": "new-talking-head",
+  "profile": "clean-talkinghead",
+  "policies": [],
+  "platform": "douyin",
+  "width": 1080,
+  "height": 1920,
+  "layout": "vertical",
+  "duration": null,
+  "sourceVideo": "assets/aroll.mp4",
+  "outputName": "final-60fps.mp4",
+  "downloadFolderName": "口播视频成片",
+  "caption": {
+    "enabled": true,
+    "maxCharsPerLine": 18,
+    "hideDuring": []
+  },
+  "editorial": {
+    "editingMode": "semantic-edl",
+    "fineCutPreset": "standard"
+  },
+  "qa": {
+    "sampleTimes": [5, 30, 60]
+  },
+  "delivery": {
+    "includeCover": true,
+    "coverFile": "cover/cover.png"
+  },
+  "shorts": {
+    "sourceVideo": "variants/douyin-vertical/renders/douyin-vertical-60fps.mp4",
+    "mode": "copy",
+    "width": 1080,
+    "height": 1920,
+    "fps": 60,
+    "maxDuration": 120,
+    "officialMaxDuration": 180
+  },
+  "variants": [
+    {
+      "id": "douyin-vertical",
+      "label": "抖音竖屏",
+      "platform": "douyin",
+      "width": 1080,
+      "height": 1920,
+      "layout": "vertical",
+      "outputName": "douyin-vertical-60fps.mp4",
+      "downloadFolderName": "口播视频-抖音竖屏",
+      "caption": {
+        "maxCharsPerLine": 18
+      },
+      "render": {
+        "fps": 60,
+        "quality": "standard",
+        "workers": 8,
+        "videoBitrate": "24M"
+      }
+    },
+    {
+      "id": "youtube-horizontal",
+      "label": "YouTube 横屏",
+      "platform": "youtube",
+      "width": 1920,
+      "height": 1080,
+      "layout": "horizontal",
+      "outputName": "youtube-horizontal-60fps.mp4",
+      "downloadFolderName": "口播视频-YouTube横屏",
+      "caption": {
+        "maxCharsPerLine": 28
+      },
+      "render": {
+        "fps": 60,
+        "quality": "standard",
+        "workers": 8,
+        "videoBitrate": "24M"
+      }
+    }
+  ]
+}

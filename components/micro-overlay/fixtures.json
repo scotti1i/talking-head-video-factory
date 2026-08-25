@@ -1,0 +1,45 @@
+[
+  {
+    "id": "locator",
+    "label": "现场地点",
+    "beat": {
+      "kicker": "ON THE GROUND",
+      "title": "YIWU, CHINA",
+      "variant": "locator",
+      "icon": "pin",
+      "body": "On-site sourcing, not remote guesswork."
+    }
+  },
+  {
+    "id": "action",
+    "label": "流程动作",
+    "beat": {
+      "kicker": "WE HANDLE",
+      "title": "TRACK PRODUCTION",
+      "variant": "action",
+      "icon": "track",
+      "body": "Daily updates, without the chasing."
+    }
+  },
+  {
+    "id": "question",
+    "label": "单个风险问题",
+    "beat": {
+      "kicker": "RISK CHECK",
+      "title": "Still chasing updates?",
+      "variant": "question",
+      "icon": "question"
+    }
+  },
+  {
+    "id": "question-stack",
+    "label": "三连问题",
+    "beat": {
+      "kicker": "DOING IT ALL YOURSELF?",
+      "title": "Where does your time go?",
+      "variant": "question",
+      "icon": "question",
+      "items": ["Quotes?", "Production?", "Shipping?"]
+    }
+  }
+]

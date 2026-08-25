@@ -1,0 +1,18 @@
+.chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 12px;
+}
+.chip-grid span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 13px;
+  border-radius: {{radius}};
+  border: 1px solid {{chipBorder}};
+  background: {{chipBg}};
+  color: {{chipText}};
+  font-size: 21px;
+  font-weight: 700;
+}

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "pipeline",
+  "order": 70,
+  "label": "四步流程",
+  "kind": "component",
+  "category": "process",
+  "description": "把一个方法或工作流拆成四个连续步骤。",
+  "version": "1.0.0",
+  "lifecycle": "published",
+  "compatibility": "supported",
+  "formats": ["portrait", "landscape"],
+  "requiredFields": ["steps", "body"],
+  "optionalFields": [],
+  "promptHint": "steps[]（恰好 4 步）, body",
+  "tags": ["流程", "步骤", "方法"],
+  "source": "beats-v2/face-safe",
+  "apply": { "mode": "beat", "type": "pipeline" },
+  "preview": { "duration": 4, "defaultFixture": "default" }
+}

@@ -1,0 +1,43 @@
+{
+  "id": "pastel-ledger",
+  "label": "奶白账本",
+  "description": "奶白纸卡、打字机字距标签、糖果数据色与黄绿贴纸 kicker。",
+  "source": "public theme tokens",
+  "fonts": [
+    { "family": "Inter", "file": "Inter-700-latin.woff2", "weight": 700 },
+    { "family": "LXGWWenKaiTC", "file": "LXGWWenKaiTC-400-latin.woff2", "weight": 400 }
+  ],
+  "tokens": {
+    "pageBg": "#F2F1EF",
+    "text": "#33322E",
+    "textBody": "#55524A",
+    "fontHead": "\"Courier New\", Inter, \"Songti SC\", \"PingFang SC\", serif",
+    "fontBody": "\"PingFang SC\", \"Noto Sans SC\", sans-serif",
+    "radius": "14px",
+    "kicker": "#3C3D18",
+    "accent": "#2E7F7A",
+    "accentFillBg": "#2E7F7A",
+    "accentFillText": "#F4FBFA",
+    "accentFillBorder": "#256762",
+    "cardBg": "rgba(246, 244, 240, 0.96)",
+    "cardBorder": "#E7E2D8",
+    "cardShadow": "0 10px 30px rgba(31, 27, 20, 0.20)",
+    "cardTopline": "linear-gradient(90deg, #F2B8C6, #C9E4F2 50%, #D9E56E)",
+    "cardBlur": "0px",
+    "chipBg": "#FFFFFF",
+    "chipBorder": "#E2DDD2",
+    "chipText": "#33322E",
+    "heroNumber": "rgba(46, 127, 122, 0.22)",
+    "boxBg": "#FBFAF8",
+    "boxHotBg": "#EAF3F2",
+    "boxHotBorder": "rgba(46, 127, 122, 0.45)",
+    "boxLabel": "#4F7CB0",
+    "mutedText": "#9A958A",
+    "mutedBorder": "#DAD5C9",
+    "mutedBg": "#EFEDE8",
+    "scrim": "linear-gradient(180deg, rgba(20, 18, 14, 0) 55%, rgba(20, 18, 14, 0.42))",
+    "vignette": "linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.08))",
+    "captionText": "#FFFFFF",
+    "captionShadow": "0 2px 0 rgba(20, 16, 10, 0.68), 0 6px 18px rgba(0, 0, 0, 0.6)"
+  }
+}

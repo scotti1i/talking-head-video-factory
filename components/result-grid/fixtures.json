@@ -1,0 +1,32 @@
+[
+  {
+    "id": "nine-results",
+    "label": "九项生成成果",
+    "assets": [
+      { "source": "themes/warm-glass/preview.jpg", "target": "assets/results/result-01.jpg" },
+      { "source": "themes/signal-yellow/preview.jpg", "target": "assets/results/result-02.jpg" },
+      { "source": "themes/steel-blueprint/preview.jpg", "target": "assets/results/result-03.jpg" },
+      { "source": "themes/editorial-stage/preview.jpg", "target": "assets/results/result-04.jpg" },
+      { "source": "themes/neon-forest/preview.jpg", "target": "assets/results/result-05.jpg" },
+      { "source": "themes/warm-minimal/preview.jpg", "target": "assets/results/result-06.jpg" },
+      { "source": "themes/field-notes/preview.jpg", "target": "assets/results/result-07.jpg" },
+      { "source": "themes/pastel-ledger/preview.jpg", "target": "assets/results/result-08.jpg" },
+      { "source": "themes/trade-proof/reference/01-style-language-board.jpg", "target": "assets/results/result-09.jpg" }
+    ],
+    "beat": {
+      "kicker": "AI TEAM / RESULTS",
+      "title": "一句话，生成一整套物料",
+      "items": [
+        { "src": "assets/results/result-01.jpg", "label": "主视觉" },
+        { "src": "assets/results/result-02.jpg", "label": "海报" },
+        { "src": "assets/results/result-03.jpg", "label": "卖点图" },
+        { "src": "assets/results/result-04.jpg", "label": "结构图" },
+        { "src": "assets/results/result-05.jpg", "label": "场景图" },
+        { "src": "assets/results/result-06.jpg", "label": "宣传图" },
+        { "src": "assets/results/result-07.jpg", "label": "多角度图" },
+        { "src": "assets/results/result-08.jpg", "label": "商品细节" },
+        { "src": "assets/results/result-09.jpg", "label": "详情页" }
+      ]
+    }
+  }
+]

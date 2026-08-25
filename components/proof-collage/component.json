@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "proof-collage",
+  "order": 85,
+  "label": "证明拼贴",
+  "kind": "component",
+  "category": "proof",
+  "description": "用三到四张真实客户、货物或现场照片围绕人物累积证据，并避开中央脸部与下三分之一字幕。",
+  "version": "1.0.0",
+  "lifecycle": "published",
+  "compatibility": "supported",
+  "captionMode": "overlay",
+  "formats": ["portrait", "landscape"],
+  "requiredFields": ["photos"],
+  "optionalFields": ["body"],
+  "promptHint": "photos[3..4]{src,alt?,label?,focus?}, title, body?（只用真实授权素材）",
+  "tags": ["客户证明", "现场照片", "社会证明", "拼贴"],
+  "source": "trade-proof/reference-study-20260806",
+  "apply": { "mode": "beat", "type": "proof-collage" },
+  "preview": { "duration": 4, "defaultFixture": "four-proofs" }
+}

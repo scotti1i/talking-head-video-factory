@@ -1,0 +1,82 @@
+/* trade-proof：真实人物与业务证明是主角，颜色只承担固定语义。 */
+#main {
+  --trade-ink: #13110F;
+  --trade-paper: #F4F5F8;
+  --trade-yellow: #F3FE19;
+  --trade-action: #0C00AF;
+  --trade-question: #7200E4;
+  --trade-cta: #EFB5D8;
+  --impact-ink: #13110F;
+  --impact-paper: #F4F5F8;
+  --impact-signal: #F3FE19;
+  --impact-action: #0C00AF;
+  --impact-question: #7200E4;
+  --impact-cta: #EFB5D8;
+}
+
+.beat {
+  border-width: 2px;
+}
+
+.beat::before {
+  height: 5px;
+}
+
+.kicker {
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  text-shadow: none;
+}
+
+h2 {
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.caption,
+.caption-over-card {
+  font-size: 48px;
+  line-height: 1.04;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  -webkit-text-stroke: 2.2px #13110F;
+  paint-order: stroke fill;
+}
+
+.caption-over-card {
+  font-size: 44px;
+}
+
+/* impact-sticker 保持短视频贴纸感，不继承通用卡片的网页 UI 语气。 */
+#main .beat-impact-sticker .impact-sticker-title {
+  font-family: "Inter", "FactoryCJK", sans-serif;
+  font-weight: 700;
+}
+
+#main .beat-impact-sticker .impact-sticker--question .impact-sticker-title,
+#main .beat-impact-sticker .impact-sticker--action .impact-sticker-title,
+#main .beat-impact-sticker .impact-sticker--reject .impact-sticker-title,
+#main .beat-impact-sticker .impact-sticker--cta .impact-sticker-title {
+  letter-spacing: -0.055em;
+}
+
+#main .beat-impact-sticker .impact-sticker--pivot .impact-sticker-title {
+  -webkit-text-stroke-width: 5px;
+}
+
+.beat strong,
+.chip-grid span,
+.panel-list span,
+.cta-row span {
+  font-weight: 700;
+}
+
+/* 旧 duel / cta 组件都用信号黄作强调底，主题层强制深墨文字。 */
+#main .beat-duel .duel-good,
+#main .beat-cta .cta-row span:first-child {
+  color: var(--trade-yellow);
+  -webkit-text-fill-color: var(--trade-yellow);
+  background: var(--trade-ink);
+  border-color: var(--trade-yellow);
+  text-shadow: none;
+}

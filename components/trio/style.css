@@ -1,0 +1,18 @@
+.trio {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+}
+.trio span {
+  display: block;
+  min-height: 78px;
+  border-radius: {{radius}};
+  padding: 10px;
+  background: {{chipBg}};
+  border: 1px solid {{chipBorder}};
+  color: {{text}};
+  font-size: 20px;
+  line-height: 1.08;
+  font-weight: 700;
+}

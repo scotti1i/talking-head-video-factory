@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "hero",
+  "order": 20,
+  "label": "数字聚焦",
+  "kind": "component",
+  "category": "data",
+  "description": "用大数字、序号或短代号制造信息锚点。",
+  "version": "1.0.0",
+  "lifecycle": "published",
+  "compatibility": "supported",
+  "formats": ["portrait", "landscape"],
+  "requiredFields": ["number", "body"],
+  "optionalFields": [],
+  "promptHint": "number, body（大数字、序号或短代号）",
+  "tags": ["数字", "序号", "数据"],
+  "source": "beats-v2/face-safe",
+  "apply": { "mode": "beat", "type": "hero" },
+  "preview": { "duration": 4, "defaultFixture": "default" }
+}

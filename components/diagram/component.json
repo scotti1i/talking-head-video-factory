@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "diagram",
+  "order": 90,
+  "label": "中心关系",
+  "kind": "component",
+  "category": "relationship",
+  "description": "展示一个核心概念与四个关联节点。",
+  "version": "1.0.0",
+  "lifecycle": "published",
+  "compatibility": "supported",
+  "formats": ["portrait", "landscape"],
+  "requiredFields": ["nodes", "body"],
+  "optionalFields": ["center"],
+  "promptHint": "nodes[]（恰好 4 个）, body；center 可选，默认 Agent",
+  "tags": ["关系图", "中心", "节点"],
+  "source": "beats-v2/face-safe",
+  "apply": { "mode": "beat", "type": "diagram" },
+  "preview": { "duration": 4, "defaultFixture": "default" }
+}

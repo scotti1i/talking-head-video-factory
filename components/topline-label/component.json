@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "topline-label",
+  "order": 12,
+  "label": "常驻顶部主题标签",
+  "kind": "component",
+  "category": "context",
+  "description": "像参考样片一样常驻一条极轻的顶部主题标签；它不替代口播字幕，也不占用中心信息区。",
+  "version": "1.0.0",
+  "lifecycle": "published",
+  "compatibility": "supported",
+  "captionMode": "overlay",
+  "formats": ["portrait", "landscape"],
+  "requiredFields": [],
+  "optionalFields": [],
+  "promptHint": "kicker(短主题名), title(主题主标签)；通常贯穿整条视频",
+  "tags": ["顶部", "常驻", "主题", "样片复刻"],
+  "source": "3814_1786513154.mp4 frame study 2026-08-12",
+  "apply": { "mode": "beat", "type": "topline-label" },
+  "preview": { "duration": 3, "defaultFixture": "default" }
+}

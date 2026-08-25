@@ -1,0 +1,18 @@
+.cta-row { display: flex; gap: 10px; margin-top: 14px; }
+.cta-row span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 13px;
+  border-radius: {{radius}};
+  border: 1px solid {{chipBorder}};
+  background: {{chipBg}};
+  color: {{chipText}};
+  font-size: 21px;
+  font-weight: 700;
+}
+.cta-row span:first-child {
+  color: {{accentFillText}};
+  background: {{accentFillBg}};
+  border-color: {{accentFillBorder}};
+}

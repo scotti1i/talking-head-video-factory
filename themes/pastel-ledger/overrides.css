@@ -1,0 +1,7 @@
+/* 贴纸 kicker + 打字机字距标题 */
+      .kicker { display: inline-block; background: #D9E56E; color: #3C3D18; padding: 5px 12px 4px;
+        border-radius: 6px; transform: rotate(-1.6deg); transform-origin: left bottom;
+        box-shadow: 0 2px 8px rgba(31, 27, 20, 0.16); letter-spacing: 0.08em; text-shadow: none; }
+      h2 { letter-spacing: 0.015em; }
+      .beat strong { letter-spacing: 0.02em; }
+      .pipeline b, .split-side small { font-family: "Courier New", monospace; letter-spacing: 0.06em; }

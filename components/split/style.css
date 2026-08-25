@@ -1,0 +1,28 @@
+.split-grid {
+  display: grid;
+  grid-template-columns: 1fr 48px 1fr;
+  gap: 10px;
+  align-items: stretch;
+  margin-top: 12px;
+}
+.split-side {
+  min-height: 116px;
+  padding: 13px;
+  border-radius: {{radius}};
+  border: 1px solid {{chipBorder}};
+  background: {{boxBg}};
+  display: grid;
+  align-content: start;
+  gap: 5px;
+}
+.split-side small { color: {{boxLabel}}; font-size: 17px; font-weight: 700; }
+.split-side b { color: {{text}}; font-size: 27px; line-height: 1; }
+.split-side span { color: {{textBody}}; font-size: 19px; font-family: {{fontBody}}; }
+.right { border-color: {{boxHotBorder}}; background: {{boxHotBg}}; }
+.vs {
+  align-self: center;
+  justify-self: center;
+  color: {{accent}};
+  font-size: 20px;
+  font-weight: 700;
+}

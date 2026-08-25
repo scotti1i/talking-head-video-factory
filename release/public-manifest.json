@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "rootFiles": [
+    ".gitignore",
+    "AGENTS.md",
+    "DESIGN.md",
+    "README.md",
+    "SECURITY.md",
+    "WINDOWS_CODEX_HANDOFF.md",
+    "package-lock.json",
+    "package.json"
+  ],
+  "roots": [
+    ".agents/skills/factory-auto-edit",
+    ".github/workflows",
+    "components",
+    "console",
+    "deploy/windows",
+    "docs",
+    "fine-cut",
+    "profiles",
+    "release",
+    "scripts",
+    "skills/talkinghead-edit",
+    "template-packs",
+    "templates/job",
+    "themes"
+  ],
+  "forbiddenPathPatterns": [
+    "(^|/)\\.env(?:\\.|$)",
+    "(^|/)factory\\.config\\.psd1$",
+    "(^|/)jobs(?:/|$)",
+    "(^|/)reports(?:/|$)",
+    "(^|/)visual-assets(?:/|$)",
+    "(^|/)node_modules(?:/|$)",
+    "(^|/)reference(?:-frames)?(?:/|$)",
+    "(^|/)previews?(?:/|$)",
+    "(^|/)archive(?:/|$)",
+    "(^|/)scripts/build-composition\\.mjs$",
+    "(^|/)scripts/transcribe-captions\\.mjs$"
+  ]
+}

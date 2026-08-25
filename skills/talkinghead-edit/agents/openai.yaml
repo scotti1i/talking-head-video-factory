@@ -1,0 +1,4 @@
+interface:
+  display_name: "口播成片工厂"
+  short_description: "从原片语义精剪到多平台成片、逐切点 QA、交付与发布准备"
+  default_prompt: "请使用 $talkinghead-edit，把我提供的口播原片做成经过切点检查、字幕校准、克制包装和最终 MP4 QA 的可交付成片。"

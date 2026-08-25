@@ -1,0 +1,13 @@
+.beat strong {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 12px;
+  padding: 0 16px;
+  border-radius: {{radius}};
+  color: {{accentFillText}};
+  background: {{accentFillBg}};
+  border: 1px solid {{accentFillBorder}};
+  font-size: 27px;
+  line-height: 1;
+}

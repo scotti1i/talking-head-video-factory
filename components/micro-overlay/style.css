@@ -1,0 +1,146 @@
+.beat-micro-overlay {
+  left: 42px;
+  right: 42px;
+  top: 118px;
+  bottom: auto;
+  max-height: none;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.beat-micro-overlay::before { display: none; }
+
+.beat-micro-overlay .micro-overlay {
+  display: flex;
+  align-items: stretch;
+  width: fit-content;
+  max-width: 790px;
+  min-height: 112px;
+  overflow: hidden;
+  border: 3px solid var(--trade-ink, {{pageBg}});
+  border-radius: 18px;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.28);
+}
+
+.beat-micro-overlay .micro-overlay--locator,
+.beat-micro-overlay .micro-overlay--question { margin-inline: auto; }
+
+.beat-micro-overlay .micro-overlay-mark {
+  display: grid;
+  flex: 0 0 112px;
+  place-items: center;
+  color: var(--trade-ink, {{pageBg}});
+  background: var(--trade-yellow, {{accentFillBg}});
+}
+
+.beat-micro-overlay .micro-overlay-mark svg {
+  width: 58px;
+  height: 58px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.beat-micro-overlay .micro-overlay-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  padding: 18px 26px 20px;
+}
+
+.beat-micro-overlay .micro-overlay .kicker {
+  margin: 0 0 7px;
+  color: currentColor;
+  font-size: 18px;
+  line-height: 1;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-shadow: none;
+  opacity: 0.7;
+}
+
+.beat-micro-overlay .micro-overlay h2 {
+  max-width: 620px;
+  color: currentColor;
+  font-size: clamp(32px, 3.7vw, 42px);
+  line-height: 1;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.beat-micro-overlay .micro-overlay p {
+  max-width: 610px;
+  margin-top: 8px;
+  color: currentColor;
+  font-family: {{fontBody}};
+  font-size: 22px;
+  line-height: 1.12;
+  opacity: 0.78;
+}
+
+.beat-micro-overlay .micro-overlay--locator {
+  color: var(--trade-paper, {{text}});
+  background: var(--trade-ink, {{cardBg}});
+}
+
+.beat-micro-overlay .micro-overlay--action {
+  color: var(--trade-action, {{accent}});
+  background: var(--trade-paper, {{text}});
+}
+
+.beat-micro-overlay .micro-overlay--action .micro-overlay-mark {
+  color: var(--trade-paper, {{accentFillText}});
+  background: var(--trade-action, {{accentFillBg}});
+}
+
+.beat-micro-overlay .micro-overlay--question {
+  color: var(--trade-question, {{accent}});
+  background: var(--trade-paper, {{text}});
+}
+
+.beat-micro-overlay .micro-overlay--question .micro-overlay-mark {
+  color: var(--trade-paper, {{accentFillText}});
+  background: var(--trade-question, {{accentFillBg}});
+}
+
+.beat-micro-overlay .micro-question-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 12px;
+}
+
+.beat-micro-overlay .micro-question-stack span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 12px;
+  color: var(--trade-question, {{accent}});
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1;
+  border: 2px solid currentColor;
+  border-radius: 999px;
+  background: transparent;
+}
+
+@media (orientation: landscape) {
+  .beat-micro-overlay {
+    left: 60px;
+    right: 50%;
+    top: 58px;
+  }
+
+  .beat-micro-overlay .micro-overlay--locator,
+  .beat-micro-overlay .micro-overlay--question { margin-inline: 0; }
+
+  .beat-micro-overlay .micro-overlay { max-width: 760px; }
+}

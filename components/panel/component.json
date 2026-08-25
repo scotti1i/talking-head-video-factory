@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "panel",
+  "order": 30,
+  "label": "要点清单",
+  "kind": "component",
+  "category": "list",
+  "description": "把三到五个并列要点收进同一张信息卡。",
+  "version": "1.0.0",
+  "lifecycle": "published",
+  "compatibility": "supported",
+  "formats": ["portrait", "landscape"],
+  "requiredFields": ["items", "body"],
+  "optionalFields": [],
+  "promptHint": "items[], body（三到五个并列要点）",
+  "tags": ["清单", "要点", "并列"],
+  "source": "beats-v2/face-safe",
+  "apply": { "mode": "beat", "type": "panel" },
+  "preview": { "duration": 4, "defaultFixture": "default" }
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "id": "default",
+    "label": "方案对比",
+    "beat": {
+      "kicker": "核心差异",
+      "title": "同样的素材，两种生产方式",
+      "left": { "label": "以前", "title": "手工重来", "lines": ["风格漂移", "重复转录", "验收靠记忆"] },
+      "right": { "label": "现在", "title": "工厂复用", "lines": ["合同统一", "缓存复用", "逐关 QA"] }
+    }
+  },
+  {
+    "id": "mixed",
+    "label": "平台对比",
+    "beat": {
+      "kicker": "画幅策略",
+      "title": "竖屏和横屏不是同一个裁切",
+      "left": { "label": "Douyin 9:16", "title": "人物全幅", "lines": ["底部安全卡", "字幕上移", "手机优先"] },
+      "right": { "label": "YouTube 16:9", "title": "左右重排", "lines": ["解释区在左", "人物位在右", "独立字幕区"] }
+    }
+  }
+]

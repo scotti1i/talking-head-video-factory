@@ -1,0 +1,328 @@
+.beat-impact-sticker {
+  inset: 0;
+  max-height: none;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.beat-impact-sticker::before { display: none; }
+
+.beat-impact-sticker .impact-sticker {
+  --sticker-ink: var(--impact-ink, var(--trade-ink, {{pageBg}}));
+  --sticker-paper: var(--impact-paper, var(--trade-paper, {{text}}));
+  --sticker-signal: var(--impact-signal, var(--trade-yellow, {{accent}}));
+  --sticker-action: var(--impact-action, var(--trade-action, {{accent}}));
+  --sticker-question: var(--impact-question, var(--trade-question, {{accent}}));
+  --sticker-cta: var(--impact-cta, var(--trade-cta, {{accentFillBg}}));
+  position: absolute;
+  pointer-events: none;
+}
+
+.beat-impact-sticker .impact-sticker-surface {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  color: var(--sticker-ink);
+  border: 4px solid var(--sticker-ink);
+  background: var(--sticker-paper);
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.34);
+  transform-origin: center center;
+  will-change: transform, opacity;
+}
+
+.beat-impact-sticker .impact-sticker-mark {
+  display: grid;
+  flex: 0 0 138px;
+  place-items: center;
+  color: var(--sticker-ink);
+  background: var(--sticker-signal);
+}
+
+.beat-impact-sticker .impact-sticker-mark svg {
+  width: 76px;
+  height: 76px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.beat-impact-sticker .impact-sticker-copy {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  padding: 24px 34px 28px;
+}
+
+.beat-impact-sticker .impact-sticker-kicker {
+  margin: 0 0 9px;
+  color: currentColor;
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  text-shadow: none;
+  opacity: 0.72;
+}
+
+.beat-impact-sticker .impact-sticker-title {
+  position: relative;
+  max-width: none;
+  color: currentColor;
+  font-size: clamp(58px, 7vw, 78px);
+  line-height: 0.92;
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+/* 问题：上方大气泡，短暂占用头顶留白。 */
+.beat-impact-sticker .impact-sticker--question {
+  top: 112px;
+  left: 50%;
+  width: min(900px, calc(100% - 92px));
+  transform: translateX(-50%);
+}
+
+.beat-impact-sticker .impact-sticker--question .impact-sticker-surface {
+  color: var(--sticker-question);
+  border-radius: 34px;
+}
+
+.beat-impact-sticker .impact-sticker--question .impact-sticker-surface::after {
+  content: "";
+  position: absolute;
+  right: 86px;
+  bottom: -26px;
+  width: 48px;
+  height: 48px;
+  border-right: 4px solid var(--sticker-ink);
+  border-bottom: 4px solid var(--sticker-ink);
+  background: var(--sticker-paper);
+  transform: skewY(-34deg) rotate(27deg);
+}
+
+.beat-impact-sticker .impact-sticker--question .impact-sticker-copy {
+  padding: 32px 42px 36px;
+}
+
+.beat-impact-sticker .impact-sticker--question .impact-sticker-title {
+  font-size: clamp(64px, 7.6vw, 84px);
+  line-height: 0.96;
+}
+
+.beat-impact-sticker .impact-sticker--question.impact-sticker--compact-title .impact-sticker-title {
+  font-size: clamp(52px, 5.6vw, 62px);
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+/* 否定：横贯身体的纸带，strike 只在结论落点出现。 */
+.beat-impact-sticker .impact-sticker--reject {
+  top: auto;
+  bottom: 540px;
+  left: 50%;
+  width: min(980px, calc(100% - 56px));
+  transform: translateX(-50%);
+}
+
+.beat-impact-sticker .impact-sticker--reject .impact-sticker-surface {
+  min-height: 154px;
+  border-radius: 8px;
+}
+
+.beat-impact-sticker .impact-sticker--reject .impact-sticker-title {
+  color: var(--sticker-action);
+  font-size: clamp(68px, 8vw, 88px);
+}
+
+.beat-impact-sticker .impact-sticker-strike {
+  position: absolute;
+  left: -2%;
+  right: -2%;
+  top: 48%;
+  height: 12px;
+  border: 3px solid var(--sticker-ink);
+  border-radius: 999px;
+  background: var(--sticker-signal);
+  box-shadow: 0 4px 0 rgba(19, 17, 15, 0.18);
+  transform: rotate(-4deg);
+  transform-origin: left center;
+}
+
+/* Pivot：不再套卡片，让答案本身成为画面。 */
+.beat-impact-sticker .impact-sticker--pivot {
+  right: 54px;
+  bottom: 520px;
+  left: 54px;
+}
+
+.beat-impact-sticker .impact-sticker--pivot .impact-sticker-surface {
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.beat-impact-sticker .impact-sticker--pivot .impact-sticker-mark {
+  flex-basis: 144px;
+  align-self: center;
+  height: 144px;
+  border: 4px solid var(--sticker-ink);
+  border-radius: 50%;
+  box-shadow: 0 9px 0 var(--sticker-ink);
+}
+
+.beat-impact-sticker .impact-sticker--pivot .impact-sticker-copy {
+  flex: 0 1 auto;
+  padding: 12px 26px;
+}
+
+.beat-impact-sticker .impact-sticker--pivot .impact-sticker-kicker {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 8px 13px;
+  color: var(--sticker-paper);
+  background: var(--sticker-ink);
+  opacity: 1;
+}
+
+.beat-impact-sticker .impact-sticker--pivot .impact-sticker-title {
+  color: var(--sticker-signal);
+  font-size: clamp(104px, 13.5vw, 148px);
+  line-height: 0.82;
+  letter-spacing: -0.065em;
+  -webkit-text-stroke: 5px var(--sticker-ink);
+  paint-order: stroke fill;
+  text-shadow: 0 9px 0 var(--sticker-ink), 0 18px 28px rgba(0, 0, 0, 0.36);
+}
+
+/* Action：纯蓝动作横条，和白底否定条分开。 */
+.beat-impact-sticker .impact-sticker--action {
+  top: auto;
+  bottom: 540px;
+  left: 50%;
+  width: min(980px, calc(100% - 56px));
+  transform: translateX(-50%);
+}
+
+.beat-impact-sticker .impact-sticker--action .impact-sticker-surface {
+  min-height: 158px;
+  color: var(--sticker-paper);
+  border-color: var(--sticker-ink);
+  border-radius: 10px;
+  background: var(--sticker-action);
+  box-shadow: 0 11px 0 var(--sticker-ink), 0 24px 42px rgba(0, 0, 0, 0.28);
+}
+
+.beat-impact-sticker .impact-sticker--action .impact-sticker-mark {
+  color: var(--sticker-action);
+  background: var(--sticker-paper);
+}
+
+.beat-impact-sticker .impact-sticker--action .impact-sticker-kicker { color: var(--sticker-signal); opacity: 1; }
+
+/* Identity：左上小章，不和主标题、字幕争夺中心区域。 */
+.beat-impact-sticker .impact-sticker--identity {
+  top: 142px;
+  left: 48px;
+  width: min(650px, calc(100% - 260px));
+}
+
+.beat-impact-sticker .impact-sticker--identity .impact-sticker-surface {
+  min-height: 118px;
+  color: var(--sticker-paper);
+  border-color: var(--sticker-paper);
+  border-radius: 16px;
+  background: var(--sticker-ink);
+  box-shadow: 0 9px 0 var(--sticker-signal), 0 18px 36px rgba(0, 0, 0, 0.30);
+}
+
+.beat-impact-sticker .impact-sticker--identity .impact-sticker-mark {
+  flex-basis: 112px;
+  color: var(--sticker-ink);
+}
+
+.beat-impact-sticker .impact-sticker--identity .impact-sticker-mark svg { width: 62px; height: 62px; }
+
+.beat-impact-sticker .impact-sticker--identity .impact-sticker-copy { padding: 19px 26px 21px; }
+.beat-impact-sticker .impact-sticker--identity .impact-sticker-title { font-size: clamp(42px, 5.2vw, 58px); }
+
+/* CTA：底部单动作徽章，保留人物上半身与字幕区。 */
+.beat-impact-sticker .impact-sticker--cta {
+  right: 54px;
+  bottom: 176px;
+  left: 54px;
+}
+
+.beat-impact-sticker .impact-sticker--cta .impact-sticker-surface {
+  min-height: 158px;
+  color: var(--sticker-ink);
+  border-radius: 32px;
+  background: var(--sticker-cta);
+  box-shadow: 0 11px 0 var(--sticker-ink), 0 24px 42px rgba(0, 0, 0, 0.28);
+}
+
+.beat-impact-sticker .impact-sticker--cta .impact-sticker-mark {
+  color: var(--sticker-paper);
+  background: var(--sticker-ink);
+  border-radius: 26px 0 0 26px;
+}
+
+.beat-impact-sticker .impact-sticker--cta .impact-sticker-title {
+  font-size: clamp(58px, 7vw, 78px);
+}
+
+.beat-impact-sticker .impact-sticker--iconless .impact-sticker-copy { padding-left: 42px; }
+
+@media (orientation: landscape) {
+  .beat-impact-sticker .impact-sticker--question {
+    top: 72px;
+    left: 70px;
+    width: 820px;
+    transform: none;
+  }
+
+  .beat-impact-sticker .impact-sticker--reject,
+  .beat-impact-sticker .impact-sticker--action {
+    top: 50%;
+    left: 78px;
+    width: 850px;
+    transform: translateY(-50%);
+  }
+
+  .beat-impact-sticker .impact-sticker--pivot {
+    right: auto;
+    bottom: 128px;
+    left: 82px;
+    width: 880px;
+  }
+
+  .beat-impact-sticker .impact-sticker--identity {
+    top: 70px;
+    left: 72px;
+    width: 610px;
+  }
+
+  .beat-impact-sticker .impact-sticker--cta {
+    right: auto;
+    bottom: 74px;
+    left: 72px;
+    width: 880px;
+  }
+
+  .beat-impact-sticker .impact-sticker-title { font-size: 64px; }
+  .beat-impact-sticker .impact-sticker--identity .impact-sticker-title { font-size: 48px; }
+  .beat-impact-sticker .impact-sticker--pivot .impact-sticker-title { font-size: 126px; }
+}

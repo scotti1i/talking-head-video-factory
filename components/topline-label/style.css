@@ -1,0 +1,44 @@
+.beat-topline-label {
+  inset: 0;
+  max-height: none;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.beat-topline-label::before { display: none; }
+
+.beat-topline-label .topline-label {
+  position: absolute;
+  top: 70px;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 88%;
+  padding: 9px 15px 10px;
+  color: #FFFFFF;
+  font-family: {{fontBody}};
+  line-height: 1;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  -webkit-text-stroke: 1.5px rgba(0, 0, 0, 0.82);
+  paint-order: stroke fill;
+  text-shadow: 0 2px 7px rgba(0, 0, 0, 0.88);
+}
+
+.beat-topline-label .topline-label-kicker {
+  font-size: 22px;
+  font-weight: 700;
+  opacity: 0.8;
+}
+
+.beat-topline-label .topline-label-title {
+  font-size: 29px;
+  font-weight: 900;
+  letter-spacing: 0.01em;
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "id": "dm",
+    "label": "私信 CTA",
+    "beat": {
+      "kicker": "READY TO IMPORT?",
+      "title": "Tell us what you need",
+      "action": "SEND US A DM",
+      "handle": "@YOURHANDLE"
+    }
+  },
+  {
+    "id": "requirements",
+    "label": "发送需求",
+    "beat": {
+      "kicker": "NEXT STEP",
+      "title": "Start with one clear brief",
+      "action": "SEND YOUR REQUIREMENTS",
+      "body": "Product, quantity and destination are enough to begin."
+    }
+  }
+]

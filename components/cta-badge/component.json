@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "cta-badge",
+  "order": 105,
+  "label": "轻量 CTA 徽章",
+  "kind": "component",
+  "category": "action",
+  "description": "在人物收尾时给出一个短动作与可执行联系方式，不铺满画面、不穿过脸部。",
+  "version": "1.0.0",
+  "lifecycle": "published",
+  "compatibility": "supported",
+  "captionMode": "overlay",
+  "formats": ["portrait", "landscape"],
+  "requiredFields": ["action"],
+  "optionalFields": ["handle", "body"],
+  "promptHint": "title, action, handle?, body?（动作必须可执行，建议保持 1.2–1.8 秒）",
+  "tags": ["CTA", "私信", "联系", "收尾"],
+  "source": "trade-proof/reference-study-20260806",
+  "apply": { "mode": "beat", "type": "cta-badge" },
+  "preview": { "duration": 3, "defaultFixture": "dm" }
+}

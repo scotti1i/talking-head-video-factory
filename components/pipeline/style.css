@@ -1,0 +1,26 @@
+.pipeline {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+}
+.pipeline div {
+  min-height: 78px;
+  border-radius: {{radius}};
+  padding: 10px;
+  background: {{chipBg}};
+  border: 1px solid {{chipBorder}};
+}
+.pipeline b {
+  display: block;
+  color: {{accent}};
+  font-size: 16px;
+  margin-bottom: 7px;
+}
+.pipeline span {
+  display: block;
+  color: {{text}};
+  font-size: 20px;
+  line-height: 1.08;
+  font-weight: 700;
+}

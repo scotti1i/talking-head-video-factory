@@ -1,0 +1,43 @@
+{
+  "id": "trade-proof",
+  "label": "外贸现场证明",
+  "description": "真实仓库口播的 proof-first 包装：黑白重字与信号黄字幕，动作蓝、问题紫、CTA 粉只承担固定语义。v2，2026-08-06 新增高冲击语义贴纸，问题、否定、答案、动作、身份和 CTA 不再共用网页式卡片。",
+  "source": "public theme tokens",
+  "fonts": [
+    { "family": "Inter", "file": "Inter-700-latin.woff2", "weight": 700 },
+    { "family": "LXGWWenKaiTC", "file": "LXGWWenKaiTC-400-latin.woff2", "weight": 400 }
+  ],
+  "tokens": {
+    "pageBg": "#13110F",
+    "text": "#F4F5F8",
+    "textBody": "#E1E3E7",
+    "fontHead": "Inter, sans-serif",
+    "fontBody": "Inter, LXGWWenKaiTC, sans-serif",
+    "radius": "16px",
+    "kicker": "#F3FE19",
+    "accent": "#F3FE19",
+    "accentFillBg": "#F3FE19",
+    "accentFillText": "#13110F",
+    "accentFillBorder": "#13110F",
+    "cardBg": "rgba(19, 17, 15, 0.92)",
+    "cardBorder": "rgba(244, 245, 248, 0.88)",
+    "cardShadow": "0 18px 46px rgba(0, 0, 0, 0.34)",
+    "cardTopline": "linear-gradient(90deg, #F3FE19, #F3FE19)",
+    "cardBlur": "0px",
+    "chipBg": "rgba(244, 245, 248, 0.12)",
+    "chipBorder": "rgba(244, 245, 248, 0.34)",
+    "chipText": "#F4F5F8",
+    "heroNumber": "rgba(243, 254, 25, 0.24)",
+    "boxBg": "rgba(19, 17, 15, 0.90)",
+    "boxHotBg": "rgba(243, 254, 25, 0.12)",
+    "boxHotBorder": "rgba(243, 254, 25, 0.76)",
+    "boxLabel": "#F3FE19",
+    "mutedText": "rgba(244, 245, 248, 0.58)",
+    "mutedBorder": "rgba(244, 245, 248, 0.22)",
+    "mutedBg": "rgba(19, 17, 15, 0.72)",
+    "scrim": "linear-gradient(180deg, rgba(19, 17, 15, 0.02) 44%, rgba(19, 17, 15, 0.08) 58%, rgba(19, 17, 15, 0.70) 100%)",
+    "vignette": "radial-gradient(circle at 50% 42%, rgba(19, 17, 15, 0) 44%, rgba(19, 17, 15, 0.22) 100%)",
+    "captionText": "#F4F5F8",
+    "captionShadow": "0 3px 0 #13110F, 0 7px 0 #13110F, 0 13px 24px rgba(0, 0, 0, 0.72)"
+  }
+}

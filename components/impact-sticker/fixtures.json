@@ -1,0 +1,69 @@
+[
+  {
+    "id": "question",
+    "label": "大问题气泡",
+    "beat": {
+      "kicker": "QUICK QUESTION",
+      "title": "WHAT COSTS YOU MOST?",
+      "variant": "question",
+      "icon": "none",
+      "hitOffset": 0.13
+    }
+  },
+  {
+    "id": "reject",
+    "label": "否定横条",
+    "beat": {
+      "kicker": "NOT THE ANSWER",
+      "title": "THE PRODUCT",
+      "variant": "reject",
+      "icon": "package",
+      "strike": true,
+      "hitOffset": 0.13
+    }
+  },
+  {
+    "id": "pivot",
+    "label": "巨型答案",
+    "beat": {
+      "kicker": "THE REAL COST IS",
+      "title": "TIME",
+      "variant": "pivot",
+      "icon": "clock",
+      "hitOffset": 0.17
+    }
+  },
+  {
+    "id": "action",
+    "label": "动作横条",
+    "beat": {
+      "kicker": "WHAT IT BECOMES",
+      "title": "TRACK IT YOURSELF",
+      "variant": "action",
+      "icon": "track",
+      "hitOffset": 0.13
+    }
+  },
+  {
+    "id": "identity",
+    "label": "来源身份章",
+    "beat": {
+      "kicker": "SOURCE",
+      "title": "LOCAL REGRESSION FIXTURE",
+      "variant": "identity",
+      "icon": "source",
+      "hitOffset": 0.1
+    }
+  },
+  {
+    "id": "cta",
+    "label": "单动作 CTA",
+    "beat": {
+      "kicker": "NEXT STEP",
+      "title": "SEND YOUR REQUIREMENTS",
+      "variant": "cta",
+      "icon": "message",
+      "hitOffset": 0.13
+    }
+  }
+]

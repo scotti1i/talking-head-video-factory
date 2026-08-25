@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "impact-sticker",
+  "order": 18,
+  "label": "高冲击语义贴纸",
+  "kind": "component",
+  "category": "emphasis",
+  "description": "用问题气泡、否定横条、巨型答案、行动条、身份章或 CTA 在语义落点制造短促冲击，并把人物留在主画面。",
+  "version": "1.0.0",
+  "lifecycle": "published",
+  "compatibility": "supported",
+  "captionMode": "overlay",
+  "formats": ["portrait", "landscape"],
+  "requiredFields": ["variant"],
+  "optionalFields": ["icon", "strike", "hitOffset"],
+  "promptHint": "variant(question/reject/pivot/action/identity/cta), kicker(小标题), title(主标题), icon?, strike?, hitOffset?；只在明确语义落点短促出现",
+  "tags": ["贴纸", "问题", "否定", "答案", "动作", "身份", "CTA"],
+  "source": "trade-proof/reference-study-20260806-v2",
+  "apply": { "mode": "beat", "type": "impact-sticker" },
+  "preview": { "duration": 2.2, "defaultFixture": "pivot" }
+}

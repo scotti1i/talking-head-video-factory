@@ -1,0 +1,42 @@
+{
+  "id": "editorial-stage",
+  "label": "深色编辑舞台",
+  "description": "深色编辑舞台：4:3 主舞台、左上圆形讲解人像、居中粗白单行字幕、冷灰分割线与悬浮证据画框。",
+  "source": "public theme tokens",
+  "fonts": [
+    { "family": "Inter", "file": "Inter-700-latin.woff2", "weight": 700 }
+  ],
+  "tokens": {
+    "pageBg": "#050608",
+    "text": "#F7F5F0",
+    "textBody": "#D9DDE0",
+    "fontHead": "FactoryCJK, Inter, \"Hiragino Sans GB\", sans-serif",
+    "fontBody": "FactoryCJK, \"Hiragino Sans GB\", sans-serif",
+    "radius": "8px",
+    "kicker": "#C8D1D8",
+    "accent": "#E5EDF1",
+    "accentFillBg": "#E5EDF1",
+    "accentFillText": "#0B0D10",
+    "accentFillBorder": "#F7F5F0",
+    "cardBg": "linear-gradient(180deg, rgba(16, 19, 23, 0.96), rgba(6, 8, 10, 0.98))",
+    "cardBorder": "#2B3138",
+    "cardShadow": "0 22px 64px rgba(0, 0, 0, 0.46), inset 0 1px 0 rgba(255, 255, 255, 0.05)",
+    "cardTopline": "linear-gradient(90deg, #F7F5F0 0%, #AAB8C2 58%, rgba(170, 184, 194, 0) 100%)",
+    "cardBlur": "0px",
+    "chipBg": "#101419",
+    "chipBorder": "#303740",
+    "chipText": "#F7F5F0",
+    "heroNumber": "rgba(229, 237, 241, 0.18)",
+    "boxBg": "#0D1115",
+    "boxHotBg": "#171D22",
+    "boxHotBorder": "#697883",
+    "boxLabel": "#B8C7D0",
+    "mutedText": "#929DA5",
+    "mutedBorder": "#283039",
+    "mutedBg": "#0A0D10",
+    "scrim": "linear-gradient(180deg, rgba(5, 6, 8, 0) 48%, rgba(5, 6, 8, 0.68) 100%)",
+    "vignette": "radial-gradient(circle at 50% 38%, rgba(255, 255, 255, 0.025), rgba(0, 0, 0, 0.18) 78%)",
+    "captionText": "#FFFFFF",
+    "captionShadow": "0 3px 5px rgba(0, 0, 0, 0.72)"
+  }
+}

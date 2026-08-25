@@ -1,0 +1,22 @@
+[
+  {
+    "id": "default",
+    "label": "四步链路",
+    "beat": {
+      "kicker": "标准流程",
+      "title": "一次母版派生多个交付格式",
+      "steps": ["原片", "语义精剪", "视觉包装", "最终 QA"],
+      "body": "每一步都有明确输入和输出。"
+    }
+  },
+  {
+    "id": "mixed",
+    "label": "中英混排",
+    "beat": {
+      "kicker": "数据合同",
+      "title": "生产链路只传递稳定结果",
+      "steps": ["word cache", "semantic EDL", "beats", "MP4 QA"],
+      "body": "Agent 做判断，脚本做确定性执行。"
+    }
+  }
+]

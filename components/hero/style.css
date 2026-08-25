@@ -1,0 +1,9 @@
+.hero-number {
+  position: absolute;
+  right: 24px;
+  bottom: 20px;
+  color: {{heroNumber}};
+  font-size: 92px;
+  line-height: 0.8;
+  font-weight: 700;
+}

@@ -1,0 +1,25 @@
+.duel-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+.duel-row div {
+  min-height: 76px;
+  padding: 14px;
+  border-radius: {{radius}};
+  font-size: 27px;
+  line-height: 1.05;
+  font-weight: 700;
+}
+.duel-bad {
+  color: {{mutedText}};
+  border: 1px solid {{mutedBorder}};
+  background: {{mutedBg}};
+  text-decoration: line-through;
+}
+.duel-good {
+  color: {{accentFillText}};
+  background: {{accentFillBg}};
+  border: 1px solid {{accentFillBorder}};
+}

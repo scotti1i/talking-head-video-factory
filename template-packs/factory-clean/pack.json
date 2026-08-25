@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "factory-clean",
+  "label": "工厂简洁",
+  "description": "真人与现场为主，奶油纸感字幕和少量信息卡，适合可信、克制的询单口播。",
+  "theme": "warm-minimal",
+  "compatibleProfiles": ["factory-acquisition"],
+  "compatibleLayouts": ["vertical", "horizontal"],
+  "caption": {
+    "maxCharsPerLine": 28,
+    "singleLine": false
+  },
+  "brollPolicy": {
+    "maxCoverage": 0.18,
+    "defaultMode": "fullscreen-pip",
+    "proofFirst": true
+  },
+  "audioPolicy": {
+    "musicBedRequired": true,
+    "maxSemanticCues": 3
+  }
+}

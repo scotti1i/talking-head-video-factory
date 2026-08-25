@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "split",
+  "order": 50,
+  "label": "双栏对比",
+  "kind": "component",
+  "category": "comparison",
+  "description": "把两套方案并列，让差异在同一视野内成立。",
+  "version": "1.0.0",
+  "lifecycle": "published",
+  "compatibility": "supported",
+  "formats": ["portrait", "landscape"],
+  "requiredFields": ["left", "right"],
+  "optionalFields": [],
+  "promptHint": "left{label,title,lines[]}, right{label,title,lines[]}（右侧为强调侧）",
+  "tags": ["对比", "双栏", "前后"],
+  "source": "beats-v2/face-safe",
+  "apply": { "mode": "beat", "type": "split" },
+  "preview": { "duration": 4, "defaultFixture": "default" }
+}

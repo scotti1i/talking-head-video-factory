@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "default": "clean-talkinghead",
+  "profiles": {
+    "clean-talkinghead": {
+      "label": "普通口播",
+      "description": "真人口播为主，按语义精剪；卡片、B-roll 和音乐均按需使用。",
+      "editingMode": "semantic-edl",
+      "requiredGates": [
+        "source",
+        "inventory",
+        "transcript",
+        "editorTranscript",
+        "editorSignals",
+        "edl",
+        "aroll",
+        "cutEvidence",
+        "cutApproval",
+        "captions",
+        "variantBuild",
+        "finalQa",
+        "finalApproval",
+        "fullPlayback"
+      ]
+    },
+    "screen-demo": {
+      "label": "录屏实操口播",
+      "description": "Screen Studio 或软件演示为主素材；发布目标仍由 variants 独立决定。",
+      "editingMode": "preedited-or-semantic-edl",
+      "requiredGates": [
+        "source",
+        "inventory",
+        "transcript",
+        "captions",
+        "variantBuild",
+        "finalQa",
+        "finalApproval",
+        "fullPlayback"
+      ]
+    },
+    "commercial-showcase": {
+      "label": "商单展示口播",
+      "description": "真人口播与真实产品、实操、结果图共同叙事。",
+      "editingMode": "semantic-edl",
+      "requiredGates": [
+        "source",
+        "inventory",
+        "transcript",
+        "editorTranscript",
+        "editorSignals",
+        "edl",
+        "aroll",
+        "cutEvidence",
+        "cutApproval",
+        "captions",
+        "variantBuild",
+        "finalQa",
+        "finalApproval",
+        "audioQa",
+        "fullPlayback"
+      ]
+    },
+    "factory-acquisition": {
+      "label": "工厂外贸获客口播",
+      "description": "完整书面脚本优先、多语言字幕、样片级 BGM/SFX/转场与真实工厂证据。",
+      "editingMode": "script-preserving-edl",
+      "requiredGates": [
+        "source",
+        "writtenScript",
+        "inventory",
+        "transcript",
+        "editorTranscript",
+        "editorSignals",
+        "edl",
+        "aroll",
+        "cutEvidence",
+        "cutApproval",
+        "captions",
+        "musicBed",
+        "variantBuild",
+        "finalQa",
+        "finalApproval",
+        "audioQa",
+        "fullPlayback"
+      ]
+    }
+  },
+  "policies": {
+    "douyin-compliance": {
+      "label": "抖音合规",
+      "description": "平台敏感语义、字幕、音轨和 CTA 的独立审核层，不改变内容 profile。"
+    }
+  }
+}

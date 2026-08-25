@@ -1,0 +1,33 @@
+.diagram { position: relative; height: 140px; margin-top: 12px; }
+.center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  width: 116px;
+  height: 60px;
+  border-radius: {{radius}};
+  color: {{accentFillText}};
+  background: {{accentFillBg}};
+  border: 1px solid {{accentFillBorder}};
+  font-size: 23px;
+  font-weight: 700;
+}
+.node {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 168px;
+  min-height: 44px;
+  border-radius: {{radius}};
+  border: 1px solid {{chipBorder}};
+  background: {{chipBg}};
+  font-size: 18px;
+  font-weight: 700;
+}
+.node-0 { left: 28px; top: 8px; }
+.node-1 { right: 28px; top: 8px; }
+.node-2 { left: 28px; bottom: 8px; }
+.node-3 { right: 28px; bottom: 8px; }

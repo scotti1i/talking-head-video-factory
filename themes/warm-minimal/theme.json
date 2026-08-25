@@ -1,0 +1,43 @@
+{
+  "id": "warm-minimal",
+  "label": "Warm Minimal",
+  "description": "奶油纸底、深棕墨色、陶土橙单一强调色；低圆角、细描边、克制投影，无玻璃、无霓虹、无发光。",
+  "source": "public theme tokens",
+  "fonts": [
+    { "family": "Inter", "file": "Inter-700-latin.woff2", "weight": 700 },
+    { "family": "LXGWWenKaiTC", "file": "LXGWWenKaiTC-400-latin.woff2", "weight": 400 }
+  ],
+  "tokens": {
+    "pageBg": "#F7F2EA",
+    "text": "#2D2218",
+    "textBody": "#6B5D4D",
+    "fontHead": "Inter, LXGWWenKaiTC, \"PingFang SC\", sans-serif",
+    "fontBody": "LXGWWenKaiTC, \"PingFang SC\", sans-serif",
+    "radius": "8px",
+    "kicker": "#3D5A80",
+    "accent": "#BF5700",
+    "accentFillBg": "#BF5700",
+    "accentFillText": "#FFF9F0",
+    "accentFillBorder": "#A94C00",
+    "cardBg": "rgba(250, 246, 238, 0.97)",
+    "cardBorder": "rgba(45, 34, 24, 0.14)",
+    "cardShadow": "0 12px 32px rgba(45, 34, 24, 0.18)",
+    "cardTopline": "linear-gradient(90deg, #BF5700, #C8881F)",
+    "cardBlur": "0px",
+    "chipBg": "#FFFFFF",
+    "chipBorder": "rgba(45, 34, 24, 0.14)",
+    "chipText": "#2D2218",
+    "heroNumber": "rgba(191, 87, 0, 0.22)",
+    "boxBg": "rgba(255, 255, 255, 0.84)",
+    "boxHotBg": "rgba(191, 87, 0, 0.10)",
+    "boxHotBorder": "rgba(191, 87, 0, 0.42)",
+    "boxLabel": "#BF5700",
+    "mutedText": "rgba(45, 34, 24, 0.44)",
+    "mutedBorder": "rgba(45, 34, 24, 0.14)",
+    "mutedBg": "rgba(45, 34, 24, 0.05)",
+    "scrim": "linear-gradient(180deg, rgba(22, 14, 8, 0.02), rgba(22, 14, 8, 0.04) 54%, rgba(22, 14, 8, 0.58))",
+    "vignette": "radial-gradient(circle at 50% 42%, rgba(247, 242, 234, 0), rgba(45, 34, 24, 0.12))",
+    "captionText": "#FFF9F0",
+    "captionShadow": "0 2px 0 rgba(45, 34, 24, 0.88), 0 7px 20px rgba(22, 14, 8, 0.62)"
+  }
+}

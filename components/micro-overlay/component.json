@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "micro-overlay",
+  "order": 15,
+  "label": "语义微浮层",
+  "kind": "component",
+  "category": "context",
+  "description": "用同一套紧凑视觉语法表达地点、流程动作或风险问题，不把三个语义拆成三套组件。",
+  "version": "1.0.0",
+  "lifecycle": "published",
+  "compatibility": "supported",
+  "captionMode": "overlay",
+  "formats": ["portrait", "landscape"],
+  "requiredFields": ["variant"],
+  "optionalFields": ["body", "icon", "items"],
+  "promptHint": "variant(locator/action/question), title, body?, icon?, items?（只在语义节点短暂出现）",
+  "tags": ["地点", "动作", "问题", "微浮层"],
+  "source": "trade-proof/reference-study-20260806",
+  "apply": { "mode": "beat", "type": "micro-overlay" },
+  "preview": { "duration": 3, "defaultFixture": "locator" }
+}

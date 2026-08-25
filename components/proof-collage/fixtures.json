@@ -1,0 +1,41 @@
+[
+  {
+    "id": "four-proofs",
+    "label": "四张现场证明",
+    "assets": [
+      { "source": "themes/trade-proof/reference/09-proof-market.jpg", "target": "assets/proof/market-visit.jpg" },
+      { "source": "themes/trade-proof/reference/10-proof-logistics.jpg", "target": "assets/proof/logistics.jpg" },
+      { "source": "themes/trade-proof/reference/11-proof-warehouse.jpg", "target": "assets/proof/warehouse.jpg" },
+      { "source": "themes/trade-proof/reference/07-proof-collage.jpg", "target": "assets/proof/clients.jpg" }
+    ],
+    "beat": {
+      "kicker": "REAL WORK, ON THE GROUND",
+      "title": "Your order is handled in China",
+      "body": "Supplier visits, quality checks, packing and dispatch.",
+      "photos": [
+        { "src": "assets/proof/market-visit.jpg", "alt": "团队在中国市场现场选品", "label": "MARKET VISIT", "focus": "center" },
+        { "src": "assets/proof/logistics.jpg", "alt": "物流运输现场", "label": "LOGISTICS", "focus": "center" },
+        { "src": "assets/proof/warehouse.jpg", "alt": "仓库现场口播", "label": "WAREHOUSE", "focus": "top" },
+        { "src": "assets/proof/clients.jpg", "alt": "客户与现场照片拼贴", "label": "CLIENTS", "focus": "center" }
+      ]
+    }
+  },
+  {
+    "id": "three-clients",
+    "label": "三张客户证明",
+    "assets": [
+      { "source": "themes/trade-proof/reference/09-proof-market.jpg", "target": "assets/proof/client-01.jpg" },
+      { "source": "themes/trade-proof/reference/07-proof-collage.jpg", "target": "assets/proof/client-02.jpg" },
+      { "source": "themes/trade-proof/reference/10-proof-logistics.jpg", "target": "assets/proof/client-03.jpg" }
+    ],
+    "beat": {
+      "kicker": "TRUSTED BY BUYERS",
+      "title": "Proof before promises",
+      "photos": [
+        { "src": "assets/proof/client-01.jpg", "alt": "团队陪同客户在市场选品", "focus": "center" },
+        { "src": "assets/proof/client-02.jpg", "alt": "客户与现场照片拼贴", "focus": "center" },
+        { "src": "assets/proof/client-03.jpg", "alt": "物流运输现场", "focus": "center" }
+      ]
+    }
+  }
+]

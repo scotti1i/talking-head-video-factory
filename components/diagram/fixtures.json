@@ -1,0 +1,24 @@
+[
+  {
+    "id": "default",
+    "label": "中心辐射",
+    "beat": {
+      "kicker": "系统关系",
+      "title": "一条母版连接四类确定性数据",
+      "nodes": ["字幕", "拍子", "主题", "QA"],
+      "center": "A-roll",
+      "body": "所有派生版本都回到同一份母素材。"
+    }
+  },
+  {
+    "id": "mixed",
+    "label": "中英混排",
+    "beat": {
+      "kicker": "Agent 边界",
+      "title": "模型负责判断，工具负责执行",
+      "nodes": ["transcript", "语义 EDL", "B-roll", "final MP4"],
+      "center": "Codex",
+      "body": "每一层的职责必须清楚。"
+    }
+  }
+]

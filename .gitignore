@@ -1,0 +1,75 @@
+.DS_Store
+node_modules/
+__pycache__/
+.codex_tmp/
+
+# 每条视频的大文件默认不进版本管理
+jobs/
+jobs/*/assets/*
+!jobs/*/assets/.gitkeep
+# 回归工程的小型真实证明帧是确定性 fixture，不按用户大素材忽略。
+!jobs/beats-regression/assets/proof-regression/
+!jobs/beats-regression/assets/proof-regression/*.jpg
+jobs/*/cover/*
+!jobs/*/cover/.gitkeep
+jobs/*/renders/
+jobs/*/delivery/**/*.mp4
+jobs/*/delivery/**/*.mov
+jobs/*/qa/
+jobs/*/variants/
+jobs/*/snapshots/
+jobs/*/vendor/
+jobs/*/tmp/
+
+# smoke / 临时交付
+out/
+dist/
+reports/**/*.mp4
+
+# 系统日志
+npm-debug.log*
+console/logs/
+
+# Public release exclusions: local reports, frozen client/history evidence,
+# archived one-off skills and machine-specific legacy builders never ship.
+reports/
+visual-assets/evidence/
+visual-assets/families/
+skills/video-cover-factory/
+skills/talkinghead-edit/archive/
+PRODUCT.md
+scripts/apply-*-tight-cut.mjs
+scripts/bake-*-broll.mjs
+scripts/build-balanced-face-safe-job.mjs
+scripts/build-claude-glass-job.mjs
+scripts/build-dynamic-tight-job.mjs
+scripts/build-*-commercial.mjs
+scripts/build-youtube-horizontal-job.mjs
+scripts/build-youtube-horizontal-v2.mjs
+scripts/upload-shorts-batch.py
+visual-assets/catalog.test.mjs
+console/color-system.test.mjs
+scripts/build-composition.mjs
+scripts/transcribe-captions.mjs
+
+# Reference frames and previews may contain identifiable people or third-party
+# material. Public code ships theme tokens, never those source images.
+themes/_reference/
+themes/*/reference/
+themes/*/preview.jpg
+docs/assets/design-references/
+template-packs/*-replica/
+themes/*-replica/
+themes/_shared/fonts/*Replica*.woff2
+docs/*replica*design-spec.md
+docs/factory-acquisition-resource-rich-v5.md
+docs/production-polish-audit.md
+docs/visual-library-design-spec.md
+docs/windows-workbench-design-spec.md
+visual-assets/
+scripts/audit-youtube-shorts.py
+scripts/render-shorts-batch.py
+scripts/compose-youtube-horizontal-v2.mjs
+
+# 本地真实素材试点：只用于隔离验收，禁止误提交客户素材、转录与审片数据。
+jobs/windows-pilot-*/

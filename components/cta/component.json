@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "cta",
+  "order": 100,
+  "label": "行动号召",
+  "kind": "component",
+  "category": "action",
+  "description": "在收尾给出一个主行动和一个次行动。",
+  "version": "1.0.0",
+  "lifecycle": "published",
+  "compatibility": "supported",
+  "formats": ["portrait", "landscape"],
+  "requiredFields": ["body", "primary", "secondary"],
+  "optionalFields": [],
+  "promptHint": "body, primary, secondary（主行动 + 次行动）",
+  "tags": ["行动", "收尾", "关注"],
+  "source": "beats-v2/face-safe",
+  "apply": { "mode": "beat", "type": "cta" },
+  "preview": { "duration": 4, "defaultFixture": "default" }
+}
