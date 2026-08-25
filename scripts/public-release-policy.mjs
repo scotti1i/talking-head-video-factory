@@ -40,7 +40,11 @@ export function assertPublicPaths(entries, manifest) {
     const candidate = normalizeReleasePath(entry).replace(/\/$/, "");
     if (!candidate) continue;
     const allowed = manifest.rootFiles.includes(candidate)
-      || manifest.roots.some((root) => candidate === root || candidate.startsWith(`${root}/`));
+      || manifest.roots.some((root) => (
+        candidate === root
+        || candidate.startsWith(`${root}/`)
+        || root.startsWith(`${candidate}/`)
+      ));
     if (!allowed) violations.push(`${candidate}: 不在公开白名单`);
     if (forbidden.some((pattern) => pattern.test(candidate))) {
       violations.push(`${candidate}: 命中禁止路径`);

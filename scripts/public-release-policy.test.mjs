@@ -16,6 +16,7 @@ const manifest = {
 test("公开白名单允许 runtime，拒绝未知顶层目录和本地状态", () => {
   assert.equal(assertPublicPaths([
     "talking-head-video-factory/README.md",
+    "talking-head-video-factory/deploy/",
     "talking-head-video-factory/scripts/a.mjs",
     "deploy/windows/start.ps1",
   ], manifest), true);
