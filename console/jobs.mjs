@@ -4,8 +4,9 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-export const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
+export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 const DATA_FILES = ["captions.json", "beats.json", "shorts.json", "chapters.json", "overlays.json", "rough-cut-cuts.json"];
 

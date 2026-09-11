@@ -3,17 +3,18 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
+import { fileURLToPath } from "node:url";
 
 import { inspectComponentCatalog, inspectComponentPackages, loadComponentCatalog } from "./component-registry.mjs";
 
-const ROOT = path.resolve(new URL("..", import.meta.url).pathname);
+const ROOT = path.resolve(fileURLToPath(new URL("..", import.meta.url)));
 
 test("生产组件均可加载、支持竖横屏，并包含 trade-proof 组件", async () => {
   const catalog = await inspectComponentCatalog({ root: ROOT });
   assert.deepEqual(catalog.errors, []);
   assert.ok(catalog.components.length >= 14);
   const componentsById = new Map(catalog.components.map((component) => [component.id, component]));
-  for (const id of ["micro-overlay", "impact-sticker", "proof-collage", "cta-badge"]) {
+  for (const id of ["micro-overlay", "impact-sticker", "proof-collage", "cta-badge", "product-domain-pop", "ui-click-sticker"]) {
     assert.equal(componentsById.has(id), true, `缺少关键组件 ${id}`);
     assert.equal(componentsById.get(id).captionMode, "overlay");
   }
@@ -21,6 +22,32 @@ test("生产组件均可加载、支持竖横屏，并包含 trade-proof 组件"
     assert.deepEqual(component.formats, ["portrait", "landscape"]);
     assert.ok(component.fixtures.length > 0);
   }
+});
+
+test("commerce-pop 组件冻结本地产品图并提供确定性点击状态", async () => {
+  const catalog = await loadComponentCatalog({ root: ROOT });
+  const product = catalog.find((item) => item.id === "product-domain-pop");
+  const ui = catalog.find((item) => item.id === "ui-click-sticker");
+  assert.ok(product);
+  assert.ok(ui);
+
+  const productBeat = product.fixtures[0].beat;
+  assert.deepEqual(product.validate(productBeat), []);
+  assert.match(product.render(productBeat), /data-product-domain-pop/);
+  assert.match(product.render(productBeat), /data-domain-motion/);
+  assert.match(product.render(productBeat), /data-product-motion/);
+  assert.match(product.validate({ kicker: "K", title: "T", src: "https:\/\/example.com\/x.png" }).join(";"), /本地图片/);
+  assert.match(product.validate({ kicker: "K", title: "T", src: "..\/x.png" }).join(";"), /assets/);
+
+  assert.deepEqual(ui.fixtures.map((fixture) => fixture.beat.variant), ["follow", "save"]);
+  for (const fixture of ui.fixtures) {
+    assert.deepEqual(ui.validate(fixture.beat), []);
+    const html = ui.render(fixture.beat);
+    assert.match(html, /data-ui-click-sticker/);
+    assert.match(html, /data-ui-before/);
+    assert.match(html, /data-ui-after/);
+  }
+  assert.match(ui.validate({ kicker: "K", title: "T", afterText: "A", variant: "like" }).join(";"), /save\/follow/);
 });
 
 test("impact-sticker 覆盖六类语义、八种图标与命中时点合同", async () => {

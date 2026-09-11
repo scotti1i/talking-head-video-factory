@@ -187,7 +187,10 @@ function assertRoughCutOutput({ file, width, height, fps, expectedDuration, expe
     throw new Error(`粗剪输出 fps ${video.avg_frame_rate || video.r_frame_rate} != ${fps}`);
   }
   const actualDuration = Number(video.duration || probe.format?.duration);
-  const durationTolerance = Math.max(0.05, 2 / fps);
+  // AAC concat/muxing can add a few milliseconds of encoder padding per edit.
+  // Keep the guard well below a perceptible pause while allowing multi-source
+  // 60 fps edits to differ by up to roughly five frames at the container edge.
+  const durationTolerance = Math.max(0.08, 2 / fps);
   if (!Number.isFinite(actualDuration) || Math.abs(actualDuration - expectedDuration) > durationTolerance) {
     throw new Error(`粗剪输出时长 ${actualDuration}s 与 EDL ${expectedDuration.toFixed(3)}s 不一致`);
   }

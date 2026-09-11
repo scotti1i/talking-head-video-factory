@@ -42,7 +42,7 @@ description: "工厂外贸口播自动剪辑：只读导入素材和确定文稿
 
 3. 阅读书面文稿、`takes-packed.md` 与 `editor-signals.md`，按语义写 `rough-cut-edl.json`。禁止用静音检测代替判断。
 
-4. 渲染 A-roll、逐切点检查、生成字幕、套用已注册模板包，再构建 review MP4。
+4. 渲染 A-roll、逐切点检查、生成字幕后，必须建立 `data/dialogue-continuity.json`：逐 take 检查首个有效音节、异语言拍摄口令、尾词保护和局部响度跳变；B-roll 还要声明没有遮住未剪掉的静音或制造短 A-roll 闪回。运行 `npm run dialogue:qa -- --job jobs/<slug>` 通过后，才套用已注册模板包并构建 review MP4。
 
 5. 建立审片版本：
 

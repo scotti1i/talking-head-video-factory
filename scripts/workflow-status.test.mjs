@@ -14,10 +14,10 @@ test("普通口播不强制 beats，也不同时要求根 composition 和 varian
   assert.equal(status.checks.some((item) => item.name === "主合成"), false);
 });
 
-test("工厂外贸 profile 独立要求书面脚本、BGM 和音频 QA", () => {
+test("工厂外贸 profile 独立要求书面脚本、BGM、段首段尾和音频 QA", () => {
   const job = fixture({ profile: "factory-acquisition", includeScript: false, includeMusic: false });
   const status = evaluateWorkflowStatus(job);
-  for (const id of ["writtenScript", "musicBed", "audioQa"]) {
+  for (const id of ["writtenScript", "musicBed", "dialogueQa", "audioQa"]) {
     const check = status.checks.find((item) => item.id === id);
     assert.equal(check.required, true);
     assert.equal(check.ok, false);

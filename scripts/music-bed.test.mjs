@@ -35,3 +35,15 @@ test("BGM 不允许越界、绝对路径或缺素材", () => {
     volume: 2
   }, { jobDir, totalDuration: 12 }), /music-bed\.json 校验失败/);
 });
+
+test("用户明确不要 BGM 时用带原因的禁用合同通过且不渲染音轨", () => {
+  const jobDir = fs.mkdtempSync(path.join(os.tmpdir(), "music-bed-disabled-"));
+  fs.mkdirSync(path.join(jobDir, "data"), { recursive: true });
+  fs.writeFileSync(path.join(jobDir, "data", "music-bed.json"), JSON.stringify({
+    enabled: false,
+    reason: "用户要求本版暂不添加背景音乐"
+  }));
+  const bed = loadMusicBed({ jobDir, totalDuration: 12 });
+  assert.equal(bed, null);
+  assert.equal(renderMusicBed(bed), "");
+});

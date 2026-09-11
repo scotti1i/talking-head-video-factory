@@ -1,6 +1,9 @@
 {
   "schemaVersion": 1,
   "default": "standard",
+  "profileDefaults": {
+    "factory-acquisition": "social-fast"
+  },
   "presets": {
     "natural": {
       "label": "自然",
@@ -29,6 +32,31 @@
         "min": 0.12,
         "max": 0.24
       },
+      "allowSentenceReorder": false,
+      "allowUniqueScriptDeletion": false
+    },
+    "social-fast": {
+      "label": "社媒快节奏",
+      "description": "TikTok、Instagram 等前三秒获客口播：尽快进入有效发声，除明确留白和转场缓冲外不保留可感知气口。",
+      "breathSeconds": {
+        "min": 0.06,
+        "max": 0.18
+      },
+      "transitionBufferSeconds": {
+        "min": 0.1,
+        "max": 0.3
+      },
+      "playbackRate": 1.1,
+      "maxOpeningSilenceSeconds": 0.08,
+      "maxTakeLeadInSeconds": 0.08,
+      "openingVisualReadiness": "first-frame-must-overlap-valid-syllable-mouth-shape-and-speaking-state-no-inhale-preparation",
+      "protectedTailSeconds": {
+        "min": 0.08,
+        "max": 0.25
+      },
+      "maxAdjacentSpeechWindowJumpDb": 4,
+      "operatorCuePolicy": "reject-at-every-take-start",
+      "wrapMetaSpeechPolicy": "reject-recording-directions-and-completion-comments-at-every-take-tail",
       "allowSentenceReorder": false,
       "allowUniqueScriptDeletion": false
     }

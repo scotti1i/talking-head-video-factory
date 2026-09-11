@@ -3,6 +3,9 @@ node_modules/
 __pycache__/
 .codex_tmp/
 
+# Windows/WSL 本机部署配置由 Bootstrap 生成，不进入版本管理。
+deploy/windows/factory.config.psd1
+
 # 每条视频的大文件默认不进版本管理
 jobs/
 jobs/*/assets/*

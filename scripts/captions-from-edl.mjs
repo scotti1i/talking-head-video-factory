@@ -11,6 +11,10 @@ const configPath = path.join(jobDir, "project.json");
 const config = fs.existsSync(configPath) ? readJson(configPath) : {};
 const maxChars = Number(args.maxChars || config.caption?.maxCharsPerLine || 18);
 const maxDuration = Number(args.maxDuration || 2.8);
+const playbackRate = Number(args.playbackRate || args["playback-rate"] || 1);
+if (!Number.isFinite(playbackRate) || playbackRate <= 0) {
+  throw new Error("playback-rate 必须是大于 0 的数字");
+}
 
 const edl = readJsonArray(edlPath);
 const index = readJson(indexPath);
@@ -32,12 +36,12 @@ for (const [segmentIndex, segment] of edl.entries()) {
     .filter((word) => Number(word.end) > sourceStart && Number(word.start) < sourceEnd)
     .map((word) => ({
       text: word.text,
-      start: outputCursor + Math.max(0, Number(word.start) - sourceStart),
-      end: outputCursor + Math.min(sourceEnd - sourceStart, Number(word.end) - sourceStart)
+      start: outputCursor + Math.max(0, Number(word.start) - sourceStart) / playbackRate,
+      end: outputCursor + Math.min(sourceEnd - sourceStart, Number(word.end) - sourceStart) / playbackRate
     }))
     .filter((word) => word.end > word.start);
   mappedWords.push(...words);
-  outputCursor += sourceEnd - sourceStart;
+  outputCursor += (sourceEnd - sourceStart) / playbackRate;
 }
 
 const captions = groupWords(mappedWords);

@@ -25,6 +25,8 @@
 | `data/rough-cut-edl.json` | 保留段，使用原片绝对语义时间 | 人 / Agent |
 | `qa/cuts/approval.json` | 所有切点已逐张检查 | 人 / Agent |
 | `data/captions.json` | 校准后的最终字幕 | 人 / Agent |
+| `data/caption-voice.json` | 经波形、语义和人物状态批准的人声区及字幕/等价屏幕文字覆盖方式 | 人 / Agent；脚本门禁 |
+| `data/dialogue-continuity.json` | 每个 take 段首、尾词、局部响度跳变及 B-roll 边界的人工审计事实 | 人 / Agent；脚本门禁 |
 | `data/beats.json` | 解释性卡片 | 人 / Agent |
 | `data/broll.json` | B-roll 时间、素材、意图与理由 | 人 / Agent |
 | `data/primary-clips.json` | 长段主展示媒体、源时码与说话人小窗 | 人 / Agent |
@@ -34,6 +36,8 @@
 | `data/shorts.json` | Shorts 语义区间 | 人 / Agent |
 | `qa/approval.json` | 最终 MP4 抽帧与完整播放状态 | 人 / Agent |
 | `qa/audio-report.json` | profile 要求下的响度与 true peak 门禁 | 脚本 |
+| `qa/caption-voice-report.json` | 字幕与已批准人声区的覆盖门禁；提前、拖尾、漏句或跨静音即失败 | 脚本 |
+| `qa/dialogue-continuity-report.json` | 段首≤0.08s、尾音保护、局部响度≤4dB 跳变及空镜不遮静音的门禁 | 脚本 |
 | `review/Rn/manifest.json` | 冻结审片视频哈希、时长与当轮事实源哈希 | 脚本 |
 | `review/Rn/feedback.json` | 时间码、类别、修改指令、作用域、状态和处理结果 | 专业剪辑 / Agent 结构化 |
 
@@ -62,6 +66,22 @@
 `clean-talkinghead` 默认按语义清洁剪辑，卡片和 BGM 均可为空。`screen-demo` 允许使用已经剪好的 Screen Studio 主素材，不强制伪造 EDL 切点。`commercial-showcase` 要求真实产品/实操/结果证据。`factory-acquisition` 以完整书面脚本为内容边界：只删片头片尾等待、明确口误和有证据的重复拍摄；不为追求极限紧凑删除独有脚本内容。ASR 只是时码证据，原稿优先于 Whisper 拼写。
 
 `fineCutPreset` 与 `templatePack` 是正交轴：前者只控制语言节奏，后者只控制主题、字幕、B-roll、音效和镜头包装。模板包可以复用真实预览与资源，但不得改变文稿句序或 EDL 内容。
+
+用户明确要求某一版不加 BGM 时仍保留 `data/music-bed.json`，写为 `{"enabled":false,"reason":"..."}`。这表示经过确认的创作选择，不等于遗漏音频工序；构建器不会生成背景音乐轨。
+
+`factory-acquisition` 新 job 默认使用 `social-fast`：TikTok / Instagram 前三秒必须尽快进入有效口播；第 0 帧封面之后，首个有效音节以及每个新 take 的首个有效音节默认都要在 0.08 秒内进入。交付首帧必须同时落在首个有效音节、对应嘴型已经形成、表情与手势已经进入口播状态的交集内；吸气、张口准备、举手准备或寻找镜头的画面即使出现小波形也不算正文。除用户明确要求的空音频、语义停顿和转场所需 0.1–0.3 秒缓冲外，不保留可感知气口。拍摄者的“开始/Action/Go”、数拍、提示词、碰麦和演员准备声必须在每个 take 的段首单独听审；项目语言锁定的 ASR 可能漏掉异语言口令，不能用“转写中没有”推断“声轨中没有”。每个 take 尾部还要审查“念完了/完了/拍完了/done/finished”等仅服务拍摄流程的收工元话语：它们不属于书面文稿，必须在批准的最后一个词及嘴型闭合保护量之后删除。该 preset 默认以 1.1 倍速派生 A-roll 母版；若语种、说话人清晰度或用户要求不适合，必须显式覆盖而不是暗中变速。切点仍必须同时检查电影条、人物进入状态与波形，静音检测只能量取候选边界，不能自动决定删除。A-roll 变速后，字幕、B-roll、Zoom、转场和音效必须全部从变速后的最终声轨重建，不允许按旧时码整体缩放。A-roll 改动后字幕必须从新时间线重映射，并在最终 MP4 上逐段复核，禁止用整体平移掩盖漏句或切点错误。每段经批准的有效人声必须由 `data/captions.json` 或明确声明的等价屏幕文字覆盖；无人声区不得残留字幕。`data/caption-voice.json` 把这些批准声区固定下来；每个口播声区必须填写 `expectedText`，内容是该区实际说出的完整、按顺序的词语。构建后必须运行 `captions:voice-qa`，同时检查时间覆盖和逐词序列，任何漏词、多词、错序、提前、拖尾或跨静音显示都失败。
+
+整体 LUFS 正规化不能代替对白内部动态处理。每个 take 的前 1 秒和波形明显上下跳变处必须以 0.1–0.2 秒窗口检查局部响度；相邻有效人声窗口修正后默认不超过 4dB 跳变。超过时先在 A-roll 派生母版使用增益包络、压缩器或两者组合平滑，再做整条响度正规化；不得把弱首字直接拉成突发大声，也不得以 BGM 或音效掩盖。
+
+每个保留段的出点必须建立“尾词保护”：最后一个有效词的完整音节、辅音与尾音衰减均需保留，默认在确认的语音结束后留 0.08–0.25 秒保护量，并同时检查源词级时码、波形衰减与嘴型闭合。字幕里出现了词不等于声音完整；`más bajo`、`origen` 这类尾词被截断时一律 QA 失败。
+
+`factory-acquisition` 的固定 A-roll 美颜终调使用注册表中的 `factory-neutral-skin-v1`：逐拍摄段先检查曝光和白平衡，再通过 FFmpeg 的 `colorbalance + eq + bilateral + unsharp` 做中间调提亮、降黄、边缘保护磨皮与轻回锐。该链路必须非生成式，不允许用会重建眼睛、嘴型或脸部纹理的修复模型替代真实人物；输出写入新派生母版并生成 `data/aroll-beauty.json`，禁止覆盖原 A-roll。每条真片至少检查两组不同时间点的同帧前后对照。
+
+`social-fast` 的包装节奏还必须满足：任何转场完成后至少 2 秒才允许开始 `face-zoom`，避免连续视觉加速造成碎裂；若转场与 Zoom 的声音触发点在 2 秒窗口内相邻，只保留语义优先级较高的一条音效（CTA > 主证据转场 > Zoom），不得叠加两次提醒。相邻 B-roll 默认直接衔接，禁止在不足 0.5 秒的 A-roll 闪回后又进入下一段 B-roll。B-roll 进入点只能与当前 take 的有效起声基本同步（误差不超过约 0.08 秒），或在该 take 已连续有效口播至少 2 秒后进入；严禁用空镜遮住本应从 A-roll 删除的段首静音、口令或准备画面。若 B-roll 退出后 1 秒内存在 A-roll take 切点，默认延长 B-roll 跨过切点并保留约 0.3 秒后摇，或至少提前 2 秒结束；不得出现“上一段—空镜—下一段”在 1 秒内多次闪切。
+
+所有外部 B-roll 在入时间线前先派生统一工作副本：MP4、1080×1920（竖屏项目）、60fps、yuv420p、TV range、Rec.709，并使用不超过 1 秒的短 GOP，保证逐帧抽取与转场寻帧稳定。低于 50fps 的源素材升为 60fps 时必须使用帧混合或运动插值，不得只复制帧；MOV/HLG/BT.2020 素材先 tone-map，再以审色抽帧检查曝光、白平衡和饱和度是否与相邻镜头一致。原文件始终只读保留。
+
+外部图片与视频必须记录来源页、作者/提供者、许可条件和本地 SHA-256；用户自带素材记录原始路径与哈希。任何进入主轨或解释层的 B-roll 工作副本都必须移除源音轨，口播 A-roll 始终是唯一连续叙事声轨。真实证据优先于装饰性库存素材：产品照片、客户沟通、工厂/仓库、邮件或电话等画面应与当前口播语义直接对应。
 
 ## 审片版本与反馈
 
@@ -182,7 +202,7 @@
 }
 ```
 
-硬约束：`kind` 只允许 `demo-stage` / `proof-footage`；时间段互不重叠，也不得与 `broll.json` 重叠；媒体和已启用的说话人小窗都必须覆盖完整区间；`fit` 只允许 `contain` / `cover`，`demo-stage` 默认 `contain`，`proof-footage` 默认全画布 `cover`；`sourceStart` 是展示媒体的起始秒数，说话人小窗始终按成片时码同步。
+硬约束：`kind` 只允许 `demo-stage` / `proof-footage`；时间段互不重叠，也不得与 `broll.json` 重叠；媒体和已启用的说话人小窗都必须覆盖完整区间；`fit` 只允许 `contain` / `cover`，`demo-stage` 默认 `contain`，`proof-footage` 默认全画布 `cover`；`sourceStart` 是展示媒体的起始秒数，说话人小窗始终按成片时码同步。相邻 `proof-footage` 之间不得夹入少于 0.5 秒的 A-roll 闪回：语义连续时直接衔接，确需回到人物时至少保留 0.5 秒，并确认包含完整表情或语义动作。
 
 `proof-footage` 只放真实、已授权、能支撑口播论点的现场媒体；不用 AI 生图、虚构产品界面或无关库存画面代替证据。只是辅助说明的短素材仍放 `broll.json`，不得为了转场把它升格为主轨。
 
@@ -230,15 +250,19 @@
 ]
 ```
 
-三类 cue 都使用最终成片的绝对秒数，必须有唯一小写 `id`，且 `start + duration` 不得超出成片：
+五类 cue 都使用最终成片的绝对秒数，必须有唯一小写 `id`，且 `start + duration` 不得超出成片：
 
 | `type` | 参数范围 | 时间语义 |
 |---|---|---|
 | `punch` | `duration` 0.12–0.45s；`scale` 1.02–1.18 | `start` 开始推近，约在窗口 38% 处达到最大尺度，结尾恢复。 |
 | `flash-punch` | `duration` 0.15–0.30s；`scale` 1.04–1.20 | `start` 开始推近与暖闪，约在窗口 40% 处达峰，结尾恢复；只用于关键结论。 |
 | `whip-cut` | `duration` 0.13–0.24s；`scale` 1.08–1.18；`direction` 为 `left/right/up/down` | `start` 是遮切窗口起点；粗剪母版中的真实切点必须对齐 `start + duration / 2`。 |
+| `rgb-glitch-cut` | `duration` 0.20–0.40s；`scale` 1.06–1.14 | `start` 是遮切窗口起点；只用于确有数字/故障语义的切镜。 |
+| `face-zoom` | `duration` 0.50–8.00s；`scale` 1.10–1.30；`attackFrames` / `releaseFrames` 各 8–9 帧；`focusX` / `focusY` 指向人脸中心 | `start` 随语句起声开始，以 60fps 在 8–9 帧内从 100% 推至目标比例，保持到该句尾部，再以相同帧数回到 100%；它是段落级视线引导，不是瞬时转场。 |
 
-cue 之间不得重叠，也不得与 gallery intro、`broll.json` 或 `primary-clips.json` 的区间重叠；这些效果只写 `video-wrap` 的 transform 和各自唯一 overlay。builder 同步生成 paused GSAP 绝对时间线，窗口结束时清理 scale / translate / overlay，不使用回调、运行时计时或随机数。贴纸与字幕可以和 cue 同时出现，因为它们不写 A-roll transform。
+cue 之间不得重叠，也不得与 gallery intro、`broll.json` 或 `primary-clips.json` 的区间重叠；这些效果只写 `video-wrap` 的 transform 和各自唯一 overlay。builder 同步生成 paused GSAP 绝对时间线，窗口结束时清理 scale / translate / transform origin / overlay，不使用回调、运行时计时或随机数。`face-zoom` 必须以人脸为缩放中心，放大阶段、保持阶段、回落阶段都必须在最终 MP4 的逐帧抽样中验证。贴纸与字幕可以和 cue 同时出现，因为它们不写 A-roll transform。
+
+工厂商业引流口播若用户没有另行指定，整条成片默认只使用约 3–4 次 `face-zoom`，按段落价值分散安排，不因每个贴纸或重点词重复触发。`focusX/focusY` 必须按当前出镜人的实际脸位逐条测量；放大后的眼鼻中轴应落在目标视觉中心附近，不复用固定坐标导致人物持续偏左或偏右。
 
 ## audio-cues.json
 
@@ -257,6 +281,14 @@ cue 之间不得重叠，也不得与 gallery intro、`broll.json` 或 `primary-
 每项必须有唯一 `id`、`start >= 0`、`duration > 0`、现存的 job 相对 `asset` 和 `volume` 0–1，且不得超出成片。`asset` 不得是绝对路径、URL 或跳出 job 目录；音效先由共享媒体引擎冻结进 `assets/`，builder 只负责确定性挂载，不临时下载、生成或随机挑选。
 
 音效只标记少数语义事件：主证据进场、关键结论落点、CTA 确认。不给每句字幕、每张卡或每个切点配声；对话始终是主声轨。`audio-cues.json` 不表示 BGM，也不代替画面的 `transition` 意图。
+
+提示音需要清楚可辨但不刺耳：同一版先用中等音量建立层次，再在最终混音中检查短时峰值和主观舒适度。联系型 CTA 应优先构成一个完整的视听动作组，例如邮件/电话实拍或贴纸配合克制的键盘、提示铃声；声音必须与可见动作对齐，而不是仅在结尾叠加无关冲击声。
+
+对 `factory-acquisition`，当脚本结尾出现联系、询价、私信、写信、邮件或电话等引流话术时，默认必须使用“联系型收尾组”：真实联系动作素材（或语义明确的联系贴纸）＋可立即执行的联系卡＋与动作对齐的键盘/电话/提示铃。该组可以比中段动效更醒目，但对白始终是主声轨；中段贴纸与色卡音效不得沿用收尾 CTA 的强提醒响度。
+
+联系型收尾组不能跨项目固定复用同一张大色卡。先按当条产品语义选择用户提供或可授权、至少 1080p 的真实产品/工厂素材作为 B-roll 背景，并冻结来源、许可和哈希；CTA 卡只保留一个明确行动和必要联系方式，使用高反差、小面积呈现。只有找不到合格语义素材时才退回通用联系贴纸，不用无关库存画面冒充产品证据。
+
+A-roll 的提亮、轻度降噪/磨皮和轻度脸型优化只允许在原片之外生成派生母版。处理前后需要同帧对照，肤色保持自然、五官比例不变、边缘无拉伸；原始素材和既有 A-roll 母版不得覆盖。封面从人物端正、脸部清晰的审片帧派生，独立输出 `cover/cover.png`；用户要求首帧挂封面时，再生成短时长、静音、同规格的首帧视频作为确定性时间轴 clip。
 
 ## music-bed.json
 
@@ -411,6 +443,50 @@ cue 之间不得重叠，也不得与 gallery intro、`broll.json` 或 `primary-
 - 必填非空 `action`；可选非空 `handle` 与字符串 `body`。
 - 只在结尾已建立完证据链后出现，默认 1.2–1.8 秒；行动必须可执行，例如私信、发送需求或预约沟通。
 - 不用在开场，不写虚假紧迫感、价格促销或多个并列行动，不用全屏卡遮住说话人。
+
+### `factory-commerce-pop` extension：产品网址与 UI 点击贴纸
+
+这两个组件只属于已注册的高密度电商弹贴语言。它们仍是普通 `beats.json` clip，使用最终成片绝对时间，不从口播文字在运行时随机生成内容。
+
+#### product-domain-pop
+
+```json
+{
+  "type": "product-domain-pop",
+  "start": 10.2,
+  "end": 12.6,
+  "kicker": "TOYS",
+  "title": "example-supplier.com",
+  "src": "assets/products/toy.png",
+  "alt": "玩具产品透明图",
+  "hitOffset": 0.16
+}
+```
+
+- `src` 必须是冻结在 job `assets/` 内的本地 png / jpg / webp / avif / svg，不允许 URL、data URI 或越界路径。
+- `kicker` 是短品类标签，`title` 是当下口播明确说出的域名；不得替观众编造网址或供应商背书。
+- `hitOffset` 可选，表示产品落点相对 beat 开始的秒数，必须小于 beat 时长；默认 0。
+- 组件在头顶安全区显示纸带、胸腹区显示产品图，人物脸部仍是主画面。只在品类和网址形成同一语义单元时使用。
+
+#### ui-click-sticker
+
+```json
+{
+  "type": "ui-click-sticker",
+  "start": 28.1,
+  "end": 29.8,
+  "kicker": "NEXT UPDATE",
+  "title": "+ Follow",
+  "variant": "follow",
+  "afterText": "✓ Following",
+  "pressOffset": 0.72
+}
+```
+
+- `variant` 只允许 `save` / `follow`；`title` 是点击前状态，`afterText` 是确认后的状态。
+- `pressOffset` 可选，表示按钮压下相对 beat 开始的秒数，必须小于 beat 时长；默认 0.72 秒。
+- 只在口播明确发出收藏或关注 CTA 时使用。状态切换只是视觉确认，不表示平台上的真实关注或收藏操作。
+- 两组件的 `captionMode` 均为 `overlay`；普通字幕默认保留，若大贴纸完整接管文字，必须由 job 显式写 `caption.hideDuring`。
 
 ## 通过条件
 

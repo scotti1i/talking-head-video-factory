@@ -11,17 +11,18 @@ test("缺少 A-roll cues 文件时返回空 bundle", (context) => {
   assert.deepEqual(createArollCues({ jobDir, totalDuration: 10 }), emptyBundle());
 });
 
-test("四类 cue 输出唯一 overlay、绝对时间和边界清理", (context) => {
+test("五类 cue 输出唯一 overlay、绝对时间和边界清理", (context) => {
   const jobDir = makeJob(context);
   const items = [
     cue({ id: "hook-punch", type: "punch", start: 1, duration: 0.2, scale: 1.06 }),
     cue({ id: "answer-flash", type: "flash-punch", start: 3, duration: 0.2, scale: 1.1 }),
     cue({ id: "take-whip", type: "whip-cut", start: 5, duration: 0.18, scale: 1.1, direction: "left" }),
-    cue({ id: "machine-glitch", type: "rgb-glitch-cut", start: 7, duration: 0.3, scale: 1.08 })
+    cue({ id: "machine-glitch", type: "rgb-glitch-cut", start: 7, duration: 0.3, scale: 1.08 }),
+    cue({ id: "face-hold", type: "face-zoom", start: 8, duration: 1.5, scale: 1.3, attackFrames: 9, releaseFrames: 9, focusX: 52, focusY: 43 })
   ];
   const result = createArollCues({ jobDir, totalDuration: 10, items });
 
-  assert.deepEqual([...AROLL_CUE_TYPES], ["punch", "flash-punch", "whip-cut", "rgb-glitch-cut"]);
+  assert.deepEqual([...AROLL_CUE_TYPES], ["punch", "flash-punch", "whip-cut", "rgb-glitch-cut", "face-zoom"]);
   assert.deepEqual(result.items, items);
   assert.equal((result.html.match(/class="clip aroll-cue-overlay/g) || []).length, 3);
   assert.match(result.html, /id="aroll-cue-overlay-answer-flash"[^>]+data-start="3\.00"[^>]+data-duration="0\.20"[^>]+data-manual-timeline="true"/);
@@ -39,11 +40,14 @@ test("四类 cue 输出唯一 overlay、绝对时间和边界清理", (context) 
   assert.match(result.timelineJs, /opacity: 0\.3/);
   assert.match(result.timelineJs, /xPercent: 6, yPercent: 0, scale: 1\.1 \}, 5\.09/);
   assert.match(result.timelineJs, /#aroll-cue-blur-take-whip[^\n]+stdDeviation: "0 0"[^\n]+duration: 0\.09, ease: "power2\.out"/);
-  assert.match(result.timelineJs, /xPercent: 0, yPercent: 0, scale: 1, filter: "blur\(0px\) brightness\(1\)" \}, 5\.18/);
+  assert.match(result.timelineJs, /xPercent: 0, yPercent: 0, scale: 1, transformOrigin: "50% 50%", filter: "blur\(0px\) brightness\(1\)" \}, 5\.18/);
   assert.match(result.css, /aroll-cue-whip-cut \{ z-index: 20/);
   assert.match(result.css, /aroll-cue-rgb-glitch-cut/);
   assert.match(result.timelineJs, /#aroll-cue-overlay-machine-glitch/);
   assert.match(result.timelineJs, /drop-shadow\(9px 0 rgba\(255,0,90,.72\)\)/);
+  assert.match(result.timelineJs, /transformOrigin: "52% 43%"/);
+  assert.match(result.timelineJs, /scale: 1\.3, duration: 0\.15, ease: "power2\.inOut"/);
+  assert.match(result.timelineJs, /scale: 1, duration: 0\.15, ease: "power2\.inOut" \}, 9\.35/);
   assert.doesNotMatch(result.timelineJs, /setTimeout|requestAnimationFrame|Math\.random|Date\.now|performance\.now|onComplete|tl\.play|repeat/);
 });
 
@@ -51,7 +55,7 @@ test("校验 id、类型、范围、方向和成片边界", (context) => {
   const jobDir = makeJob(context);
   const cases = [
     [cue({ id: "Bad ID" }), /id: 只能使用小写字母/],
-    [cue({ type: "zoom" }), /type: 只能是 punch\/flash-punch\/whip-cut\/rgb-glitch-cut/],
+    [cue({ type: "zoom" }), /type: 只能是 punch\/flash-punch\/whip-cut\/rgb-glitch-cut\/face-zoom/],
     [cue({ start: -0.1 }), /start: 不能小于 0/],
     [cue({ duration: 0.1 }), /duration: 必须在 0.12\.\.0.45/],
     [cue({ scale: 1.19 }), /scale: 必须在 1.02\.\.1.18/],
@@ -60,6 +64,8 @@ test("校验 id、类型、范围、方向和成片边界", (context) => {
     [cue({ type: "whip-cut", duration: 0.18, scale: 1.1 }), /direction: 只能是 left\/right\/up\/down/],
     [cue({ type: "whip-cut", duration: 0.18, scale: 1.07, direction: "right" }), /scale: 必须在 1.08\.\.1.18/],
     [cue({ type: "rgb-glitch-cut", duration: 0.19, scale: 1.08 }), /duration: 必须在 0.2\.\.0.4/],
+    [cue({ type: "face-zoom", duration: 1, scale: 1.3, attackFrames: 7, releaseFrames: 9, focusX: 52, focusY: 43 }), /attackFrames: 必须是 8\.\.9/],
+    [cue({ type: "face-zoom", duration: 1, scale: 1.31, attackFrames: 9, releaseFrames: 9, focusX: 52, focusY: 43 }), /scale: 必须在 1.1\.\.1.3/],
     [cue({ start: 9.9, duration: 0.2 }), /结束时间 10\.100s 超出成片/]
   ];
   for (const [item, pattern] of cases) {

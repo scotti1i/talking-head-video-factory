@@ -1,4 +1,4 @@
-#Requires -RunAsAdministrator
+﻿#Requires -RunAsAdministrator
 param(
   [string]$DataRoot = 'D:\AutoEdit',
   [string]$Distro = 'Ubuntu'
@@ -6,8 +6,9 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $os = Get-CimInstance Win32_OperatingSystem
-$computer = Get-CimInstance Win32_ComputerSystem
-$memoryGb = [math]::Round($computer.TotalPhysicalMemory / 1GB, 1)
+$installedMemoryBytes = (Get-CimInstance Win32_PhysicalMemory |
+  Measure-Object -Property Capacity -Sum).Sum
+$memoryGb = [math]::Round($installedMemoryBytes / 1GB, 1)
 
 if ([int]$os.BuildNumber -lt 22000) {
   throw '正式部署要求 Windows 11。请先升级系统并重启。'
@@ -33,7 +34,20 @@ New-Item -ItemType Directory -Force -Path `
   "$DataRoot\Inbox", `
   "$DataRoot\Outbox" | Out-Null
 
-$installed = @(wsl.exe --list --quiet 2>$null) -replace "`0", ''
+$installed = @()
+$previousErrorActionPreference = $ErrorActionPreference
+try {
+  # A missing WSL feature is the expected state on a first-time install. Windows
+  # PowerShell 5.1 otherwise promotes wsl.exe's stderr to a terminating error.
+  $ErrorActionPreference = 'Continue'
+  $wslOutput = @(wsl.exe --list --quiet 2>$null)
+  if ($LASTEXITCODE -eq 0) {
+    $installed = $wslOutput -replace "`0", ''
+  }
+}
+finally {
+  $ErrorActionPreference = $previousErrorActionPreference
+}
 if ($installed -notcontains $Distro) {
   Write-Host "正在安装 WSL2 与 $Distro。命令完成后必须重启 Windows，再打开 Ubuntu 创建 Linux 用户。"
   wsl.exe --install -d $Distro

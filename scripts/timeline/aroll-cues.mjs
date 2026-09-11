@@ -7,7 +7,8 @@ export const AROLL_CUE_TYPES = Object.freeze([
   "punch",
   "flash-punch",
   "whip-cut",
-  "rgb-glitch-cut"
+  "rgb-glitch-cut",
+  "face-zoom"
 ]);
 
 const DIRECTIONS = Object.freeze(["left", "right", "up", "down"]);
@@ -19,7 +20,8 @@ const LIMITS = Object.freeze({
   punch: Object.freeze({ duration: [0.12, 0.45], scale: [1.02, 1.18] }),
   "flash-punch": Object.freeze({ duration: [0.15, 0.3], scale: [1.04, 1.2] }),
   "whip-cut": Object.freeze({ duration: [0.13, 0.24], scale: [1.08, 1.18] }),
-  "rgb-glitch-cut": Object.freeze({ duration: [0.2, 0.4], scale: [1.02, 1.12] })
+  "rgb-glitch-cut": Object.freeze({ duration: [0.2, 0.4], scale: [1.02, 1.12] }),
+  "face-zoom": Object.freeze({ duration: [0.5, 8], scale: [1.1, 1.3] })
 });
 
 export function createArollCues(options = {}) {
@@ -77,6 +79,18 @@ function normalizeCue(cue, index) {
     `${label}(${id}).scale`,
     LIMITS[type].scale
   );
+
+  if (type === "face-zoom") {
+    if (cue.direction != null) throw new Error(`${label}(${id}).direction: face-zoom 不使用 direction`);
+    const attackFrames = integerInRange(cue.attackFrames, `${label}(${id}).attackFrames`, 8, 9);
+    const releaseFrames = integerInRange(cue.releaseFrames, `${label}(${id}).releaseFrames`, 8, 9);
+    const focusX = rangedNumber(cue.focusX, `${label}(${id}).focusX`, [25, 75]);
+    const focusY = rangedNumber(cue.focusY, `${label}(${id}).focusY`, [20, 70]);
+    if (duration <= (attackFrames + releaseFrames) / 60) {
+      throw new Error(`${label}(${id}).duration: 必须长于推近与回落帧数之和`);
+    }
+    return { id, type, start, duration, scale, attackFrames, releaseFrames, focusX, focusY };
+  }
 
   if (type !== "whip-cut") {
     if (cue.direction != null) throw new Error(`${label}(${id}).direction: 只用于 whip-cut`);
@@ -143,7 +157,7 @@ function normalizeBlockedRange(range, index) {
 
 function renderArollCueHtml(items) {
   return items
-    .filter((cue) => cue.type !== "punch")
+    .filter((cue) => !["punch", "face-zoom"].includes(cue.type))
     .map((cue, index) => {
       const direction = cue.type === "whip-cut" ? ` data-direction="${escapeHtml(cue.direction)}"` : "";
       const overlay = `<div id="aroll-cue-overlay-${escapeHtml(cue.id)}" class="clip aroll-cue-overlay aroll-cue-${escapeHtml(cue.type)}" data-kind="aroll-${escapeHtml(cue.type)}" data-start="${fmtTime(cue.start)}" data-duration="${fmtTime(cue.duration)}" data-track-index="${TRACK_START + index}" data-manual-timeline="true"${direction} aria-hidden="true"></div>`;
@@ -165,11 +179,28 @@ function renderArollCueCss() {
 
 function renderArollCueTimeline(items) {
   return items.map((cue) => {
+    if (cue.type === "face-zoom") return faceZoomTimeline(cue);
     if (cue.type === "flash-punch") return flashPunchTimeline(cue);
     if (cue.type === "whip-cut") return whipCutTimeline(cue);
     if (cue.type === "rgb-glitch-cut") return rgbGlitchTimeline(cue);
     return punchTimeline(cue);
   }).join("\n      ");
+}
+
+function faceZoomTimeline(cue) {
+  const attack = cue.attackFrames / 60;
+  const release = cue.releaseFrames / 60;
+  const peak = cue.start + attack;
+  const end = cue.start + cue.duration;
+  const releaseStart = end - release;
+  return [
+    resetVideoWrap(cue.start),
+    `tl.set(videoWrap, { transformOrigin: "${number(cue.focusX)}% ${number(cue.focusY)}%" }, ${fmtTime(cue.start)});`,
+    `tl.to(videoWrap, { scale: ${number(cue.scale)}, duration: ${fmtTime(attack)}, ease: "power2.inOut" }, ${fmtTime(cue.start)});`,
+    `tl.set(videoWrap, { scale: ${number(cue.scale)} }, ${fmtTime(peak)});`,
+    `tl.to(videoWrap, { scale: 1, duration: ${fmtTime(release)}, ease: "power2.inOut" }, ${fmtTime(releaseStart)});`,
+    resetVideoWrap(end)
+  ].join("\n      ");
 }
 
 function rgbGlitchTimeline(cue) {
@@ -269,7 +300,7 @@ function directionalMotion(direction) {
 }
 
 function resetVideoWrap(time) {
-  return `tl.set(videoWrap, { xPercent: 0, yPercent: 0, scale: 1, filter: "blur(0px) brightness(1)" }, ${fmtTime(time)});`;
+  return `tl.set(videoWrap, { xPercent: 0, yPercent: 0, scale: 1, transformOrigin: "50% 50%", filter: "blur(0px) brightness(1)" }, ${fmtTime(time)});`;
 }
 
 function emptyBundle() {
@@ -284,6 +315,14 @@ function rangedNumber(value, label, [minimum, maximum]) {
   const parsed = finiteNumber(value, label);
   if (parsed < minimum || parsed > maximum) {
     throw new Error(`${label}: 必须在 ${minimum}..${maximum}`);
+  }
+  return parsed;
+}
+
+function integerInRange(value, label, minimum, maximum) {
+  const parsed = finiteNumber(value, label);
+  if (!Number.isInteger(parsed) || parsed < minimum || parsed > maximum) {
+    throw new Error(`${label}: 必须是 ${minimum}..${maximum} 的整数`);
   }
   return parsed;
 }

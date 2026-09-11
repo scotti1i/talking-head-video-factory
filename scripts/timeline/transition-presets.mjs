@@ -75,10 +75,9 @@ export function renderTransitionPresetCss() {
 }
 
 function cutTimeline(item) {
-  return [
-    `tl.set(videoWrap, { opacity: 0 }, ${fmtTime(item.start)});`,
-    `tl.set(videoWrap, { opacity: 1 }, ${fmtTime(item.end)});`
-  ].join("\n      ");
+  const lines = [`tl.set(videoWrap, { opacity: 0 }, ${fmtTime(item.start)});`];
+  if (!item.directProofExit) lines.push(`tl.set(videoWrap, { opacity: 1 }, ${fmtTime(item.end)});`);
+  return lines.join("\n      ");
 }
 
 function focusDissolveTimeline(item) {
@@ -88,16 +87,22 @@ function focusDissolveTimeline(item) {
   const exit = item.transition.exit;
   const exitStart = item.end - exit;
   const pipEnter = Math.max(0.15, enter - 0.06);
-  const lines = [
-    `tl.set("${media}", { opacity: 0, scale: 1.018 }, 0);`,
-    `tl.to(videoWrap, { opacity: 0, duration: ${fmtTime(enter)}, ease: "sine.inOut" }, ${fmtTime(item.start)});`,
-    `tl.to("${media}", { opacity: 1, scale: 1, duration: ${fmtTime(enter)}, ease: "power3.out" }, ${fmtTime(item.start)});`
-  ];
+  const lines = [`tl.set("${media}", { opacity: 0, scale: 1.018 }, 0);`];
+  if (item.directProofEnter) {
+    lines.push(`tl.set(videoWrap, { opacity: 0 }, ${fmtTime(item.start)});`);
+    lines.push(`tl.set("${media}", { opacity: 1, scale: 1 }, ${fmtTime(item.start)});`);
+  } else {
+    lines.push(`tl.to(videoWrap, { opacity: 0, duration: ${fmtTime(enter)}, ease: "sine.inOut" }, ${fmtTime(item.start)});`);
+    lines.push(`tl.to("${media}", { opacity: 1, scale: 1, duration: ${fmtTime(enter)}, ease: "power3.out" }, ${fmtTime(item.start)});`);
+    lines.push(`tl.set(videoWrap, { opacity: 0 }, ${fmtTime(item.start + enter)});`);
+  }
   if (item.speakerPip) {
     lines.push(`tl.set("${pip}", { opacity: 0, scale: 0.965 }, 0);`);
     lines.push(`tl.to("${pip}", { opacity: 1, scale: 1, duration: ${fmtTime(pipEnter)}, ease: "power3.out" }, ${fmtTime(item.start + 0.06)});`);
   }
-  if (exit > 0) {
+  if (item.directProofExit) {
+    // The following proof clip replaces this one at the same frame; keep A-roll hidden.
+  } else if (exit > 0) {
     lines.push(`tl.to("${media}", { opacity: 0, scale: 0.992, duration: ${fmtTime(exit)}, ease: "power2.inOut" }, ${fmtTime(exitStart)});`);
     if (item.speakerPip) {
       lines.push(`tl.to("${pip}", { opacity: 0, scale: 0.985, duration: ${fmtTime(exit)}, ease: "power2.inOut" }, ${fmtTime(exitStart)});`);
@@ -119,18 +124,23 @@ function whipBlurTimeline(item) {
   const exitStart = item.end - exit;
   const motion = directionalMotion(item.transition.direction);
   const pipEnter = Math.max(0.13, enter - 0.04);
-  const lines = [
-    `tl.set("${media}", { opacity: 0, xPercent: ${motion.incomingX}, yPercent: ${motion.incomingY}, filter: "blur(18px)" }, 0);`,
-    `tl.to(videoWrap, { opacity: 0, xPercent: ${motion.outgoingX}, yPercent: ${motion.outgoingY}, filter: "blur(16px)", duration: ${fmtTime(enter)}, ease: "power3.in" }, ${fmtTime(item.start)});`,
-    `tl.to("${media}", { opacity: 1, xPercent: 0, yPercent: 0, filter: "blur(0px)", duration: ${fmtTime(enter)}, ease: "power3.out" }, ${fmtTime(item.start)});`,
-    `tl.set(videoWrap, { xPercent: 0, yPercent: 0, filter: "none" }, ${fmtTime(item.start + enter)});`,
-    `tl.set("${media}", { xPercent: 0, yPercent: 0, filter: "none" }, ${fmtTime(item.start + enter)});`
-  ];
+  const lines = [`tl.set("${media}", { opacity: 0, xPercent: ${motion.incomingX}, yPercent: ${motion.incomingY}, filter: "blur(18px)" }, 0);`];
+  if (item.directProofEnter) {
+    lines.push(`tl.set(videoWrap, { opacity: 0, xPercent: 0, yPercent: 0, filter: "none" }, ${fmtTime(item.start)});`);
+    lines.push(`tl.set("${media}", { opacity: 1, xPercent: 0, yPercent: 0, filter: "none" }, ${fmtTime(item.start)});`);
+  } else {
+    lines.push(`tl.to(videoWrap, { opacity: 0, xPercent: ${motion.outgoingX}, yPercent: ${motion.outgoingY}, filter: "blur(16px)", duration: ${fmtTime(enter)}, ease: "power3.in" }, ${fmtTime(item.start)});`);
+    lines.push(`tl.to("${media}", { opacity: 1, xPercent: 0, yPercent: 0, filter: "blur(0px)", duration: ${fmtTime(enter)}, ease: "power3.out" }, ${fmtTime(item.start)});`);
+    lines.push(`tl.set(videoWrap, { opacity: 0, xPercent: 0, yPercent: 0, filter: "none" }, ${fmtTime(item.start + enter)});`);
+    lines.push(`tl.set("${media}", { xPercent: 0, yPercent: 0, filter: "none" }, ${fmtTime(item.start + enter)});`);
+  }
   if (item.speakerPip) {
     lines.push(`tl.set("${pip}", { opacity: 0, scale: 0.97 }, 0);`);
     lines.push(`tl.to("${pip}", { opacity: 1, scale: 1, duration: ${fmtTime(pipEnter)}, ease: "power3.out" }, ${fmtTime(item.start + 0.04)});`);
   }
-  if (exit > 0) {
+  if (item.directProofExit) {
+    // The following proof clip replaces this one at the same frame; keep A-roll hidden.
+  } else if (exit > 0) {
     lines.push(`tl.set(videoWrap, { opacity: 0, xPercent: ${motion.incomingX}, yPercent: ${motion.incomingY}, filter: "blur(16px)" }, ${fmtTime(exitStart)});`);
     lines.push(`tl.to("${media}", { opacity: 0, xPercent: ${motion.outgoingX}, yPercent: ${motion.outgoingY}, filter: "blur(18px)", duration: ${fmtTime(exit)}, ease: "power3.in" }, ${fmtTime(exitStart)});`);
     lines.push(`tl.to(videoWrap, { opacity: 1, xPercent: 0, yPercent: 0, filter: "blur(0px)", duration: ${fmtTime(exit)}, ease: "power3.out" }, ${fmtTime(exitStart)});`);
@@ -141,7 +151,9 @@ function whipBlurTimeline(item) {
     lines.push(`tl.set(videoWrap, { opacity: 1 }, ${fmtTime(item.end)});`);
   }
   lines.push(`tl.set("${media}", { opacity: 0, xPercent: 0, yPercent: 0, filter: "none" }, ${fmtTime(item.end)});`);
-  lines.push(`tl.set(videoWrap, { opacity: 1, xPercent: 0, yPercent: 0, filter: "none" }, ${fmtTime(item.end)});`);
+  if (!item.directProofExit) {
+    lines.push(`tl.set(videoWrap, { opacity: 1, xPercent: 0, yPercent: 0, filter: "none" }, ${fmtTime(item.end)});`);
+  }
   if (item.speakerPip) lines.push(`tl.set("${pip}", { opacity: 0, scale: 1 }, ${fmtTime(item.end)});`);
   return lines.join("\n      ");
 }
@@ -155,17 +167,22 @@ function flashTimeline(item) {
     `tl.set("${flash}", { autoAlpha: 0 }, 0);`
   ];
   if (item.speakerPip) lines.push(`tl.set("${pip}", { opacity: 0, scale: 0.98 }, 0);`);
-  lines.push(...flashEdge({
-    from: "videoWrap",
-    to: `"${media}"`,
-    flash: `"${flash}"`,
-    start: item.start,
-    duration: item.transition.enter
-  }));
+  if (item.directProofEnter) {
+    lines.push(`tl.set(videoWrap, { opacity: 0, filter: "none" }, ${fmtTime(item.start)});`);
+    lines.push(`tl.set("${media}", { opacity: 1, filter: "none" }, ${fmtTime(item.start)});`);
+  } else {
+    lines.push(...flashEdge({
+      from: "videoWrap",
+      to: `"${media}"`,
+      flash: `"${flash}"`,
+      start: item.start,
+      duration: item.transition.enter
+    }));
+  }
   if (item.speakerPip) {
     lines.push(`tl.to("${pip}", { opacity: 1, scale: 1, duration: ${fmtTime(item.transition.enter * 0.6)}, ease: "power3.out" }, ${fmtTime(item.start + item.transition.enter * 0.4)});`);
   }
-  if (item.transition.exit > 0) {
+  if (!item.directProofExit && item.transition.exit > 0) {
     const exitStart = item.end - item.transition.exit;
     lines.push(...flashEdge({
       from: `"${media}"`,
@@ -179,7 +196,7 @@ function flashTimeline(item) {
     }
   }
   lines.push(`tl.set("${media}", { opacity: 0, filter: "none" }, ${fmtTime(item.end)});`);
-  lines.push(`tl.set(videoWrap, { opacity: 1, filter: "none" }, ${fmtTime(item.end)});`);
+  if (!item.directProofExit) lines.push(`tl.set(videoWrap, { opacity: 1, filter: "none" }, ${fmtTime(item.end)});`);
   lines.push(`tl.set("${flash}", { autoAlpha: 0 }, ${fmtTime(item.end)});`);
   if (item.speakerPip) lines.push(`tl.set("${pip}", { opacity: 0, scale: 1 }, ${fmtTime(item.end)});`);
   return lines.join("\n      ");

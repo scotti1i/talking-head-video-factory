@@ -1,8 +1,9 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 
 $os = Get-CimInstance Win32_OperatingSystem
-$computer = Get-CimInstance Win32_ComputerSystem
-$memoryGb = [math]::Round($computer.TotalPhysicalMemory / 1GB, 1)
+$installedMemoryBytes = (Get-CimInstance Win32_PhysicalMemory |
+  Measure-Object -Property Capacity -Sum).Sum
+$memoryGb = [math]::Round($installedMemoryBytes / 1GB, 1)
 $windows11 = [int]$os.BuildNumber -ge 22000
 $wsl = Get-Command wsl.exe -ErrorAction SilentlyContinue
 $nvidia = Get-Command nvidia-smi.exe -ErrorAction SilentlyContinue
