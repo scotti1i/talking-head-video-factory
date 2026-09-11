@@ -37,6 +37,13 @@
     "(^|/)previews?(?:/|$)",
     "(^|/)archive(?:/|$)",
     "(^|/)scripts/build-composition\\.mjs$",
-    "(^|/)scripts/transcribe-captions\\.mjs$"
+    "(^|/)scripts/transcribe-captions\\.mjs$",
+    "(^|/)exports(?:/|$)",
+    "(^|/)tmp-selection(?:/|$)",
+    "(^|/)analysis(?:/|$)",
+    "(^|/)\\.cache(?:/|$)",
+    "\\.zip$",
+    "(^|/)LICENSE-SOURCE\\.md$",
+    "(^|/)template-packs/[^/]*sfx[^/]*pack[^/]*(?:/|$)"
   ]
 }
