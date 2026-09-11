@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "id": "factory-rapid-proof",
+  "version": "1.0.0",
+  "label": "工厂快证据黄字幕",
+  "description": "把公司自有高流量短视频抽象为可复用模板：黄白重描边字幕、首屏分层钩子、圆形揭示、关键词弹跳 CTA 与实景证据硬切节奏。",
+  "theme": "rapid-proof",
+  "compatibleProfiles": ["factory-acquisition"],
+  "compatibleLayouts": ["vertical", "horizontal"],
+  "caption": {
+    "maxCharsPerLine": 24,
+    "singleLine": false,
+    "placement": "tiktok-safe",
+    "fontSize": 64,
+    "safeBottom": 330,
+    "leftInset": 56,
+    "rightInset": 56
+  },
+  "captionPolicy": {
+    "wordsPerCue": [2, 5],
+    "alignment": "strict-horizontal-center",
+    "emphasis": "default-yellow-selected-phrase-white-black-heavy-stroke-no-box",
+    "punctuation": "remove-terminal-period-comma-keep-question-exclamation",
+    "timing": "word-cache-lip-sync-semantic-phrase-hard-refresh"
+  },
+  "editorialPolicy": {
+    "openingHook": "first-0.5s-layered-value-card-then-short-iris-reveal",
+    "proofRhythm": "alternate-speaker-model-demo-and-full-frame-factory-proof",
+    "proofClipDurationSeconds": [1.2, 3.5],
+    "proofTransition": "semantic-hard-cut",
+    "facePriority": true,
+    "cutApproval": "semantic-edl-plus-filmstrip-and-waveform-review"
+  },
+  "motionPolicy": {
+    "hook": "layered-card-punch",
+    "reveal": "black-iris-expand-6-to-18-frames",
+    "keywordCta": "letter-stagger-back-out",
+    "avoidFlashOnly": true,
+    "semanticTriggerRequired": true
+  },
+  "brollPolicy": {
+    "maxCoverage": 0.25,
+    "defaultMode": "full-frame",
+    "proofFirst": true,
+    "preferredDurationsSeconds": [1.2, 3.5]
+  },
+  "components": [
+    "hook-stack-banner",
+    "iris-reveal",
+    "keyword-burst"
+  ],
+  "assets": []
+}

@@ -1,0 +1,152 @@
+.beat-ui-click-sticker {
+  inset: 0;
+  max-height: none;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.beat-ui-click-sticker::before { display: none; }
+
+.beat-ui-click-sticker .ui-click-sticker {
+  --ui-ink: var(--commerce-ink, {{pageBg}});
+  --ui-paper: var(--commerce-paper, {{text}});
+  --ui-blue: var(--commerce-blue, {{accentFillBg}});
+  --ui-green: var(--commerce-green, {{accent}});
+  position: absolute;
+  right: auto;
+  bottom: 700px;
+  left: 50%;
+  width: 560px;
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+.beat-ui-click-sticker .ui-click-surface {
+  position: relative;
+  display: flex;
+  min-height: 154px;
+  align-items: center;
+  gap: 24px;
+  padding: 20px 32px;
+  color: var(--ui-paper);
+  border: 5px solid var(--ui-ink);
+  border-radius: 28px;
+  background: var(--ui-blue);
+  box-shadow: 0 11px 0 var(--ui-ink), 0 24px 42px rgba(0,0,0,0.30);
+  transform-origin: 68% 64%;
+  will-change: transform, opacity;
+}
+
+.beat-ui-click-sticker .ui-click-sticker--save .ui-click-surface { background: var(--ui-paper); color: var(--ui-ink); }
+
+.beat-ui-click-sticker .ui-click-sticker--minimal {
+  width: 460px;
+}
+
+.beat-ui-click-sticker .ui-click-sticker--minimal .ui-click-surface {
+  min-height: 128px;
+  gap: 18px;
+  padding: 16px 24px;
+  border-radius: 24px;
+}
+
+.beat-ui-click-sticker .ui-click-sticker--minimal .ui-click-icon {
+  flex-basis: 76px;
+  height: 76px;
+  border-radius: 18px;
+}
+
+.beat-ui-click-sticker .ui-click-sticker--minimal .ui-click-icon svg {
+  width: 48px;
+  height: 48px;
+}
+
+.beat-ui-click-sticker .ui-click-sticker--minimal .ui-click-copy strong {
+  grid-area: 1 / 1;
+  margin-top: 0;
+  font-size: 56px;
+}
+
+.beat-ui-click-sticker .ui-click-sticker--minimal .ui-click-pointer {
+  right: -14px;
+  bottom: -62px;
+  width: 78px;
+  height: 96px;
+}
+
+.beat-ui-click-sticker .ui-click-icon {
+  display: grid;
+  flex: 0 0 92px;
+  height: 92px;
+  place-items: center;
+  color: var(--ui-ink);
+  border: 4px solid var(--ui-ink);
+  border-radius: 22px;
+  background: var(--ui-green);
+}
+
+.beat-ui-click-sticker .ui-click-icon svg {
+  width: 58px;
+  height: 58px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.beat-ui-click-sticker .ui-click-copy { position: relative; display: grid; flex: 1; min-width: 0; }
+.beat-ui-click-sticker .ui-click-copy small {
+  display: inline-flex;
+  justify-self: start;
+  padding: 5px 8px 6px;
+  color: var(--ui-paper);
+  border-radius: 6px;
+  background: var(--ui-ink);
+  font-size: 18px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 1;
+}
+.beat-ui-click-sticker .ui-click-copy strong {
+  display: block;
+  grid-area: 2 / 1;
+  min-height: 0;
+  margin: 8px 0 0;
+  padding: 0;
+  color: inherit;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font-size: 50px;
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+  white-space: nowrap;
+}
+.beat-ui-click-sticker .ui-click-after { opacity: 0; }
+
+.beat-ui-click-sticker .ui-click-pointer {
+  position: absolute;
+  right: -20px;
+  bottom: -74px;
+  width: 92px;
+  height: 112px;
+  fill: var(--ui-paper);
+  stroke: var(--ui-ink);
+  stroke-width: 7;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 8px 0 rgba(0,0,0,0.34));
+  transform-origin: 12px 8px;
+  will-change: transform, opacity;
+}
+
+@media (orientation: landscape) {
+  .beat-ui-click-sticker .ui-click-sticker { right: auto; bottom: 112px; left: 86px; width: 580px; transform: none; }
+}

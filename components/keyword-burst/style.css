@@ -1,0 +1,86 @@
+.beat-keyword-burst {
+  inset: 0;
+  max-height: none;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.beat-keyword-burst::before { display: none; }
+
+.beat-keyword-burst .keyword-burst {
+  --keyword-ink: var(--rapid-ink, {{pageBg}});
+  --keyword-fill: var(--rapid-green, {{accentFillBg}});
+  position: absolute;
+  left: 50%;
+  display: flex;
+  max-width: calc(100% - 80px);
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+.beat-keyword-burst .keyword-burst--top-center { top: 150px; }
+.beat-keyword-burst .keyword-burst--center { top: 46%; transform: translate(-50%, -50%); }
+.beat-keyword-burst .keyword-burst--bottom-center { bottom: 520px; }
+.beat-keyword-burst .keyword-burst--yellow { --keyword-fill: var(--rapid-yellow, {{accent}}); }
+.beat-keyword-burst .keyword-burst--white { --keyword-fill: var(--rapid-paper, {{text}}); }
+
+.beat-keyword-burst .keyword-burst-kicker {
+  display: inline-flex;
+  margin-bottom: 14px;
+  padding: 6px 12px;
+  color: var(--rapid-paper, {{text}});
+  border-radius: 999px;
+  background: var(--keyword-ink);
+  font-family: {{fontHead}};
+  font-size: 24px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.beat-keyword-burst .keyword-burst-word {
+  display: flex;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  color: var(--keyword-fill);
+  font-family: {{fontHead}};
+  font-size: clamp(82px, 11vw, 122px);
+  line-height: 0.88;
+  font-weight: 700;
+  letter-spacing: -0.07em;
+  text-align: center;
+  text-transform: uppercase;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  -webkit-text-stroke: 4px var(--keyword-ink);
+  paint-order: stroke fill;
+  filter: drop-shadow(0 7px 0 var(--keyword-ink)) drop-shadow(0 14px 18px rgba(0,0,0,0.34));
+}
+
+.beat-keyword-burst .keyword-burst-glyph {
+  display: inline-block;
+  transform-origin: 50% 80%;
+  will-change: transform, opacity;
+}
+
+.beat-keyword-burst .keyword-burst-space { display: inline-block; width: 0.28em; }
+
+@media (orientation: landscape) {
+  .beat-keyword-burst .keyword-burst { left: 32%; }
+  .beat-keyword-burst .keyword-burst--top-center { top: 88px; }
+  .beat-keyword-burst .keyword-burst--bottom-center { bottom: 110px; }
+  .beat-keyword-burst .keyword-burst-word { font-size: 82px; -webkit-text-stroke-width: 3px; }
+}

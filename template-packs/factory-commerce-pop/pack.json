@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "id": "factory-commerce-pop",
+  "version": "2.1.0",
+  "label": "工厂电商弹贴",
+  "description": "面向工厂外贸网站与产品口播的高留存模板：无框黄字重点、域名纸条、悬念 Web 贴纸、大产品图、简约 CTA、语义节点音效和自然统一调色。",
+  "theme": "commerce-pop",
+  "compatibleProfiles": ["factory-acquisition"],
+  "compatibleLayouts": ["vertical", "horizontal"],
+  "caption": {
+    "maxCharsPerLine": 22,
+    "singleLine": true,
+    "placement": "tiktok-safe",
+    "fontSize": 64,
+    "safeBottom": 550,
+    "leftInset": 64,
+    "rightInset": 64
+  },
+  "captionPolicy": {
+    "wordsPerCue": [3, 4],
+    "alignment": "strict-horizontal-center",
+    "emphasis": "semantic-phrase-yellow-black-stroke-no-box",
+    "punctuation": "remove-terminal-period-comma-keep-question-exclamation",
+    "timing": "word-cache-lip-sync-no-early-next-cue"
+  },
+  "editorialPolicy": {
+    "takeHeads": "remove-camera-direction-and-pre-speech-waste",
+    "takeTails": "remove-post-speech-waste",
+    "retakeBoundary": "preserve-complete-spoken-phrase-and-remove-repeated-boundary-words",
+    "crossTakeContinuation": "allow-seamless-sentence-continuation-without-marking-the-first-take-as-failed",
+    "cutApproval": "semantic-edl-plus-filmstrip-and-waveform-review",
+    "captionAudit": "review-all-cues-against-word-cache-not-only-reported-timecodes",
+    "audioCleanup": "remove-unintended-recording-commands-clicks-and-transition-noise"
+  },
+  "outputPolicy": {
+    "frameRate": "preserve-source-60000/1001",
+    "frameRateFallback": "preserve-source",
+    "masterFirst": true,
+    "platformDerivatives": "derive-from-high-quality-master"
+  },
+  "visualPolicy": {
+    "domainBanner": "domain-only-large-type-no-kicker",
+    "openingNegativeClaim": "logo-with-cross-sticker",
+    "listTeaser": "web-globe-browser-sticker-without-revealing-items",
+    "branchVisual": "large-category-cutout-with-domain-on-top-paper",
+    "duplicateDomainCaption": "hide-while-domain-paper-is-visible",
+    "cta": "product-semantic-broll-plus-simple-contact-card-when-script-ends-with-contact-quote-dm-email-or-phone",
+    "contactLeadgenOutro": "real-contact-action-or-semantic-sticker-plus-explicit-contact-card-plus-action-synced-typing-phone-or-chime-sfx",
+    "mobileInfoCard": "default-3-by-2-large-canvas-coverage-high-contrast-text-and-background",
+    "ctaVariation": "do-not-reuse-one-identical-large-card-across-products",
+    "facePriority": true,
+    "tiktokSafeArea": true
+  },
+  "motionPolicy": {
+    "entry": "short-pop-or-punch",
+    "teaserHoldSeconds": [3.5, 5],
+    "avoidFlashOnly": true,
+    "semanticBranchCueRequired": true
+  },
+  "audioPolicy": {
+    "musicBedRequired": false,
+    "maxSemanticCues": 12,
+    "openingSfxBeforeSeconds": 5.5,
+    "openingSfxPolicy": "none-unless-explicitly-approved",
+    "corePoint": "layered-pop-plus-ding",
+    "branchPoint": "pop-hit-on-every-branch",
+    "cta": "contact-action-synced-typing-phone-or-chime-with-speech-priority",
+    "dialogueLeveling": "local-gain-envelope-or-compressor-before-whole-program-loudness-normalization",
+    "mixTarget": {
+      "integratedLufs": -13,
+      "truePeakDbtp": -1.2
+    }
+  },
+  "colorPolicy": {
+    "mode": "per-take-exposure-match-plus-global-look",
+    "brightness": "bright-natural",
+    "whiteBalance": "consistent-neutral-natural-skin",
+    "contrast": "consistent-moderate",
+    "beauty": {
+      "whitening": "subtle",
+      "blemishReduction": "subtle",
+      "skinSmoothing": "subtle-bilateral",
+      "faceReshape": false,
+      "detailRecovery": true,
+      "preset": "factory-neutral-skin-v1",
+      "implementation": "ffmpeg-colorbalance-eq-bilateral-unsharp",
+      "identityPolicy": "non-generative-no-face-reconstruction",
+      "qa": "per-take-before-after-filmstrip"
+    }
+  },
+  "brollPolicy": {
+    "maxCoverage": 0.25,
+    "defaultMode": "floating-frame",
+    "proofFirst": true,
+    "revealPolicy": "preserve-curiosity-do-not-preview-all-list-items"
+  },
+  "components": [
+    "product-domain-pop",
+    "ui-click-sticker"
+  ],
+  "assets": [
+    "sfx/pop-soft.wav",
+    "sfx/final-ding.wav",
+    "sfx/click-confirm.wav",
+    "sfx/follow-confirm.wav",
+    "stickers/web-globe-teaser.svg"
+  ]
+}

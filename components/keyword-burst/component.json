@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "keyword-burst",
+  "order": 24,
+  "label": "关键词逐字弹跳",
+  "kind": "component",
+  "category": "cta",
+  "description": "把评论、私信或询盘关键词按字母/字形依次弹入，在重读音节附近形成短促记忆点。",
+  "version": "1.0.0",
+  "lifecycle": "published",
+  "compatibility": "supported",
+  "captionMode": "overlay",
+  "formats": ["portrait", "landscape"],
+  "requiredFields": ["placement"],
+  "optionalFields": ["tone", "quoted", "hitOffset", "staggerFrames"],
+  "promptHint": "title(关键词), kicker(可选动作提示), placement(top-center/center/bottom-center), tone(green/yellow/white)?, quoted?, hitOffset?, staggerFrames?；只在明确评论/私信/询盘 CTA 关键词处使用",
+  "tags": ["关键词", "CTA", "评论", "询盘", "逐字弹入"],
+  "source": "rapid-proof/user-confirmed-reference-analysis-20260902",
+  "apply": { "mode": "beat", "type": "keyword-burst" },
+  "preview": { "duration": 1.4, "defaultFixture": "comment-keyword" }
+}

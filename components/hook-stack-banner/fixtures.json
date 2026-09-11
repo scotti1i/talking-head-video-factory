@@ -1,0 +1,13 @@
+[
+  {
+    "id": "value-hook",
+    "label": "交付周期钩子",
+    "beat": {
+      "kicker": "ATTENTION",
+      "title": "PREFAB SPACE",
+      "value": "FASTER DELIVERY",
+      "tone": "green",
+      "hitOffset": 0.12
+    }
+  }
+]

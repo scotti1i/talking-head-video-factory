@@ -1,0 +1,495 @@
+#main {
+  --commerce-ink: #101114;
+  --commerce-paper: #ffffff;
+  --commerce-yellow: #ffe600;
+  --commerce-blue: #1877f2;
+  --commerce-green: #00d878;
+  --commerce-red: #ff3b30;
+  --impact-action: #1877f2;
+}
+
+/* Phone-first information cards use a real 3:2 area and hard foreground/background contrast. */
+#main .beat-micro-overlay {
+  top: 54px;
+  right: auto;
+  left: 50%;
+  width: min(720px, calc(100% - 120px));
+  transform: translateX(-50%);
+}
+
+#main .beat-micro-overlay .micro-overlay {
+  width: 100%;
+  height: 480px;
+  max-width: none;
+  min-height: 0;
+  flex-direction: column;
+  color: #ffffff;
+  border: 3px solid #ffffff;
+  border-radius: 34px;
+  background: #14213d;
+  box-shadow: 0 18px 46px rgba(15, 25, 48, 0.30), 0 6px 0 #ffe13c;
+}
+
+#main .beat-micro-overlay .micro-overlay-mark {
+  flex: 0 0 132px;
+  width: 132px;
+  height: 132px;
+  margin: 28px auto 0;
+  color: #14213d;
+  border-radius: 28px;
+  background: #ffe13c;
+}
+
+#main .beat-micro-overlay .micro-overlay-copy {
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 42px 38px;
+  text-align: center;
+}
+
+#main .beat-micro-overlay .micro-overlay .kicker {
+  margin-bottom: 14px;
+  padding: 8px 14px;
+  color: #14213d;
+  font-size: 25px;
+  font-weight: 800;
+  border-radius: 999px;
+  background: #ffe13c;
+  opacity: 1;
+}
+
+#main .beat-micro-overlay .micro-overlay h2 {
+  max-width: 620px;
+  color: #ffffff;
+  font-size: clamp(54px, 6vw, 68px);
+  line-height: 0.96;
+}
+
+#main .beat-micro-overlay .micro-overlay p {
+  max-width: 600px;
+  margin-top: 14px;
+  color: #dce8ff;
+  font-size: 30px;
+  opacity: 1;
+}
+
+#main .beat-micro-overlay .micro-overlay--action,
+#main .beat-micro-overlay .micro-overlay--question,
+#main .beat-micro-overlay .micro-overlay--locator {
+  color: #ffffff;
+  background: #14213d;
+}
+
+#main .beat-micro-overlay .micro-overlay--action .micro-overlay-mark,
+#main .beat-micro-overlay .micro-overlay--question .micro-overlay-mark {
+  color: #14213d;
+  background: #ffe13c;
+}
+
+/* Platform artwork should read as clean app tiles, without comic black frames. */
+#main .beat-media-pop-sticker .media-pop-sticker-visual {
+  border: 0;
+  background: transparent;
+  box-shadow: 0 14px 34px rgba(20, 30, 55, 0.24), 0 3px 10px rgba(20, 30, 55, 0.14);
+}
+
+/* Real proof photos need phone-readable area, not icon-sized square treatment. */
+#main .beat-media-pop-sticker .media-pop-sticker--medium .media-pop-sticker-visual {
+  width: min(760px, calc(100% - 120px));
+  height: 507px;
+  border: 3px solid rgba(255, 255, 255, 0.96);
+  border-radius: 34px;
+  background: #fff;
+  box-shadow: 0 20px 48px rgba(15, 25, 48, 0.30), 0 6px 16px rgba(15, 25, 48, 0.16);
+}
+
+#main .beat-media-pop-sticker .media-pop-sticker--medium .media-pop-sticker-visual img {
+  object-fit: cover;
+}
+
+#main .beat-media-pop-sticker .media-pop-sticker--large .media-pop-sticker-visual {
+  width: min(760px, calc(100% - 120px));
+  height: 1020px;
+  border: 3px solid rgba(255, 255, 255, 0.96);
+  border-radius: 34px;
+  background: #fff;
+  box-shadow: 0 20px 48px rgba(15, 25, 48, 0.30), 0 6px 16px rgba(15, 25, 48, 0.16);
+}
+
+#main .beat-media-pop-sticker .media-pop-sticker--large .media-pop-sticker-visual img {
+  object-fit: cover;
+}
+
+/* Phone-first proof images: a readable 3:2 card, clear of the lower-third captions. */
+#main .broll-floating-frame {
+  inset: auto;
+  top: 236px;
+  bottom: auto;
+  width: 720px;
+  height: 480px;
+  margin: 0;
+  overflow: hidden;
+  border: 3px solid rgba(255, 255, 255, 0.96);
+  border-radius: 34px;
+  background: #ffffff;
+  box-shadow: 0 22px 52px rgba(15, 25, 48, 0.30), 0 7px 0 #ffe13c;
+  transform-origin: 50% 50%;
+  will-change: transform, opacity;
+}
+
+#main .broll-floating-frame[data-placement="left"] {
+  left: 64px;
+  right: auto;
+}
+
+#main .broll-floating-frame[data-placement="right"] {
+  left: 296px;
+  right: auto;
+}
+
+#main .broll-floating-media {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 30px;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  will-change: transform;
+}
+
+/* Refined commerce cards: softer outlines, controlled color depth and cleaner spacing. */
+#main .beat-impact-sticker .impact-sticker-surface {
+  border: 3px solid rgba(255, 255, 255, 0.94);
+  box-shadow: 0 18px 46px rgba(15, 25, 48, 0.28), 0 4px 12px rgba(15, 25, 48, 0.14);
+}
+
+#main .beat-impact-sticker .impact-sticker-kicker {
+  display: inline-flex;
+  align-self: flex-start;
+  width: max-content;
+  padding: 7px 12px;
+  border-radius: 999px;
+  color: #fff;
+  background: #1877f2;
+  font-weight: 700;
+  opacity: 1;
+}
+
+#main .beat-impact-sticker .impact-sticker--reject .impact-sticker-surface {
+  border-radius: 28px;
+  background: linear-gradient(135deg, #ffffff 0%, #fff8d8 100%);
+  box-shadow: 0 14px 38px rgba(26, 45, 84, 0.25), 0 6px 0 #ffe24a;
+}
+
+#main .beat-impact-sticker .impact-sticker--question .impact-sticker-surface {
+  color: #17213b;
+  border-radius: 28px;
+  border-color: rgba(255, 255, 255, 0.94);
+  background: linear-gradient(135deg, #ffffff 0%, #eef5ff 100%);
+  box-shadow: 0 15px 38px rgba(27, 64, 140, 0.25), 0 6px 0 #65d5ff;
+}
+
+#main .beat-impact-sticker .impact-sticker--question .impact-sticker-surface::after {
+  border-color: #ffffff;
+  background: #eef5ff;
+}
+
+#main .beat-impact-sticker .impact-sticker--question .impact-sticker-title {
+  color: #17213b;
+  font-size: clamp(56px, 6.4vw, 70px);
+  letter-spacing: -0.035em;
+}
+
+#main .beat-impact-sticker .impact-sticker--reject .impact-sticker-title {
+  color: #16223b;
+  letter-spacing: -0.035em;
+}
+
+#main .beat-impact-sticker .impact-sticker--reject .impact-sticker-strike {
+  border: 0;
+  height: 9px;
+  background: linear-gradient(90deg, #ff5b45, #ff9b3d);
+  box-shadow: 0 4px 10px rgba(255, 79, 61, 0.26);
+}
+
+#main .beat-impact-sticker .impact-sticker--action .impact-sticker-surface {
+  border-radius: 28px;
+  border-color: rgba(255, 255, 255, 0.92);
+  background: linear-gradient(135deg, #1769e8 0%, #5a43e8 100%);
+  box-shadow: 0 15px 40px rgba(39, 79, 200, 0.30), 0 6px 0 #ffdf38;
+}
+
+#main .beat-impact-sticker .impact-sticker--action .impact-sticker-mark {
+  margin: 12px 0 12px 12px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.96);
+}
+
+#main .beat-impact-sticker .impact-sticker--identity .impact-sticker-surface {
+  min-height: 520px;
+  height: 520px;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 34px;
+  border-color: rgba(255, 255, 255, 0.88);
+  background: linear-gradient(135deg, #101d3d 0%, #182d5e 100%);
+  box-shadow: 0 13px 34px rgba(8, 19, 48, 0.30), 0 6px 0 #ffe13c;
+}
+
+#main .beat-impact-sticker .impact-sticker--identity .impact-sticker-mark {
+  flex: 0 0 170px;
+  width: 170px;
+  height: 170px;
+  margin: 28px auto 0;
+  border-radius: 28px;
+}
+
+#main .beat-impact-sticker .impact-sticker--identity {
+  top: 58px;
+  left: 50%;
+  width: min(780px, calc(100% - 120px));
+  transform: translateX(-50%);
+}
+
+#main .beat-impact-sticker .impact-sticker--identity .impact-sticker-mark svg {
+  width: 104px;
+  height: 104px;
+}
+
+#main .beat-impact-sticker .impact-sticker--identity .impact-sticker-copy {
+  width: 100%;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 42px 42px;
+  text-align: center;
+}
+
+#main .beat-impact-sticker .impact-sticker--identity .impact-sticker-kicker {
+  align-self: center;
+  padding: 10px 18px;
+  font-size: 28px;
+}
+
+#main .beat-impact-sticker .impact-sticker--identity .impact-sticker-title {
+  margin-top: 18px;
+  font-size: clamp(72px, 7.5vw, 84px);
+  line-height: 0.92;
+}
+
+#main .beat-impact-sticker .impact-sticker--pivot .impact-sticker-title {
+  -webkit-text-stroke: 3px #17213b;
+  text-shadow: 0 6px 0 #17213b, 0 16px 28px rgba(20, 30, 55, 0.25);
+}
+
+#main .beat-impact-sticker .impact-sticker--cta {
+  top: 118px;
+  right: 110px;
+  bottom: auto;
+  left: 110px;
+}
+
+#main .beat-impact-sticker .impact-sticker--cta .impact-sticker-surface {
+  min-height: 138px;
+  border-radius: 30px;
+  border-color: rgba(255, 255, 255, 0.94);
+  background: linear-gradient(135deg, #ffe13c 0%, #ffb52f 100%);
+  box-shadow: 0 16px 42px rgba(24, 42, 78, 0.28), 0 6px 0 #1877f2;
+}
+
+#main .beat-impact-sticker .impact-sticker--cta .impact-sticker-mark {
+  margin: 10px 0 10px 10px;
+  border-radius: 22px;
+  background: #17213b;
+}
+
+/* Mobile CTA follows the same large-card principle instead of a thin desktop banner. */
+#main .beat-cta-badge {
+  right: auto;
+  left: 50%;
+  width: min(720px, calc(100% - 120px));
+  max-width: none;
+  transform: translateX(-50%);
+}
+
+#main .beat-cta-badge .cta-badge {
+  min-height: 480px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+  padding: 30px 42px 38px;
+  text-align: center;
+}
+
+#main .beat-cta-badge .cta-badge-mark {
+  flex: 0 0 116px;
+  width: 116px;
+  height: 116px;
+}
+
+#main .beat-cta-badge .cta-badge-mark svg {
+  width: 66px;
+  height: 66px;
+}
+
+#main .beat-cta-badge .cta-badge-copy {
+  align-items: center;
+}
+
+#main .beat-cta-badge .cta-badge .kicker {
+  margin-bottom: 10px;
+  font-size: 26px;
+  opacity: 1;
+}
+
+#main .beat-cta-badge .cta-badge h2 {
+  font-size: 44px;
+}
+
+#main .beat-cta-badge .cta-badge strong {
+  align-self: center;
+  min-height: 68px;
+  margin-top: 14px;
+  padding: 0 24px;
+  font-size: 56px;
+}
+
+.caption {
+  left: 58px;
+  right: 58px;
+  bottom: 258px;
+  font-size: 66px;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+}
+
+/* Full-screen proof footage must not move captions to a different vertical baseline. */
+#main .caption.caption-primary,
+#main .caption.caption-primary-pip {
+  top: auto;
+  right: 58px;
+  left: 58px;
+  width: auto;
+  font-size: 66px;
+  line-height: 0.98;
+  transform: none;
+  white-space: nowrap;
+}
+
+#main .caption,
+#main .caption-over-card {
+  color: #fff;
+  -webkit-text-stroke: 2px #08090b;
+  paint-order: stroke fill;
+  text-shadow: 0 4px 0 #08090b, 0 8px 0 #08090b, 0 16px 26px rgba(0, 0, 0, 0.72);
+}
+
+.caption-emphasis {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.caption-over-card {
+  bottom: 446px;
+  font-size: 54px;
+}
+
+@media (orientation: landscape) {
+  #main .beat-impact-sticker .impact-sticker--identity {
+    top: 70px;
+    left: 72px;
+    width: 610px;
+    transform: none;
+  }
+
+  #main .beat-impact-sticker .impact-sticker--identity .impact-sticker-surface {
+    min-height: 170px;
+    height: auto;
+    flex-direction: row;
+  }
+
+  #main .beat-impact-sticker .impact-sticker--identity .impact-sticker-mark {
+    flex-basis: 148px;
+    width: auto;
+    height: auto;
+    margin: 9px 0 9px 9px;
+  }
+
+  #main .beat-impact-sticker .impact-sticker--identity .impact-sticker-copy {
+    align-items: flex-start;
+    padding: 24px 30px 26px;
+    text-align: left;
+  }
+
+  #main .beat-impact-sticker .impact-sticker--identity .impact-sticker-kicker {
+    align-self: flex-start;
+    padding: 7px 12px;
+    font-size: 20px;
+  }
+
+  #main .beat-impact-sticker .impact-sticker--identity .impact-sticker-title {
+    margin-top: 0;
+    font-size: 48px;
+  }
+
+  #main .beat-cta-badge {
+    top: 70px;
+    right: auto;
+    left: 70px;
+    width: auto;
+    max-width: 820px;
+    transform: none;
+  }
+
+  #main .beat-cta-badge .cta-badge {
+    min-height: 126px;
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 17px 22px;
+    text-align: left;
+  }
+
+  #main .beat-cta-badge .cta-badge-mark {
+    flex-basis: 72px;
+    width: 72px;
+    height: 72px;
+  }
+
+  #main .beat-cta-badge .cta-badge-copy {
+    align-items: flex-start;
+  }
+
+  #main .beat-cta-badge .cta-badge .kicker { margin-bottom: 5px; font-size: 17px; }
+  #main .beat-cta-badge .cta-badge h2 { font-size: 25px; }
+  #main .beat-cta-badge .cta-badge strong {
+    align-self: flex-start;
+    min-height: 48px;
+    margin-top: 5px;
+    padding: 0 14px;
+    font-size: clamp(34px, 4vw, 46px);
+  }
+
+  .caption,
+  .caption-over-card {
+    font-size: 42px;
+    line-height: 1.02;
+    -webkit-text-stroke-width: 1.4px;
+  }
+
+
+  #main .caption.caption-primary,
+  #main .caption.caption-primary-pip {
+    top: auto;
+    right: 58px;
+    left: 58px;
+    width: auto;
+    font-size: 42px;
+    line-height: 1.02;
+    transform: none;
+  }
+}
