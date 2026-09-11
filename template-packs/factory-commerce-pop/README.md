@@ -30,4 +30,4 @@ profile: factory-acquisition
 
 模板会自动把通用音效和 Web 悬念贴纸复制进 job。产品图片、平台 Logo 和实际域名仍应按每条视频语义提供，避免把客户内容固化进模板。
 
-跨电脑迁移请使用导出的 ZIP，并在目标仓库根目录运行 ZIP 内的 `Install-TemplatePack.ps1`。
+跨电脑迁移随仓库发布：目标机 `npm run update` 检出最新 `v*` tag 即可，不再提供独立 ZIP / 便携安装器（2026-09-11 起）。

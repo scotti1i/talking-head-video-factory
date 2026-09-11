@@ -47,11 +47,4 @@ npm run intake -- --dry-run --slug <项目名> --source <素材目录> --languag
 
 ## 跨电脑安装
 
-使用导出的 ZIP，完整解压后在 PowerShell 中运行：
-
-```powershell
-.\Verify-Bundle.ps1
-.\Install-TemplatePack.ps1 -TargetRoot "D:\你的 talking-head-video-factory 目录"
-```
-
-目标电脑必须先安装兼容版本的剪辑系统。模板 ZIP 不包含客户原片、文稿、转录、成片、API Key、第三方 BGM 或第三方原始音效库。
+本模板包随仓库一起发布：目标机在 WSL 仓库里 `npm run update`（检出最新 `v*` tag）即可获得，不再提供独立 ZIP / 便携安装器（2026-09-11 起，发布 = 打 tag）。仓库不包含客户原片、文稿、转录、成片、API Key、第三方 BGM 或第三方原始音效库。

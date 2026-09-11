@@ -16,7 +16,6 @@
     "intake": "node scripts/intake-job.mjs",
     "test:contracts": "node --test scripts/product-contracts.test.mjs",
     "review": "node scripts/review-feedback.mjs",
-    "template:export": "node scripts/export-template-pack.mjs",
     "inventory": "node scripts/inventory-media.mjs",
     "transcribe:editor": "node scripts/transcribe-editor.mjs",
     "transcript:audit": "node scripts/audit-editor-transcript.mjs",
