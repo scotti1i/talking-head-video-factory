@@ -70,13 +70,15 @@ npm run qa:cuts:approve -- --job jobs/<slug> --by human --name <人名> [--acous
 
 Agent 可以先用默认 `--by agent` 记录自己的检查，但那不是交付门禁；`deliver` 与 `review init` 只认人签。`editor-signals.json` 里 `severity: high` 的信号，要么改 EDL 剪掉，要么听审后写进 `data/resolved-signals.json`（格式见 [data-contract.md](data-contract.md)）。
 
-## 3. 从缓存生成字幕
+## 3. 处理 A-roll 并从成片音轨生成字幕
 
 ```bash
-npm run captions:build -- --job jobs/<slug>
+npm run aroll:treat -- --job jobs/<slug>        # 剪辑母版 aroll-cut.mp4 → 工作母版 aroll.mp4（倍速 / 对白链按 aroll-treat/registry.json 预设），写 project.json.aroll
+npm run captions:build -- --job jobs/<slug>     # 对工作母版只转录一次 → captions / caption-voice / words-timeline（细节见 docs/timing-chain.md）
+npm run qa:alignment -- --job jobs/<slug>       # 每个 EDL 段原片↔母版互相关，≤1 帧
 ```
 
-生成后通篇校准人名、产品名、英文术语与断句。
+字幕词面以 `editorial.writtenScript` 为准（拉丁语系自动对齐替换）；要改词面就改文稿再重跑 `captions:build`，不要手改 `data/captions.json` 的时间。`qa:alignment` 不过说明 EDL 或母版有问题，回到 EDL 重做，不许整体平移字幕。
 
 目标格式：
 

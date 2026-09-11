@@ -46,7 +46,7 @@
 | `request -- --title --detail` | 写 `requests/<date>-<slug>.md`，commit 到 `client/<host>` 并 push | — |
 | `report:push` | 把当前 job 的 data / qa / review 文本（无媒体）commit 到 `client/<host>` 分支并 push | 无 remote 时只 commit |
 | `update` | `git fetch` → checkout 最新 `v*` tag → `npm ci` → doctor → 回归样片；失败回滚上一个 tag | — |
-| `migrate` | 把 `jobs/` 挪到 `FACTORY_JOBS_ROOT`（默认 `$DATA_ROOT/jobs`），校验旧 job 合同，写 `legacy: true` + 原因；幂等 | — |
+| `migrate` | 把 `jobs/` 挪到 `FACTORY_JOBS_ROOT`（默认 `~/factory-jobs`，在 WSL ext4 内；`/mnt/d` 是 NTFS 不能渲染，2026-09-11 实现时推翻原 `$DATA_ROOT/jobs`），校验旧 job 合同，写 `legacy: true` + 原因；幂等 | — |
 
 已有命令保留名字；`legacy:*` 保留但 skill 不再引用。
 

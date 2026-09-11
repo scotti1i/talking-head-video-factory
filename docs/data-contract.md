@@ -126,6 +126,42 @@
 
 外部图片与视频必须记录来源页、作者/提供者、许可条件和本地 SHA-256；用户自带素材记录原始路径与哈希。任何进入主轨或解释层的 B-roll 工作副本都必须移除源音轨，口播 A-roll 始终是唯一连续叙事声轨。真实证据优先于装饰性库存素材：产品照片、客户沟通、工厂/仓库、邮件或电话等画面应与当前口播语义直接对应。
 
+## A-roll 工作母版合同（`project.json.aroll`，v2）
+
+`aroll:treat` 把剪辑母版 `assets/aroll-cut.mp4` 处理成工作母版 `assets/aroll.mp4` 后写入：
+
+```json
+"aroll": {
+  "playbackRate": 1.1,
+  "treat": "social-fast-v1",
+  "master": "assets/aroll.mp4",
+  "cut": "assets/aroll-cut.mp4",
+  "edlHash": "<sha256 data/rough-cut-edl.json>",
+  "cutHash": "<sha256 剪辑母版>",
+  "masterHash": "<sha256 工作母版>",
+  "duration": 232.6,
+  "fps": 60
+}
+```
+
+- `playbackRate` / `treat` 来自 `aroll-treat/registry.json` 的预设（`factory-acquisition` 默认 `social-fast-v1` = 1.1 倍速 + 对白链），job 不写滤镜。
+- `captions:build`、`qa:alignment`、`build*` 先校验 `edlHash` 与 `masterHash`：EDL 改了必须重跑 `roughcut:render` + `aroll:treat`；手工替换 `aroll.mp4` 直接拒绝。
+- `qa:cuts`、`review:independent` 的切点时间按 `playbackRate` 换算。
+
+相关文件：
+
+| 文件 | 含义 | 谁写 |
+|---|---|---|
+| `data/aroll-master.json` | 处理记录：预设、滤镜、输入输出哈希与时长 | `aroll:treat` |
+| `data/aroll-transcript.json` | 工作母版的一次性词级转录（按 `masterHash` 缓存） | `captions:build` |
+| `data/captions.json` | 字幕，时间来自工作母版转录 + 能量谷吸附，词面来自文稿对齐 | `captions:build` |
+| `data/caption-voice.json` | 人声区合同，由转录语音区生成（旧文件里的 `text-overlay` 区保留） | `captions:build` |
+| `data/words-timeline.json` | 词级时间线（动效 / 重点词用） | `captions:build` |
+| `data/captions-provenance.json` | 字幕来源：`masterHash`、`edlHash`、模型、文稿对齐统计；与当前母版不符 = acceptance 失败 | `captions:build` |
+| `qa/alignment-report.json` | 逐 EDL 段原片↔母版互相关，`maxAbsOffsetFrames ≤ 1` 才 passed | `qa:alignment` |
+
+时间链全貌见 `docs/timing-chain.md`。
+
 ## 审片版本与反馈
 
 `review/R0`、`review/R1` 只增不改。创建 revision 时必须把当轮视频复制/CoW 冻结到 `review/Rn/video.mp4`，并记录成片 SHA-256、时长与当轮 EDL/字幕/beats/B-roll 等事实源哈希；验证时复核冻结视频哈希。反馈的 `start/end` 必须在视频时长内；`scope` 只允许 `project`、`client`、`template-pack` 或 `factory-profile`。默认 `project`，只有专业剪辑明确选择后才提升为长期规则。
