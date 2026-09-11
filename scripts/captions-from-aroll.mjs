@@ -120,8 +120,8 @@ export function groupIntoLines(words, { maxChars = 18, maxDuration = 2.8, gapBre
     const prev = words[index - 1];
     const current = joinWords(group);
     if (group.length && prev && word.start - prev.end >= gapBreak) flush();
-    // whisper 段边界只是软信号：行已过半才在这里断，避免「做」「的人」这种孤行
-    else if (group.length && prev?.segmentEnd && current.length >= maxChars * 0.5) flush();
+    // whisper 段边界：CJK 没有词间空格，段就是最自然的短语单位 → 硬断（孤行由下面并回）；拉丁语系只在行已过半时断
+    else if (group.length && prev?.segmentEnd && (CJK.test(prev.text) || current.length >= maxChars * 0.5)) flush();
     const candidate = joinWords([...group, word]);
     const duration = word.end - (group[0]?.start ?? word.start);
     if (group.length && (candidate.length > maxChars || duration > maxDuration)) flush();
@@ -158,13 +158,17 @@ export function groupIntoLines(words, { maxChars = 18, maxDuration = 2.8, gapBre
 // 拼词：有 sp 标志用 sp（whisper 前导空格 / 文稿词），没有就按字符类型推断（CJK 之间不加空格）
 export function joinWords(words) {
   let text = "";
+  let lastToken = "";
   for (const word of words) {
     const value = String(word.text || "").trim();
     if (!value) continue;
-    if (!text) { text = value; continue; }
+    if (!text) { text = value; lastToken = value; continue; }
     const heuristic = /[\p{L}\p{N}?!.,]$/u.test(text) && /^[\p{L}\p{N}¿¡]/u.test(value) && !(CJK.test(text.at(-1)) && CJK.test(value[0]));
-    const space = word.sp == null ? heuristic : (word.sp || (word.script && !CJK.test(value[0]))) && !(CJK.test(text.at(-1)) && CJK.test(value[0]));
+    // 单个拉丁字母 / 数字连着出现（whisper 把 GPT6 拆成 G P T 6）不加空格
+    const singleLatinRun = /^[A-Za-z0-9]$/.test(value) && /^[A-Za-z0-9]$/.test(lastToken);
+    const space = !singleLatinRun && (word.sp == null ? heuristic : (word.sp || (word.script && !CJK.test(value[0]))) && !(CJK.test(text.at(-1)) && CJK.test(value[0])));
     text += `${space ? " " : ""}${value}`;
+    lastToken = value;
   }
   return text;
 }
