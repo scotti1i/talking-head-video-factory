@@ -6,9 +6,6 @@ param(
 $ErrorActionPreference = 'Stop'
 $startScript = Join-Path $PSScriptRoot 'Start-Harness.ps1'
 $config = Join-Path $PSScriptRoot 'factory.config.psd1'
-$logDir = 'D:\AutoEdit\Install\logs'
-$stdoutLog = Join-Path $logDir 'harness.stdout.log'
-$stderrLog = Join-Path $logDir 'harness.stderr.log'
 
 function Test-Harness {
   try {
@@ -34,6 +31,13 @@ if (Test-Harness) {
 
 if (-not (Test-Path $startScript)) { Show-LaunchError "缺少启动脚本：$startScript"; exit 1 }
 if (-not (Test-Path $config)) { Show-LaunchError "缺少本机配置：$config"; exit 1 }
+
+# 日志目录跟随配置里的 DataRoot（Bootstrap 生成；旧配置缺该项时补一行 DataRoot = 'D:\AutoEdit'）。
+$settings = Import-PowerShellDataFile $config
+if (-not $settings.DataRoot) { Show-LaunchError "配置缺少 DataRoot：$config"; exit 1 }
+$logDir = Join-Path $settings.DataRoot 'Install\logs'
+$stdoutLog = Join-Path $logDir 'harness.stdout.log'
+$stderrLog = Join-Path $logDir 'harness.stderr.log'
 New-Item -ItemType Directory -Force -Path $logDir | Out-Null
 
 $arguments = @(

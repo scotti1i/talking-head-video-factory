@@ -24,7 +24,7 @@ Harness 版本固定在配置里的 `DshVersion`，升级时先在隔离分支�
 .\Start-Harness.ps1
 ```
 
-桌面快捷启动可指向 `Launch-Harness.ps1`。它会复用已运行的服务；服务未启动时在后台拉起 WSL Harness，等待 `http://127.0.0.1:3080` 就绪后自动打开浏览器，并将日志写入 `D:\AutoEdit\Install\logs\`。
+桌面快捷启动可指向 `Launch-Harness.ps1`。它会复用已运行的服务；服务未启动时在后台拉起 WSL Harness，等待 `http://127.0.0.1:3080` 就绪后自动打开浏览器，并将日志写入 `<DataRoot>\Install\logs\`（`DataRoot` 来自 `factory.config.psd1`，2026-09-11 之前生成的旧配置需手动补一行 `DataRoot = 'D:\AutoEdit'`）。
 
 Harness 从仓库根目录启动后会自动发现 `.agents/skills/factory-auto-edit/SKILL.md`。首次使用 30-60 秒 SDR 真实样片；随后补跑一条 HDR 色彩回归，不允许跳过 `-RequireHdr` 检查。
 

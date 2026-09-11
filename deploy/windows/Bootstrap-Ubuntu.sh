@@ -99,9 +99,12 @@ export PATH="$HOME/.local/bin:$PATH"
 mkdir -p "$DATA_ROOT/Inbox" "$DATA_ROOT/Outbox" "$HOME/.config/talking-head-factory"
 config="$ROOT/deploy/windows/factory.config.psd1"
 if [[ ! -f "$config" ]]; then
+  # DataRoot 是 Windows 侧路径（Launch-Harness.ps1 用它放日志）；WSL 内用 wslpath 换算，非 WSL 环境退回默认值。
+  data_root_win="$(wslpath -w "$DATA_ROOT" 2>/dev/null || printf 'D:\\AutoEdit')"
   sed \
     -e "s#/home/factory/#/home/$USER/#g" \
     -e "s#/mnt/d/AutoEdit/Outbox#$DATA_ROOT/Outbox#g" \
+    -e "s#D:\\\\AutoEdit#${data_root_win//\\/\\\\}#g" \
     "$ROOT/deploy/windows/factory.config.example.psd1" > "$config"
 fi
 
