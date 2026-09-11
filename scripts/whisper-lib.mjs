@@ -95,6 +95,8 @@ function normalizeTokens(tokens, segmentIndex, segmentEnd) {
         end = nextDtw >= 0 ? nextDtw / 1000 : Math.max(start + 0.05, Math.min(end, segmentEnd));
       }
       result.push({
+        // whisper token 的前导空格就是真实词边界（" Open"、" AI"）；拼行时靠它决定要不要加空格
+        sp: /^\s/.test(String(first.text || "")),
         id: `w-${String(segmentIndex + 1).padStart(4, "0")}-${String(result.length + 1).padStart(3, "0")}`,
         start: round(start),
         end: round(Math.max(end, start + 0.001)),

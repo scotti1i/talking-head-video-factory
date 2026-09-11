@@ -34,10 +34,11 @@ test("CJK 不做词面替换", () => {
 test("分行：按字宽、时长、气口和句末标点断，行尾逗号句号去掉、问号感叹号保留", () => {
   const words = [word("Não", 0, 0.2), word("compra", 0.2, 0.6), word("tudo", 0.6, 0.8), word("pelo", 0.8, 1.0), word("Alibaba!", 1.0, 1.5), word("Ainda", 2.3, 2.6), word("os", 2.6, 2.7), word("produtos", 2.7, 3.2), word("ali,", 3.2, 3.5)];
   const lines = groupIntoLines(words, { maxChars: 18, maxDuration: 2.8 });
-  assert.deepEqual(lines.map((line) => line.t), ["Não compra tudo pelo Alibaba!", "Ainda os produtos ali"]);
+  // maxChars 按原始字符数（客户合同 18 = 西葡语 3–4 个词），孤行 "ali" 并回上一行
+  assert.deepEqual(lines.map((line) => line.t), ["Não compra tudo", "pelo Alibaba!", "Ainda os produtos ali"]);
   assert.equal(lines[0].s, 0);
-  assert.equal(lines[0].e, 1.5);
-  assert.equal(lines[1].s, 2.3);
+  assert.equal(lines[1].e, 1.5);
+  assert.equal(lines[2].s, 2.3);
 });
 
 test("分行：超过字宽就断；域名里的点不算句末", () => {

@@ -110,24 +110,39 @@ export function cleanLineText(text) {
 export function groupIntoLines(words, { maxChars = 18, maxDuration = 2.8, gapBreak = 0.6 } = {}) {
   const lines = [];
   let group = [];
-  const width = (text) => Array.from(text).reduce((sum, ch) => sum + (CJK.test(ch) ? 1 : 0.55), 0);
   const flush = () => {
     if (!group.length) return;
-    const text = cleanLineText(joinTokens(group.map((item) => item.text)));
-    if (text) lines.push({ s: group[0].start, e: group.at(-1).end, t: text, wordIds: group.map((item) => item.id) });
+    const text = cleanLineText(joinWords(group));
+    if (text) lines.push({ s: group[0].start, e: group.at(-1).end, t: text, wordIds: group.map((item) => item.id), words: group.length });
     group = [];
   };
   for (const [index, word] of words.entries()) {
     const prev = words[index - 1];
+    const current = joinWords(group);
     if (group.length && prev && word.start - prev.end >= gapBreak) flush();
-    if (group.length && prev?.segmentEnd) flush();
-    const candidate = joinTokens([...group, word].map((item) => item.text));
+    // whisper 段边界只是软信号：行已过半才在这里断，避免「做」「的人」这种孤行
+    else if (group.length && prev?.segmentEnd && current.length >= maxChars * 0.5) flush();
+    const candidate = joinWords([...group, word]);
     const duration = word.end - (group[0]?.start ?? word.start);
-    if (group.length && (width(candidate) > maxChars || duration > maxDuration)) flush();
+    if (group.length && (candidate.length > maxChars || duration > maxDuration)) flush();
     group.push(word);
     if (/[?!？！]$/.test(word.text) || (/[.。]$/.test(word.text) && !/\.[a-z]{2,}$/i.test(word.text))) flush();
   }
   flush();
+  // 孤行（≤3 字或单词）并回上一行：宽度允许且间隔 <0.4s
+  for (let index = 1; index < lines.length; index += 1) {
+    const line = lines[index];
+    const prev = lines[index - 1];
+    const orphan = line.words === 1 || line.t.length <= 3;
+    if (orphan && line.s - prev.e < 0.4 && `${prev.t} ${line.t}`.length <= maxChars + 4 && !/[?!？！]$/.test(prev.t)) {
+      prev.t = cleanLineText(`${prev.t}${CJK.test(prev.t.at(-1)) && CJK.test(line.t[0]) ? "" : " "}${line.t}`);
+      prev.e = line.e;
+      prev.wordIds.push(...line.wordIds);
+      prev.words += line.words;
+      lines.splice(index, 1);
+      index -= 1;
+    }
+  }
   // 太短的行向后延到下一行起点（不越过 0.35s）
   for (let index = 0; index < lines.length; index += 1) {
     const line = lines[index];
@@ -135,17 +150,27 @@ export function groupIntoLines(words, { maxChars = 18, maxDuration = 2.8, gapBre
     if (line.e - line.s < 0.45) line.e = round(Math.min(line.s + 0.45, next ? next.s : line.e + 0.35));
     if (next && line.e > next.s) line.e = next.s;
     line.s = round(line.s); line.e = round(line.e);
+    delete line.words;
   }
   return lines;
 }
 
+// 拼词：有 sp 标志用 sp（whisper 前导空格 / 文稿词），没有就按字符类型推断（CJK 之间不加空格）
+export function joinWords(words) {
+  let text = "";
+  for (const word of words) {
+    const value = String(word.text || "").trim();
+    if (!value) continue;
+    if (!text) { text = value; continue; }
+    const heuristic = /[\p{L}\p{N}?!.,]$/u.test(text) && /^[\p{L}\p{N}¿¡]/u.test(value) && !(CJK.test(text.at(-1)) && CJK.test(value[0]));
+    const space = word.sp == null ? heuristic : (word.sp || (word.script && !CJK.test(value[0]))) && !(CJK.test(text.at(-1)) && CJK.test(value[0]));
+    text += `${space ? " " : ""}${value}`;
+  }
+  return text;
+}
+
 function joinTokens(tokens) {
-  return tokens.reduce((text, token) => {
-    const value = String(token || "").trim();
-    if (!value) return text;
-    const needsSpace = /[\p{L}\p{N}?!.,]$/u.test(text) && /^[\p{L}\p{N}¿¡]/u.test(value) && !(CJK.test(text.at(-1)) && CJK.test(value[0]));
-    return `${text}${needsSpace ? " " : ""}${value}`;
-  }, "");
+  return joinWords(tokens.map((token) => ({ text: token })));
 }
 
 function carryEmphasis(lines, previous) {
