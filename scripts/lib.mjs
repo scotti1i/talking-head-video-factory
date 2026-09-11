@@ -144,8 +144,9 @@ export function relinkJobPackage(jobDir) {
   if (!fs.existsSync(file)) return;
   const pkg = readJson(file);
   const cli = hyperframesCli(jobDir);
+  // variants/<id>/package.json 写的是 ../../../../，一并处理
   for (const [name, command] of Object.entries(pkg.scripts || {})) {
-    pkg.scripts[name] = String(command).replaceAll("../../node_modules/.bin/hyperframes", cli);
+    pkg.scripts[name] = String(command).replace(/(?:\.\.\/)+node_modules\/\.bin\/hyperframes|\/[^\s]*\/node_modules\/\.bin\/hyperframes/g, cli);
   }
   writeJson(file, pkg);
 }

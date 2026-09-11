@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+# ============================================================
+# Bootstrap-Ubuntu.sh —— 客户 WSL2 基础环境（CODEX-REINSTALL.md 的 Gate 2）
+# 结尾打印 GATE 2 PASS；任何一步失败由 trap 打印 GATE 2 FAIL。
+# 除装依赖外还做两件治理动作：写 FACTORY_ROLE=operator、装 git hooks。
+# ============================================================
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -6,6 +11,10 @@ DATA_ROOT="${FACTORY_DATA_ROOT:-/mnt/d/AutoEdit}"
 MODEL="$HOME/.cache/whisper-cpp/ggml-large-v3-turbo.bin"
 WHISPER_ROOT="$HOME/.local/src/whisper.cpp"
 NVM_VERSION="v0.40.4"
+CONFIG_DIR="$HOME/.config/talking-head-factory"
+ENV_FILE="$CONFIG_DIR/env"
+
+trap 'status=$?; if [[ $status -ne 0 ]]; then echo; echo "GATE 2 FAIL"; fi' EXIT
 
 if ! grep -qi microsoft /proc/version; then
   echo "FAIL: 本脚本只用于 WSL2 Ubuntu。" >&2
@@ -69,7 +78,7 @@ if ! grep -Fq '$HOME/.local/bin' "$HOME/.bashrc"; then
 fi
 export PATH="$HOME/.local/bin:$PATH"
 
-mkdir -p "$DATA_ROOT/Inbox" "$DATA_ROOT/Outbox" "$HOME/.config/talking-head-factory"
+mkdir -p "$DATA_ROOT/Inbox" "$DATA_ROOT/Outbox" "$CONFIG_DIR"
 config="$ROOT/deploy/windows/factory.config.psd1"
 if [[ ! -f "$config" ]]; then
   sed \
@@ -78,8 +87,19 @@ if [[ ! -f "$config" ]]; then
     "$ROOT/deploy/windows/factory.config.example.psd1" > "$config"
 fi
 
+# 操作员角色 + git hook：客户机不改代码，只 update / request
+umask 077
+touch "$ENV_FILE"
+chmod 600 "$ENV_FILE"
+if ! grep -q '^FACTORY_ROLE=' "$ENV_FILE"; then
+  printf 'FACTORY_ROLE=operator\n' >> "$ENV_FILE"
+fi
+node "$ROOT/scripts/install-git-hooks.mjs"
+
 npm run doctor:deployment
 echo
 echo "基础环境完成。"
-echo "下一步：bash deploy/windows/Set-DeepSeekKey.sh"
+echo "下一步：bash deploy/windows/Set-DeepSeekKey.sh，然后按 deploy/windows/CODEX-REINSTALL.md 的 Gate 3 迁移旧 job。"
 echo "随后从 Windows PowerShell 运行 Invoke-Doctor.ps1 -RequireHdr 与 Start-Harness.ps1。"
+echo
+echo "GATE 2 PASS"
