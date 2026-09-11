@@ -14,8 +14,10 @@ test("静帧取点覆盖切点前后、字幕入点、开头结尾，并限制�
   assert.ok(times.includes(1.15));
   assert.ok(times.includes(0.05));
   assert.ok(times.every((t) => t >= 0 && t < 30));
-  const many = pickStillTimes({ duration: 300, captions: Array.from({ length: 200 }, (_, i) => ({ s: i })), cutTimes: [], max: 36 });
+  const many = pickStillTimes({ duration: 300, captions: Array.from({ length: 200 }, (_, i) => ({ s: i })), cutTimes: [100, 200], max: 36 });
   assert.equal(many.length, 36);
+  // 切点帧对与结尾三帧永远保留，抽稀只砍字幕入点
+  for (const t of [99.95, 100.05, 199.95, 200.05, 297.5, 298.8, 299.8]) assert.ok(many.includes(t), `缺 ${t}`);
 });
 
 test("裁决：10 条全 ✓ 才 pass；任一 ✗ 或不足 10 条即 fail", () => {

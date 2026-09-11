@@ -15,18 +15,17 @@ import { atomicWriteJson, parseArgs, projectRoot, readJson, resolveJob, run, vid
 const root = projectRoot();
 
 export function pickStillTimes({ duration, captions = [], cutTimes = [], max = 36 }) {
-  const times = new Set();
-  for (const cut of cutTimes) { times.add(Math.max(0, cut - 0.05)); times.add(cut + 0.05); }
-  for (const caption of captions) times.add(Number(caption.s) + 0.15);
-  times.add(0.05);
-  times.add(Math.max(0, duration - 1.5));
-  times.add(Math.max(0, duration - 0.2));
-  let list = [...times].filter((t) => t >= 0 && t < duration).sort((a, b) => a - b);
-  if (list.length > max) {
-    const step = list.length / max;
-    list = Array.from({ length: max }, (_, index) => list[Math.floor(index * step)]);
-  }
-  return list.map((t) => Math.round(t * 100) / 100);
+  // 必看：每个切点前后 0.05s、开头、结尾 3s 内三帧（收尾 CTA）；可选：字幕入点。只对可选项抽稀。
+  const must = new Set([0.05, Math.max(0, duration - 2.5), Math.max(0, duration - 1.2), Math.max(0, duration - 0.2)]);
+  for (const cut of cutTimes) { must.add(Math.max(0, cut - 0.05)); must.add(cut + 0.05); }
+  const optional = [...new Set(captions.map((caption) => Number(caption.s) + 0.15))].filter((t) => !must.has(t));
+  const room = Math.max(0, max - must.size);
+  let picked = optional;
+  if (optional.length > room && room > 0) {
+    const step = optional.length / room;
+    picked = Array.from({ length: room }, (_, index) => optional[Math.floor(index * step)]);
+  } else if (room === 0) picked = [];
+  return [...new Set([...must, ...picked])].filter((t) => t >= 0 && t < duration).sort((a, b) => a - b).map((t) => Math.round(t * 100) / 100);
 }
 
 export function cutTimesFromEdl(segments, rate) {
