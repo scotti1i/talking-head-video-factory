@@ -5,6 +5,8 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
+import { jobsRoot } from "../scripts/lib.mjs";
+
 export const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
 
 const DATA_FILES = ["captions.json", "beats.json", "shorts.json", "chapters.json", "overlays.json", "rough-cut-cuts.json"];
@@ -33,7 +35,7 @@ export function listThemes() {
 }
 
 export function listJobs() {
-  const jobsDir = path.join(ROOT, "jobs");
+  const jobsDir = jobsRoot();
   if (!fs.existsSync(jobsDir)) return [];
   return fs
     .readdirSync(jobsDir)
@@ -50,8 +52,8 @@ function jobKind(slug) {
 }
 
 export function jobDir(slug) {
-  const dir = path.resolve(ROOT, "jobs", slug);
-  if (!dir.startsWith(path.join(ROOT, "jobs") + path.sep)) throw new Error("非法 job 路径");
+  const dir = path.resolve(jobsRoot(), slug);
+  if (!dir.startsWith(jobsRoot() + path.sep)) throw new Error("非法 job 路径");
   return dir;
 }
 

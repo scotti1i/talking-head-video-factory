@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 import { atomicWriteJson, readJson } from "./lib.mjs";
+import { assertHighSignalsResolved, assertHumanApproval } from "./governance-lib.mjs";
 
 export const FEEDBACK_CATEGORIES = Object.freeze([
   "fine-cut",
@@ -45,10 +46,18 @@ const TRUTH_FILES = Object.freeze([
   "data/music-bed.json"
 ]);
 
-export function createReviewRevision({ jobDir, revision, video, duration, now = new Date() }) {
+// spec §2.3：冻结审片版本前，切点批准必须是人签的，且 high 信号已登记处理。
+// 纯函数层不读环境变量以外的东西；enforce=false 只给旧测试夹具用。
+export function assertReviewInitAllowed(jobDir) {
+  assertHumanApproval(path.join(jobDir, "qa", "cuts", "approval.json"), "切点批准", "review init");
+  assertHighSignalsResolved(jobDir, "review init");
+}
+
+export function createReviewRevision({ jobDir, revision, video, duration, now = new Date(), enforce = true }) {
   const normalizedRevision = normalizeRevision(revision);
   const reviewDir = path.join(jobDir, "review", normalizedRevision);
   if (fs.existsSync(reviewDir)) throw new Error(`审片版本已存在: ${reviewDir}`);
+  if (enforce) assertReviewInitAllowed(jobDir);
   const videoPath = resolveJobRelative(jobDir, video, "video");
   if (!fs.existsSync(videoPath)) throw new Error(`审片视频不存在: ${video}`);
   const videoDuration = Number(duration);

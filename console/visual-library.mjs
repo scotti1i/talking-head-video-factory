@@ -6,6 +6,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { jobsRoot, projectRoot } from "../scripts/lib.mjs";
+
 const DEFAULT_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 export const VISUAL_ASSET_KINDS = ["theme", "component", "layout", "preset", "legacy-composition"];
@@ -437,7 +439,8 @@ function selectPreview(previews, query) {
 }
 
 function scanJobUsage(root) {
-  const jobsDir = path.join(root, "jobs");
+  // 测试夹具传自定义 root 时沿用 <root>/jobs；真实运行读 FACTORY_JOBS_ROOT
+  const jobsDir = path.resolve(root) === projectRoot() ? jobsRoot() : path.join(root, "jobs");
   const errors = [];
   const jobs = childDirectories(jobsDir).flatMap((dir) => {
     const configFile = path.join(dir, "project.json");

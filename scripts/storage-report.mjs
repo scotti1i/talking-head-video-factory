@@ -2,14 +2,15 @@ import fs from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
-import { parseArgs, projectRoot, readJson, writeJson } from "./lib.mjs";
+import { jobsRoot as resolveJobsRoot, parseArgs, projectRoot, readJson, writeJson } from "./lib.mjs";
 
 const MEDIA_RE = /\.(mp4|mov|m4v|mkv|webm|avi|wav|mp3|m4a|aac|flac|zip)$/i;
 const QA_KEEP_RE = /(^|\/)(?:[^/]+-)?(?:approval|report|verification)\.(json|md)$/i;
 const REVIEW_RENDER_RE = /(review|preview|draft|rough|temp|tmp|pre[-_](remux|normalize|audio)|feedback[-_]?v?\d+|[-_]v\d+)([-_.]|$)/i;
 
 export function buildStorageReport(root = projectRoot(), options = {}) {
-  const jobsRoot = path.join(root, "jobs");
+  // 传入非仓库根（测试夹具）时沿用 <root>/jobs；真实运行读 FACTORY_JOBS_ROOT
+  const jobsRoot = options.jobsRoot || (root === projectRoot() ? resolveJobsRoot() : path.join(root, "jobs"));
   const globalInodes = new Set();
   const jobs = fs.existsSync(jobsRoot)
     ? fs.readdirSync(jobsRoot, { withFileTypes: true })

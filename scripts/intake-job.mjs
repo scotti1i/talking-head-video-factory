@@ -1,18 +1,19 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { parseArgs, projectRoot, readJson, run, sanitizeSlug, writeJson } from "./lib.mjs";
+import { assertNotDerivedInput, jobsRoot, parseArgs, projectRoot, readJson, run, sanitizeSlug, writeJson } from "./lib.mjs";
 import { executeIntakeCopy, planIntake } from "./intake-lib.mjs";
 
 const args = parseArgs();
 const slug = sanitizeSlug(args.slug || args._[0]);
 if (!slug) throw new Error("Usage: npm run intake -- --slug <slug> --source <folder> [--script <file>] [--language es]");
 const root = projectRoot();
+if (args.source) assertNotDerivedInput(args.source, jobsRoot(), "intake");
 const plan = planIntake({ sourceDir: args.source, scriptPath: args.script });
 console.log(`Intake plan: ${plan.originals.length} originals · ${plan.broll.length} broll · ${plan.references.length} references · 1 script`);
 if (args["dry-run"]) process.exit(0);
 
-const jobDir = path.join(root, "jobs", slug);
+const jobDir = path.join(jobsRoot(), slug);
 let created = false;
 try {
   run("node", [

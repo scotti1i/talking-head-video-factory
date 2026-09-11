@@ -7,6 +7,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import {
+  assertNotDerivedInput,
   escapeHtml,
   fmtTime,
   parseArgs,
@@ -53,6 +54,8 @@ const sourceFill = layoutMode === "source-fill";
 const sourceOverlay = sourcePreserve || sourceFill;
 const sourceVideo = config.sourceVideo || "assets/aroll.mp4";
 const sourcePath = path.join(jobDir, sourceVideo);
+// spec §4：review/ 与 renders/ 下的成片不得回流当母版
+assertNotDerivedInput(sourcePath, jobDir, "build:beats");
 if (!fs.existsSync(sourcePath)) {
   console.error(`缺少母版 A-roll: ${sourcePath}`);
   console.error("先跑粗剪渲染(npm run roughcut:render)或把成品 A-roll 放到该路径。");
