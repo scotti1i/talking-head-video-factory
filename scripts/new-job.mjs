@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { copyDir, parseArgs, projectRoot, readJson, sanitizeSlug, writeJson } from "./lib.mjs";
+import { copyDir, jobsRoot, parseArgs, projectRoot, readJson, relinkJobPackage, sanitizeSlug, writeJson } from "./lib.mjs";
 import { loadWorkflowRegistry, profileIds } from "./workflow-profile.mjs";
 import { loadFineCutRegistry, resolveFineCutPreset } from "./fine-cut-policy.mjs";
 import { applyTemplatePack, loadTemplatePackRegistry, resolveTemplatePack, stageTemplatePackAssets } from "./template-pack.mjs";
@@ -16,7 +16,7 @@ if (!slug) {
 const root = projectRoot();
 const registry = loadWorkflowRegistry(root);
 const templateDir = path.join(root, "templates", "job");
-const jobDir = path.join(root, "jobs", slug);
+const jobDir = path.join(jobsRoot(), slug);
 
 if (fs.existsSync(jobDir)) {
   console.error(`Job already exists: ${jobDir}`);
@@ -58,6 +58,7 @@ config.platform = selectedPlatforms.size === 1 ? [...selectedPlatforms][0] : "mu
 config.downloadFolderName = args.folder || defaultDownloadFolder(slug, config.variants);
 
 copyDir(templateDir, jobDir);
+relinkJobPackage(jobDir);
 stageTemplatePackAssets({ pack: resolveTemplatePack(config, root), jobDir, root });
 const configPath = path.join(jobDir, "project.json");
 writeJson(configPath, config);

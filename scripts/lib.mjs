@@ -1,6 +1,7 @@
 import { spawnSync } from "node:child_process";
 import crypto from "node:crypto";
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -28,10 +29,127 @@ export function projectRoot() {
   return path.resolve(fileURLToPath(new URL("..", import.meta.url)));
 }
 
+// ============================================================
+// 本机私有配置（~/.config/talking-head-factory/env）
+// 为什么：客户机器上 jobs 根目录、操作员角色、API key 都不进仓库；
+// 命令行没 export 时也要能读到，所以 env 文件是第二事实源。
+// FACTORY_CONFIG_DIR 只给测试隔离用。
+// ============================================================
+export function factoryConfigDir() {
+  return process.env.FACTORY_CONFIG_DIR || path.join(os.homedir(), ".config", "talking-head-factory");
+}
+
+export function factoryEnvFile() {
+  return path.join(factoryConfigDir(), "env");
+}
+
+export function readFactoryEnv() {
+  const file = factoryEnvFile();
+  if (!fs.existsSync(file)) return {};
+  const out = {};
+  for (const raw of fs.readFileSync(file, "utf8").split("\n")) {
+    const line = raw.trim();
+    if (!line || line.startsWith("#")) continue;
+    const eq = line.indexOf("=");
+    if (eq <= 0) continue;
+    out[line.slice(0, eq).trim()] = line.slice(eq + 1).trim();
+  }
+  return out;
+}
+
+export function factoryEnvValue(key) {
+  const fromProcess = process.env[key];
+  if (fromProcess !== undefined && fromProcess !== "") return fromProcess;
+  return readFactoryEnv()[key];
+}
+
+// 只改一个 key，保留其余行；文件权限 600（同目录可能存 API key）。
+export function writeFactoryEnvValue(key, value) {
+  const file = factoryEnvFile();
+  fs.mkdirSync(path.dirname(file), { recursive: true, mode: 0o700 });
+  const lines = fs.existsSync(file) ? fs.readFileSync(file, "utf8").split("\n") : [];
+  const filtered = lines.filter((line) => !line.startsWith(`${key}=`));
+  while (filtered.length && filtered.at(-1).trim() === "") filtered.pop();
+  filtered.push(`${key}=${value}`);
+  fs.writeFileSync(file, `${filtered.join("\n")}\n`, { mode: 0o600 });
+  fs.chmodSync(file, 0o600);
+  return file;
+}
+
+// ============================================================
+// jobs 根目录
+// 为什么：v2 起 jobs 不在仓库内（客户机器只 update 代码），
+// FACTORY_JOBS_ROOT 指向外部目录；未设置时保持 <root>/jobs 兼容。
+// ============================================================
+export function jobsRoot() {
+  const configured = factoryEnvValue("FACTORY_JOBS_ROOT");
+  if (configured) return path.resolve(configured);
+  return path.join(projectRoot(), "jobs");
+}
+
 export function resolveJob(jobArg) {
   const root = projectRoot();
-  if (!jobArg) return path.join(root, "jobs", "current");
-  return path.isAbsolute(jobArg) ? jobArg : path.join(root, jobArg);
+  if (!jobArg) return path.join(jobsRoot(), "current");
+  const text = String(jobArg);
+  if (path.isAbsolute(text)) return text;
+  const normalized = text.replaceAll("\\", "/").replace(/\/+$/, "");
+  const match = normalized.match(/^jobs\/(.+)$/);
+  if (match) return path.join(jobsRoot(), ...match[1].split("/"));
+  if (normalized === "jobs") return jobsRoot();
+  if (!normalized.includes("/") && !fs.existsSync(path.join(root, normalized))) {
+    return path.join(jobsRoot(), normalized);
+  }
+  return path.join(root, text);
+}
+
+// ============================================================
+// 硬拒：审片成片 / 渲染产物不得回流当输入
+// 为什么：v1 客户机上 Codex 拿 review/R1/video.mp4 再补丁一轮，
+// 时间链就断了；改动必须回到 EDL / captions 这些事实源。
+// ============================================================
+const DERIVED_DIRS = Object.freeze(["review", "renders"]);
+
+export function assertNotDerivedInput(filePath, jobDir, commandName) {
+  const target = path.resolve(String(filePath || ""));
+  // 规则按 spec §4 直译：路径任一目录段是 review/ 或 renders/ 就拒绝，
+  // 不区分是哪个 job——审片件复制到别处改名再喂回来也一样不行。
+  const segments = target.split(path.sep).slice(0, -1);
+  if (segments.some((segment) => DERIVED_DIRS.includes(segment))) {
+    throw derivedInputError(filePath, commandName, jobDir);
+  }
+  return target;
+}
+
+function derivedInputError(filePath, commandName, jobDir) {
+  const where = jobDir ? `（job: ${jobDir}）` : "";
+  return new Error(
+    `${commandName || "命令"} 不得以审片成片或渲染产物作输入: ${filePath}${where}\n` +
+    "review/ 与 renders/ 下的文件只是结果，不是事实源；请回到 EDL / captions / project.json 修改后重新生成。"
+  );
+}
+
+// job 目录里 package.json 调 hyperframes 的路径：job 在仓库内用相对路径，
+// 在外部 FACTORY_JOBS_ROOT 时用绝对路径，避免 ../../ 跳错。
+export function hyperframesCli(fromDir) {
+  const root = projectRoot();
+  const cli = path.join(root, "node_modules", ".bin", "hyperframes");
+  const resolved = path.resolve(fromDir);
+  if (!resolved.startsWith(root + path.sep)) return cli;
+  return path.relative(resolved, cli).replaceAll(path.sep, "/");
+}
+
+// templates/job/package.json 写死了 ../../node_modules/.bin/hyperframes；
+// job 复制到外部根目录后按实际位置重写，脚本本身不变。
+export function relinkJobPackage(jobDir) {
+  const file = path.join(jobDir, "package.json");
+  if (!fs.existsSync(file)) return;
+  const pkg = readJson(file);
+  const cli = hyperframesCli(jobDir);
+  // variants/<id>/package.json 写的是 ../../../../，一并处理
+  for (const [name, command] of Object.entries(pkg.scripts || {})) {
+    pkg.scripts[name] = String(command).replace(/(?:\.\.\/)+node_modules\/\.bin\/hyperframes|\/[^\s]*\/node_modules\/\.bin\/hyperframes/g, cli);
+  }
+  writeJson(file, pkg);
 }
 
 export function readJson(file) {

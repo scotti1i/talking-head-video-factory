@@ -6,13 +6,14 @@
 
 1. 升级 Windows 11，安装 RTX 显卡对应的最新 NVIDIA 生产或 Studio Driver。
 2. 管理员 PowerShell 运行 `Install-Host.ps1`；若安装 WSL 后要求重启，重启并打开 Ubuntu 创建 Linux 用户。
-3. 把仓库克隆到 WSL 的 `~/talking-head-video-factory`，运行 `Bootstrap-Ubuntu.sh`。
+3. 把仓库按发布 tag 克隆到 WSL 的 `~/talking-head-video-factory`（`git clone --branch vX.Y.Z ...`），运行 `Bootstrap-Ubuntu.sh`（写入 `FACTORY_ROLE=operator`、安装 git hooks，结尾打印 `GATE 2 PASS`）。
 4. 运行 `Set-DeepSeekKey.sh`，在安全提示中输入 API Key。密钥不得进入仓库。
 5. `Bootstrap-Ubuntu.sh` 会创建本机 `factory.config.psd1`；若用户名或数据盘不是默认值，再按实际情况修改。
+6. 旧机器上的 job 用 `npm run migrate -- --from <旧仓库路径>` 迁到 `FACTORY_JOBS_ROOT`；之后升级只用 `npm run update`。
 
 16GB 试点机应将 `wslconfig-16gb.example` 复制为 `%USERPROFILE%\.wslconfig`，再运行 `wsl --shutdown`；这会给 WSL 分配 12GB 内存和 8GB swap。32GB 以上生产机应按实际并发单独配置，不要照搬 16GB 模板。
 
-完整的 Codex 自动接管说明见仓库根目录 `WINDOWS_CODEX_HANDOFF.md`。
+全新机器的 Codex 自动接管说明见仓库根目录 `WINDOWS_CODEX_HANDOFF.md`；已有 v1 部署的机器按 `CODEX-REINSTALL.md` 的 Gate 0–5 重装。
 
 Harness 版本固定在配置里的 `DshVersion`，升级时先在隔离分支跑回归，不让目标机每次启动自动漂移到最新版。
 

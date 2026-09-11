@@ -1,5 +1,23 @@
 # 口播视频工程化流程
 
+## 治理层（v2，先看这一段）
+
+| 场景 | 命令 | 说明 |
+|---|---|---|
+| 每次开工 | `npm run update -- --check` | 只比对 tag，不装；退出码 3 = 有新版 |
+| 升级 | `npm run update [-- --tag vX.Y.Z]` | checkout tag → `npm ci` → doctor → smoke，失败回滚上一个 tag；`~/.config/talking-head-factory/update.log` |
+| 旧 job 迁移 | `npm run migrate -- [--from <旧仓库>] [--to <jobs-root>] [--dry-run] [--move]` | 迁到 `FACTORY_JOBS_ROOT`，写 `project.json.legacy`，不动 `data/`，幂等 |
+| 管线做不到 | `npm run request -- --title "..." --detail "..." [--job jobs/<slug>]` | 写 `requests/<日期>-<slug>.md`，commit + push 到 `client/<主机名>` |
+| 回流证据 | `npm run report:push -- --job jobs/<slug> [--no-push]` | 只推 `project.json/md`、`data/ qa/ review/ delivery/ requests/` 文本，进 `ops/<主机名>/<slug>/` |
+| 收尾验收 | `npm run acceptance -- --job jobs/<slug> [--no-push]` | 顺序跑 status / qa:alignment / captions:voice-qa / dialogue:qa / audio:qa / review:independent，写 `qa/acceptance.{json,md}` 后 `report:push` |
+| 装 hook | `npm run hooks:install` | `core.hooksPath=scripts/git-hooks`；`FACTORY_ROLE=operator` 时拒绝改代码目录 |
+
+- job 根目录：`FACTORY_JOBS_ROOT`（环境变量或 `~/.config/talking-head-factory/env`）；未设置时仍是 `<仓库>/jobs`。`--job jobs/<slug>` 两种情况都能解析。
+- 审批人：`qa:cuts:approve` / `qa:final:approve` 接受 `--by human|agent --name <人名>`（默认 agent），写 `by` / `name` / `reviewedAt`。`deliver`、`deliver:variants`、`review init` 只接受 `by: human`；`FACTORY_ALLOW_AGENT_APPROVAL=1` 仅供 CI / smoke，会大声警告。
+- `npm run status` 新增「批量盖章」gate：job 内任意两份 approval 相隔 ≤ 2 秒即标红（Agent 一把梭的指纹）。
+- `review init` 还要求 `data/editor-signals.json` 里每条 `severity: high` 都已在 `data/resolved-signals.json` 登记（或已被 EDL 剪掉）。
+- 硬拒：`build:beats` 的 `sourceVideo`、`intake --source` 路径含 `review/` 或 `renders/` 直接报错；审片成片不是事实源。
+
 ## 0. 定义目标
 
 每条视频开工前先写清：
@@ -44,7 +62,13 @@ npm run roughcut:render -- --job jobs/<slug>
 npm run qa:cuts -- --job jobs/<slug>
 ```
 
-每张电影条和波形都看完并修正 EDL 后，才写 `qa/cuts/approval.json`。
+每张电影条和波形都看完并修正 EDL 后，才写 `qa/cuts/approval.json`：
+
+```bash
+npm run qa:cuts:approve -- --job jobs/<slug> --by human --name <人名> [--acousticReviewed true]
+```
+
+Agent 可以先用默认 `--by agent` 记录自己的检查，但那不是交付门禁；`deliver` 与 `review init` 只认人签。`editor-signals.json` 里 `severity: high` 的信号，要么改 EDL 剪掉，要么听审后写进 `data/resolved-signals.json`（格式见 [data-contract.md](data-contract.md)）。
 
 ## 3. 从缓存生成字幕
 
@@ -169,10 +193,19 @@ jobs/<slug>/variants/<id>/qa/report.md
 ## 10. 交付
 
 ```bash
+npm run qa:final:approve -- --job jobs/<slug>/variants/<id> --by human --name <人名> --fullPlayback true
 npm run deliver:variants -- --job jobs/<slug>
 ```
 
-`deliver:variants` 会按 target 分别复制到 `Downloads`。它不会删除目标文件夹里的用户文件。
+`deliver:variants` 先要求 `qa/cuts/approval.json` 与每个 variant 的 `qa/approval.json` 都是 `by: human`，再按 target 分别复制到 `Downloads`。它不会删除目标文件夹里的用户文件。
+
+## 10.5 验收与回流
+
+```bash
+npm run acceptance -- --job jobs/<slug>
+```
+
+每步是独立子进程，退出码与末 40 行写进 `qa/acceptance.json` / `qa/acceptance.md`；任一步失败整体 FAIL，命令缺失提示 `npm run update`。结束后自动 `report:push` 到 `client/<主机名>`。转述时逐步引用结论，不要概括成「通过」。
 
 ## 11. Vault 记录
 

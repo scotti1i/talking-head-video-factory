@@ -1,0 +1,36 @@
+#!/bin/sh
+# ============================================================
+# pre-commit —— 操作员机器上禁止改代码目录
+# 为什么：spec §4——客户机 Codex 只做操作员；代码只在主仓库改、打 tag
+# 发布，客户机只 update。FACTORY_ROLE=operator 时（环境变量或
+# ~/.config/talking-head-factory/env）触及代码目录的 commit 一律拒绝，
+# 提示走 npm run request。开发机 FACTORY_ROLE=developer 或未设置：放行。
+# 安装：node scripts/install-git-hooks.mjs（core.hooksPath=scripts/git-hooks）
+# ============================================================
+set -eu
+
+role="${FACTORY_ROLE:-}"
+if [ -z "$role" ]; then
+  env_file="${FACTORY_CONFIG_DIR:-$HOME/.config/talking-head-factory}/env"
+  if [ -f "$env_file" ]; then
+    role="$(grep '^FACTORY_ROLE=' "$env_file" | tail -n 1 | cut -d= -f2- | tr -d '[:space:]')"
+  fi
+fi
+
+[ "$role" = "operator" ] || exit 0
+
+pattern='^(scripts|components|themes|template-packs|console|deploy|skills|docs|\.agents)/|^package\.json$|^package-lock\.json$'
+touched="$(git diff --cached --name-only --diff-filter=ACMRD | grep -E "$pattern" || true)"
+
+[ -z "$touched" ] && exit 0
+
+cat >&2 <<EOF
+!!! 拒绝提交：当前机器是操作员角色（FACTORY_ROLE=operator），不能修改代码目录。
+触及的文件：
+$(printf '%s\n' "$touched" | sed 's/^/  - /')
+
+管线做不到的事请提需求单，等发布后 npm run update：
+  npm run request -- --title "<一句话>" --detail "<做不到什么、期望结果、涉及的 job>"
+撤销本地改动：git checkout -- <文件>  （或 git stash）
+EOF
+exit 1

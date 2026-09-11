@@ -1,6 +1,14 @@
 # Windows Codex 接管上下文
 
 > 给目标 Windows 电脑上的 Codex：先完整阅读本文件、`AGENTS.md`、`docs/windows-harness-pilot.md`、`deploy/windows/README.md`，再执行任何命令。目标是闭环完成部署，不是只给用户一份教程。
+>
+> **已有 v1 部署的机器不要从头走本文件**：直接按 `deploy/windows/CODEX-REINSTALL.md` 的 Gate 0–5 重装 + 迁移旧 job。本文件只覆盖全新机器的首次部署；两者共用的日常规则在 `.agents/skills/factory-auto-edit/SKILL.md` 的「硬规则」段。
+
+## 0. v2 的三条边界（先记住）
+
+- 代码只从 git tag 来：`npm run update -- --check` 看新版，`npm run update` 升级，失败自动回滚。没有便携 zip / tar 包，不要找 `dist/` 或 `deploy:bundle`。
+- 你是操作员：`FACTORY_ROLE=operator` 下 git hook 拒绝任何触及 `scripts/ components/ themes/ template-packs/ console/ deploy/ skills/ docs/ .agents/ package*.json` 的 commit。管线做不到 → `npm run request -- --title --detail`，然后停下等发布。
+- job 不在仓库里：`npm run migrate` 后它们在 `FACTORY_JOBS_ROOT`（默认 `~/factory-jobs`），`--job jobs/<slug>` 自动解析到那里。回流给我们的只有文本证据（`npm run report:push` / `npm run acceptance`），永远不推媒体。
 
 ## 1. 最终目标
 
@@ -74,10 +82,10 @@ Set-ExecutionPolicy -Scope Process Bypass
 
 ### Gate C：克隆到 WSL 与基础安装
 
-若仓库尚未克隆：
+若仓库尚未克隆，克隆 Scott 指定的发布 tag（不是 main）：
 
 ```powershell
-wsl -d Ubuntu -- bash -lc "cd ~ && git clone https://github.com/scotti1i/talking-head-video-factory.git"
+wsl -d Ubuntu -- bash -lc "cd ~ && git clone --branch vX.Y.Z https://github.com/scotti1i/talking-head-video-factory.git"
 ```
 
 然后：
@@ -86,7 +94,9 @@ wsl -d Ubuntu -- bash -lc "cd ~ && git clone https://github.com/scotti1i/talking
 wsl -d Ubuntu -- bash -lc "cd ~/talking-head-video-factory && bash deploy/windows/Bootstrap-Ubuntu.sh"
 ```
 
-脚本会安装 Node 22、FFmpeg、fonttools、whisper.cpp、模型和 npm 依赖。若没有 `nvcc`，它先安装 CPU Whisper；随后按 NVIDIA 官方 WSL-Ubuntu CUDA Toolkit 指引安装 Toolkit，再重跑脚本升级为 GPU Whisper。不要安装 Linux display driver。
+脚本会安装 Node 22、FFmpeg、fonttools、whisper.cpp、模型和 npm 依赖，写入 `FACTORY_ROLE=operator`，安装 git hooks，结尾打印 `GATE 2 PASS`。若没有 `nvcc`，它先安装 CPU Whisper；随后按 NVIDIA 官方 WSL-Ubuntu CUDA Toolkit 指引安装 Toolkit，再重跑脚本升级为 GPU Whisper。不要安装 Linux display driver。
+
+之后升级只用 `npm run update`；旧机器上的 job 用 `npm run migrate -- --from <旧仓库路径>` 迁到 `FACTORY_JOBS_ROOT`（完整步骤见 `deploy/windows/CODEX-REINSTALL.md`）。
 
 ### Gate D：Key、生产 doctor 与 Harness
 
@@ -138,6 +148,8 @@ D:\AutoEdit\Inbox\smoke-001\
 - 至少能选择 `factory-clean`、`factory-proof` 两个公共模板包；公司自有参考素材可按 `docs/theme-replication.md` 新增模板。
 - R0 MP4 可完整播放，随后吸收至少 3 条时间码反馈生成 R1，R0 哈希保持不变。
 - Outbox 至少包含 MP4、SRT、干净 A-roll、EDL、反馈记录、QA 和素材清单。
+- 切点批准与最终批准由用户亲自在终端执行 `--by human --name <人名>`；`npm run status` 里「批量盖章」必须为绿。
+- 收尾 `npm run acceptance -- --job jobs/smoke-001` 通过，且 GitHub 出现 `client/<主机名>` 分支的 `ops(...)` commit。
 
 ## 6. 性能与故障判断
 
@@ -169,3 +181,4 @@ D:\AutoEdit\Inbox\smoke-001\
 - 不从二压平台文件继续制作横屏长视频。
 - 不把素材、key、模型或本地配置提交到 GitHub。
 - 不在未经专业剪辑明确分类的情况下，把单条客户反馈升级为全局模板规则。
+- 不在客户机器上改代码目录，不绕过 pre-commit hook；不以 `review/` 或 `renders/` 里的视频当输入；不在 approval 里替人写 `by: human`。

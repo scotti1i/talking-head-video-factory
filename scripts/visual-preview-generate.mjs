@@ -4,7 +4,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { parseArgs } from "./lib.mjs";
+import { jobsRoot, parseArgs } from "./lib.mjs";
 import { inspectComponentPackages } from "./component-registry.mjs";
 import {
   PREVIEW_DURATION,
@@ -45,7 +45,7 @@ const registryPath = path.join(root, "themes", "registry.json");
 const sharedFontsDir = path.join(root, "themes", "_shared", "fonts");
 const sharedGsapPath = path.join(root, "themes", "_shared", "vendor", "gsap.min.js");
 const systemCjkFontPath = "/System/Library/Fonts/Hiragino Sans GB.ttc";
-const defaultSource = path.join(root, "jobs", "beats-regression", "assets", "aroll-front-focus.mp4");
+const defaultSource = path.join(jobsRoot(), "beats-regression", "assets", "aroll-front-focus.mp4");
 const htmlOnly = Boolean(args["html-only"] || args.htmlOnly);
 
 if (args.help) {

@@ -2,10 +2,13 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { parseArgs, projectRoot, readJson, resolveJob } from "./lib.mjs";
+import { assertHumanApproval } from "./governance-lib.mjs";
 
 const args = parseArgs();
 const jobDir = resolveJob(args.job);
 const config = readJson(path.join(jobDir, "project.json"));
+// spec §2.3：最终画面批准必须 by: human 才能出厂；qa/approval.json 在 job 或 variant 目录内
+assertHumanApproval(path.join(jobDir, "qa", "approval.json"), "最终画面批准", "deliver");
 const videoPath = resolveVideoPath(args.video || path.join("renders", config.outputName || "final-60fps.mp4"));
 
 if (!fs.existsSync(videoPath)) {

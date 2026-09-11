@@ -2,9 +2,12 @@ import fs from "node:fs";
 import path from "node:path";
 
 import { readJson, readJsonArray } from "./lib.mjs";
+import { detectBatchStamp, unresolvedHighSignals } from "./governance-lib.mjs";
 import { resolveWorkflowProfile } from "./workflow-profile.mjs";
 
 const MEDIA_RE = /\.(mp4|mov|m4v|mkv|webm)$/i;
+// 治理 gate 与 profile 无关：任何 job 都必须通过
+const GOVERNANCE_GATES = Object.freeze(["batchStamp"]);
 
 export function evaluateWorkflowStatus(jobDir) {
   const projectFile = path.join(jobDir, "project.json");
@@ -13,7 +16,7 @@ export function evaluateWorkflowStatus(jobDir) {
   const profile = resolveWorkflowProfile(project);
   const targets = resolveTargets(jobDir, project);
   const gates = buildGates(jobDir, project, targets);
-  const required = new Set(profile.requiredGates);
+  const required = new Set([...profile.requiredGates, ...GOVERNANCE_GATES]);
   const checks = Object.values(gates).map((gate) => ({
     ...gate,
     required: required.has(gate.id)
@@ -62,10 +65,53 @@ function buildGates(jobDir, project, targets) {
     optionalArrayGate(jobDir, "audioCues", "短音效", "data/audio-cues.json"),
     targetGate("variantBuild", "目标构建", targets, (target) => fs.existsSync(path.join(target.dir, "index.html"))),
     targetGate("finalQa", "最终规格 QA", targets, (target) => reportPassed(path.join(target.dir, "qa", "report.json"))),
-    targetGate("finalApproval", "最终画面批准", targets, (target) => fs.existsSync(path.join(target.dir, "qa", "approval.json"))),
+    approvalTargetGate("finalApproval", "最终画面批准", targets),
     targetGate("audioQa", "最终音频 QA", targets, (target) => reportPassed(path.join(target.dir, "qa", "audio-report.json"))),
-    targetGate("fullPlayback", "最终完整播放", targets, (target) => playbackPassed(path.join(target.dir, "qa", "approval.json")))
+    targetGate("fullPlayback", "最终完整播放", targets, (target) => playbackPassed(path.join(target.dir, "qa", "approval.json"))),
+    batchStampGate(jobDir),
+    highSignalGate(jobDir)
   ]);
+}
+
+// 批量盖章：两份 approval 相隔 ≤ 2 秒 = Agent 一把梭，标红
+function batchStampGate(jobDir) {
+  try {
+    const result = detectBatchStamp(jobDir);
+    if (!result.pairs.length) return gate("batchStamp", "批量盖章", true, `${result.count} 份批准，间隔正常`);
+    const detail = result.pairs.map((pair) => `${pair.a} ↔ ${pair.b} 相隔 ${pair.gapMs}ms`).join("；");
+    return gate("batchStamp", "批量盖章", false, `疑似批量盖章：${detail}`);
+  } catch (error) {
+    return gate("batchStamp", "批量盖章", false, error.message);
+  }
+}
+
+// 高危编辑信号未登记处理：review init 会拒绝冻结 R0
+function highSignalGate(jobDir) {
+  try {
+    const pending = unresolvedHighSignals(jobDir);
+    const ok = pending.length === 0;
+    return { ...gate("resolvedSignals", "高危信号处理登记", ok, ok ? "无未处理 high 信号" : `${pending.length} 条 high 信号未登记 data/resolved-signals.json`), optional: true };
+  } catch (error) {
+    return { ...gate("resolvedSignals", "高危信号处理登记", false, error.message), optional: true };
+  }
+}
+
+function approvalTargetGate(id, name, targets) {
+  const approvals = targets.map((target) => ({ target, approval: readApprovalSafe(path.join(target.dir, "qa", "approval.json")) }));
+  const passed = approvals.filter((item) => item.approval);
+  const by = [...new Set(passed.map((item) => item.approval.by || "缺 by"))];
+  const detail = `${passed.length}/${targets.length} 份${by.length ? ` · by: ${by.join("/")}` : ""}`;
+  return gate(id, name, targets.length > 0 && passed.length === targets.length, detail);
+}
+
+function readApprovalSafe(file) {
+  if (!fs.existsSync(file)) return null;
+  try {
+    const approval = readJson(file);
+    return approval && typeof approval === "object" && !Array.isArray(approval) ? approval : null;
+  } catch {
+    return null;
+  }
 }
 
 function resolveTargets(jobDir, project) {
@@ -138,7 +184,8 @@ function approvalGate(jobDir, id, name, relative) {
   try {
     const approval = readJson(file);
     const ok = Boolean(approval && typeof approval === "object" && !Array.isArray(approval));
-    return gate(id, name, ok, approval.status || approval.approvedAt || relative);
+    const by = ok ? ` · by: ${approval.by || "缺 by"}` : "";
+    return gate(id, name, ok, `${approval.status || approval.approvedAt || relative}${by}`);
   } catch (error) {
     return gate(id, name, false, error.message);
   }

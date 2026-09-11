@@ -1,13 +1,14 @@
 import fs from "node:fs";
 import path from "node:path";
-import { copyDir, projectRoot, run, writeJson } from "./lib.mjs";
+import { copyDir, jobsRoot, projectRoot, relinkJobPackage, run, writeJson } from "./lib.mjs";
 
 const root = projectRoot();
-const jobDir = path.join(root, "jobs", "smoke");
+const jobDir = path.join(jobsRoot(), "smoke");
 const templateDir = path.join(root, "templates", "job");
 
 fs.rmSync(jobDir, { recursive: true, force: true });
 copyDir(templateDir, jobDir);
+relinkJobPackage(jobDir);
 
 const videoPath = path.join(jobDir, "assets", "aroll.mp4");
 run("ffmpeg", [

@@ -3,6 +3,7 @@ import path from "node:path";
 import {
   deepMerge,
   ensureSymlink,
+  hyperframesCli,
   parseArgs,
   projectRoot,
   readJson,
@@ -55,14 +56,15 @@ for (const variant of selected) {
   merged.downloadFolderName = variant.downloadFolderName || `${baseConfig.downloadFolderName || baseConfig.slug || "口播视频"}-${id}`;
 
   writeJson(path.join(variantDir, "project.json"), merged);
-  writeJson(path.join(variantDir, "package.json"), packageForVariant(id, merged));
+  writeJson(path.join(variantDir, "package.json"), packageForVariant(id, merged, variantDir));
 
-  const buildArgs = [path.join(root, "scripts", "build-beats-composition.mjs"), "--job", path.relative(root, variantDir)];
+  // 传绝对路径：jobs 根目录可在仓库外（FACTORY_JOBS_ROOT）
+  const buildArgs = [path.join(root, "scripts", "build-beats-composition.mjs"), "--job", variantDir];
   run("node", buildArgs);
   console.log(`Built variant: ${id}`);
 }
 
-function packageForVariant(id, config) {
+function packageForVariant(id, config, variantDir) {
   const render = config.render || {};
   const fps = render.fps || 60;
   const quality = render.quality || "standard";
@@ -72,7 +74,7 @@ function packageForVariant(id, config) {
   const gpuFlag = render.gpu === true ? " --gpu" : "";
   const browserGpuFlag = render.browserGpu === false ? " --no-browser-gpu" : render.browserGpu === true ? " --browser-gpu" : "";
   const output = `renders/${config.outputName || `${id}-60fps.mp4`}`;
-  const cli = "../../../../node_modules/.bin/hyperframes";
+  const cli = hyperframesCli(variantDir);
   return {
     name: `talking-head-${id}`,
     private: true,
