@@ -36,7 +36,39 @@ test("模板包是视觉合同，不覆盖显式 job 配置", () => {
   assert.equal(resolved.project.caption.singleLine, false);
   const commerce = loadTemplatePack("factory-commerce-pop");
   assert.equal(commerce.theme, "commerce-pop");
-  assert.equal(commerce.brollPolicy.defaultMode, "floating-frame");
+  assert.equal(commerce.caption.fontSize, 64);
+  assert.equal(commerce.brollPolicy.maxCoverage, 0.25);
+});
+
+test("pack.json 只允许脚本真读的字段，散文式规则必须失败关闭", (context) => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-pack-fields-"));
+  context.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  fs.mkdirSync(path.join(root, "themes", "warm-minimal"), { recursive: true });
+  fs.writeFileSync(path.join(root, "themes", "warm-minimal", "theme.json"), "{}\n");
+  fs.mkdirSync(path.join(root, "template-packs", "prose"), { recursive: true });
+  fs.writeFileSync(
+    path.join(root, "template-packs", "registry.json"),
+    JSON.stringify({ schemaVersion: 1, default: "prose", packs: ["prose"] })
+  );
+  const base = {
+    schemaVersion: 1,
+    id: "prose",
+    label: "L",
+    description: "D",
+    theme: "warm-minimal",
+    compatibleProfiles: ["factory-acquisition"],
+    compatibleLayouts: ["vertical"],
+    brollPolicy: { maxCoverage: 0.2 }
+  };
+  const write = (pack) => fs.writeFileSync(path.join(root, "template-packs", "prose", "pack.json"), JSON.stringify(pack));
+  write(base);
+  assert.equal(loadTemplatePack("prose", root).id, "prose");
+  write({ ...base, captionPolicy: { timing: "lip-sync" } });
+  assert.throws(() => loadTemplatePack("prose", root), /captionPolicy/);
+  write({ ...base, requiredWorkflow: { profile: "factory-acquisition" } });
+  assert.throws(() => loadTemplatePack("prose", root), /requiredWorkflow/);
+  write({ ...base, brollPolicy: { maxCoverage: 0.2, continuity: "never-flash-aroll" } });
+  assert.throws(() => loadTemplatePack("prose", root), /brollPolicy 含脚本不读取的字段 continuity/);
 });
 
 test("模板包对 profile 失败关闭", () => {
@@ -72,18 +104,23 @@ test("commerce-pop 只注入模板包声明的通用音效和贴纸", (context) 
   }
 });
 
-test("B2B 获客模板固定完整流程映射并只注入原创通用资产", (context) => {
+test("B2B 获客模板只注入原创通用资产，并把字幕排版交给 pack.json 单源", (context) => {
   const jobDir = fs.mkdtempSync(path.join(os.tmpdir(), "factory-b2b-leadgen-assets-"));
   context.after(() => fs.rmSync(jobDir, { recursive: true, force: true }));
   const pack = loadTemplatePack("factory-b2b-leadgen");
-  assert.equal(pack.requiredWorkflow.profile, "factory-acquisition");
-  assert.equal(pack.requiredWorkflow.fineCutPreset, "social-fast");
-  assert.deepEqual(pack.motionPolicy.faceZoom.countPerVideo, [3, 4]);
-  assert.deepEqual(pack.motionPolicy.faceZoom.attackFrames, [8, 9]);
-  assert.equal(pack.motionPolicy.faceZoom.minimumSecondsAfterTransition, 2);
+  assert.equal(pack.version, "1.0.1");
+  assert.equal(pack.theme, "commerce-pop");
   assert.equal(pack.caption.fontSize, 66);
-  assert.match(pack.captionPolicy.coverage, /every-approved-spoken-word/);
-  assert.match(pack.brollPolicy.continuity, /never-flash-aroll/);
+  assert.equal(pack.caption.placement, "tiktok-safe");
+  assert.deepEqual(pack.compatibleProfiles, ["factory-acquisition"]);
+  assert.ok(pack.components.includes("hook-stack-banner"));
+  const resolved = applyTemplatePack({
+    profile: "factory-acquisition",
+    templatePack: "factory-b2b-leadgen",
+    variants: [{ layout: "vertical" }]
+  });
+  assert.equal(resolved.project.caption.fontSize, 66);
+  assert.equal(resolved.project.caption.safeBottom, 550);
   const staged = stageTemplatePackAssets({ pack, jobDir });
   assert.equal(staged.length, 10);
   assert.ok(staged.includes("assets/sfx/card-soft-rise.wav"));

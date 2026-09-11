@@ -11,12 +11,6 @@
     "singleLine": false
   },
   "brollPolicy": {
-    "maxCoverage": 0.18,
-    "defaultMode": "fullscreen-pip",
-    "proofFirst": true
-  },
-  "audioPolicy": {
-    "musicBedRequired": true,
-    "maxSemanticCues": 3
+    "maxCoverage": 0.18
   }
 }
