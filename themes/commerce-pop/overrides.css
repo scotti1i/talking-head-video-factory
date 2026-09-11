@@ -356,24 +356,19 @@
   font-size: 56px;
 }
 
+/* 字幕字号、底边与左右内缩由 pack.json / job 的 caption 配置单源决定（builder 的 captionPlacementCss），
+   主题只负责字形：行高、字距、描边与投影。不得在这里写 font-size / bottom / left / right。 */
 .caption {
-  left: 58px;
-  right: 58px;
-  bottom: 258px;
-  font-size: 66px;
   line-height: 0.98;
   letter-spacing: -0.035em;
 }
 
-/* Full-screen proof footage must not move captions to a different vertical baseline. */
+/* 全屏证明素材（primary clip）不得把字幕挪到另一条基线：
+   只重置 primary 布局给的 top / width / transform，字号与 bottom 仍从 caption 配置继承。 */
 #main .caption.caption-primary,
 #main .caption.caption-primary-pip {
   top: auto;
-  right: 58px;
-  left: 58px;
   width: auto;
-  font-size: 66px;
-  line-height: 0.98;
   transform: none;
   white-space: nowrap;
 }
@@ -392,11 +387,6 @@
   border-radius: 0;
   background: transparent;
   box-shadow: none;
-}
-
-.caption-over-card {
-  bottom: 446px;
-  font-size: 54px;
 }
 
 @media (orientation: landscape) {
@@ -474,6 +464,7 @@
     font-size: clamp(34px, 4vw, 46px);
   }
 
+  /* 横屏没有 caption.placement 单源（builder 只在竖屏应用），字号由主题按横屏版式给定。 */
   .caption,
   .caption-over-card {
     font-size: 42px;
@@ -481,15 +472,11 @@
     -webkit-text-stroke-width: 1.4px;
   }
 
-
   #main .caption.caption-primary,
   #main .caption.caption-primary-pip {
-    top: auto;
     right: 58px;
     left: 58px;
-    width: auto;
     font-size: 42px;
     line-height: 1.02;
-    transform: none;
   }
 }
