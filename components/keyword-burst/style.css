@@ -13,8 +13,9 @@
 .beat-keyword-burst::before { display: none; }
 
 .beat-keyword-burst .keyword-burst {
+  /* tone 色只认 rapid-proof 主题变量；其他主题下回退为同名固定色，绝不退到主题 accentFillBg（commerce-pop 下是蓝）。 */
   --keyword-ink: var(--rapid-ink, {{pageBg}});
-  --keyword-fill: var(--rapid-green, {{accentFillBg}});
+  --keyword-fill: var(--rapid-green, #3be36a);
   position: absolute;
   left: 50%;
   display: flex;
@@ -28,7 +29,7 @@
 .beat-keyword-burst .keyword-burst--top-center { top: 150px; }
 .beat-keyword-burst .keyword-burst--center { top: 46%; transform: translate(-50%, -50%); }
 .beat-keyword-burst .keyword-burst--bottom-center { bottom: 520px; }
-.beat-keyword-burst .keyword-burst--yellow { --keyword-fill: var(--rapid-yellow, {{accent}}); }
+.beat-keyword-burst .keyword-burst--yellow { --keyword-fill: var(--rapid-yellow, #ffe600); }
 .beat-keyword-burst .keyword-burst--white { --keyword-fill: var(--rapid-paper, {{text}}); }
 
 .beat-keyword-burst .keyword-burst-kicker {

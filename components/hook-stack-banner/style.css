@@ -13,9 +13,10 @@
 .beat-hook-stack-banner::before { display: none; }
 
 .beat-hook-stack-banner .hook-stack-banner {
+  /* tone 色只认 rapid-proof 主题变量；其他主题下回退为同名固定色，绝不退到主题 accentFillBg（commerce-pop 下是蓝）。 */
   --hook-ink: var(--rapid-ink, {{pageBg}});
   --hook-paper: var(--rapid-paper, {{text}});
-  --hook-accent: var(--rapid-green, {{accentFillBg}});
+  --hook-accent: var(--rapid-green, #3be36a);
   position: absolute;
   top: 72px;
   left: 50%;
@@ -27,8 +28,8 @@
   transform: translateX(-50%);
 }
 
-.beat-hook-stack-banner .hook-stack-banner--yellow { --hook-accent: var(--rapid-yellow, {{accent}}); }
-.beat-hook-stack-banner .hook-stack-banner--pink { --hook-accent: var(--rapid-pink, {{accent}}); }
+.beat-hook-stack-banner .hook-stack-banner--yellow { --hook-accent: var(--rapid-yellow, #ffe600); }
+.beat-hook-stack-banner .hook-stack-banner--pink { --hook-accent: var(--rapid-pink, #ff4fa3); }
 
 .beat-hook-stack-banner .hook-stack-line {
   position: relative;
