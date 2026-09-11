@@ -13,6 +13,7 @@
   "roots": [
     ".agents/skills/factory-auto-edit",
     ".github/workflows",
+    "aroll-beauty",
     "components",
     "console",
     "deploy/windows",
