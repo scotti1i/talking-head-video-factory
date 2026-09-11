@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "ui-click-sticker",
+  "order": 20,
+  "label": "UI 点击贴纸",
+  "kind": "component",
+  "category": "cta",
+  "description": "把收藏或关注口播落点表现为指针点击、按钮压下和确定性状态切换。",
+  "version": "1.1.0",
+  "lifecycle": "published",
+  "compatibility": "supported",
+  "captionMode": "overlay",
+  "formats": ["portrait", "landscape"],
+  "requiredFields": ["variant", "afterText"],
+  "optionalFields": ["kicker", "pressOffset"],
+  "promptHint": "variant(save/follow), title(点击前文字), afterText(点击后文字), kicker?, pressOffset?；只在明确收藏/关注 CTA 使用",
+  "tags": ["CTA", "收藏", "关注", "点击", "UI"],
+  "source": "commerce-pop/user-reference-analysis-20260828",
+  "apply": { "mode": "beat", "type": "ui-click-sticker" },
+  "preview": { "duration": 1.8, "defaultFixture": "follow" }
+}

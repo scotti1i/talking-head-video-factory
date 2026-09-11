@@ -21,11 +21,39 @@ export function createPrimaryClips(options = {}) {
   validateIds(normalized);
   validatePrimaryOverlaps(normalized);
 
-  const selected = selectTimelineItems(normalized, context);
+  const selected = markAdjacentProofEdges(selectTimelineItems(normalized, context));
+  validateShortArollFlashes(selected);
   validateBrollOverlaps(selected, options.broll || []);
   validateMedia(selected, context);
 
   return buildBundle(selected, context);
+}
+
+function markAdjacentProofEdges(items) {
+  const marked = items.map((item) => ({ ...item }));
+  for (let index = 0; index < marked.length - 1; index += 1) {
+    const current = marked[index];
+    const next = marked[index + 1];
+    if (current.kind !== "proof-footage" || next.kind !== "proof-footage") continue;
+    if (Math.abs(next.start - current.end) > EPSILON) continue;
+    current.directProofExit = true;
+    next.directProofEnter = true;
+  }
+  return marked;
+}
+
+function validateShortArollFlashes(items) {
+  for (let index = 0; index < items.length - 1; index += 1) {
+    const current = items[index];
+    const next = items[index + 1];
+    if (current.kind !== "proof-footage" || next.kind !== "proof-footage") continue;
+    const gap = next.start - current.end;
+    if (gap > EPSILON && gap < 0.5 - EPSILON) {
+      throw new Error(
+        `primary-clips: ${current.id} 与 ${next.id} 之间仅 ${gap.toFixed(2)}s A-roll；相邻证据镜头必须直接衔接，或保留至少 0.5s 且具有完整表情/语义动作的 A-roll`
+      );
+    }
+  }
 }
 
 function normalizeOptions(options) {
@@ -34,6 +62,12 @@ function normalizeOptions(options) {
   const duration = positiveNumber(options.duration, "duration");
   const width = positiveNumber(options.width, "width");
   const height = positiveNumber(options.height, "height");
+  const captionFontSize = options.captionFontSize == null
+    ? 60
+    : positiveNumber(options.captionFontSize, "captionFontSize");
+  if (captionFontSize < 40 || captionFontSize > 80) {
+    throw new Error("primary-clips: captionFontSize 必须在 40..80");
+  }
   const format = String(options.format || "");
   if (!FORMATS.includes(format)) throw new Error(`primary-clips: format 只能是 ${FORMATS.join("/")}`);
   if (typeof options.durationProbe !== "undefined" && typeof options.durationProbe !== "function") {
@@ -44,6 +78,7 @@ function normalizeOptions(options) {
     duration,
     width,
     height,
+    captionFontSize,
     format,
     sourceVideo: String(options.sourceVideo || ""),
     truncateTimeline: Boolean(options.truncateTimeline),
@@ -201,7 +236,7 @@ function buildBundle(items, context) {
   if (!items.length) return { items: [], html: "", css: "", timelineJs: "", ranges: [], pipRanges: [] };
   return {
     items,
-    html: renderHtml(items, context.sourceVideo),
+    html: `${renderHtml(items, context.sourceVideo)}\n      ${renderProofBoundaryHtml(items)}`.trim(),
     css: renderCss(context),
     timelineJs: renderTimelineJs(items),
     ranges: items.map(({ start, end }) => ({ start, end })),
@@ -227,30 +262,74 @@ function renderHtml(items, sourceVideo) {
   }).join("\n      ");
 }
 
+function renderProofBoundaryHtml(items) {
+  return proofBoundaries(items).map((boundary, index) =>
+    `<div id="primary-proof-boundary-${escapeHtml(boundary.id)}" class="primary-proof-boundary clip" data-kind="transition-overlay" data-start="${fmtTime(boundary.start)}" data-duration="${fmtTime(boundary.duration)}" data-track-index="${260 + index}" data-manual-timeline="true" aria-hidden="true"></div>`
+  ).join("\n      ");
+}
+
 function renderCss(context) {
   if (context.format === "landscape") return `${landscapeCss(context)}\n      ${renderTransitionPresetCss()}`;
   const sx = context.width / 1080;
   const sy = context.height / 1920;
   return `#main { background: var(--primary-stage-bg, #050608); }
-      .primary-demo-media { position: absolute; left: 0; top: ${px(500 * sy)}; width: ${px(context.width)}; height: ${px(810 * sy)}; z-index: 7; object-fit: var(--primary-fit, contain); object-position: var(--primary-focus-x, 50%) var(--primary-focus-y, 50%); background: var(--primary-stage-bg, #050608); outline: ${px(2 * sx)} solid var(--primary-stage-divider, #20252b); }
+      .primary-demo-media { position: absolute; left: 0; top: ${px(500 * sy)}; width: ${px(context.width)}; height: ${px(810 * sy)}; z-index: 7; opacity: 0; object-fit: var(--primary-fit, contain); object-position: var(--primary-focus-x, 50%) var(--primary-focus-y, 50%); background: var(--primary-stage-bg, #050608); outline: ${px(2 * sx)} solid var(--primary-stage-divider, #20252b); }
       .primary-demo-media.primary-proof-media { inset: 0; width: ${px(context.width)}; height: ${px(context.height)}; object-fit: var(--primary-fit, cover); outline: 0; }
       .primary-demo-pip { position: absolute; left: var(--primary-pip-left, ${px(18 * sx)}); top: var(--primary-pip-top, ${px(1200 * sy)}); width: var(--primary-pip-size, ${px(304 * sx)}); height: var(--primary-pip-size, ${px(304 * sx)}); z-index: 8; object-fit: cover; object-position: 50% 42%; border: ${px(4 * sx)} solid var(--primary-pip-border, #f3f0ea); border-radius: 50%; box-shadow: var(--primary-pip-shadow, 0 ${px(18 * sy)} ${px(42 * sx)} rgba(0, 0, 0, .42)); will-change: transform, opacity; }
       #card-host { z-index: 10; }
-      .caption-primary { left: ${px(110 * sx)}; right: auto; top: ${px(1435 * sy)}; bottom: auto; width: ${px(860 * sx)}; font-size: ${px(60 * sx)}; line-height: 1.08; white-space: nowrap; }
+      .caption-primary { left: ${px(110 * sx)}; right: auto; top: ${px(1435 * sy)}; bottom: auto; width: ${px(860 * sx)}; font-size: ${px(context.captionFontSize * sx)}; line-height: 1.08; white-space: nowrap; }
       .caption-primary-pip { left: ${px(330 * sx)}; top: ${px(1450 * sy)}; width: ${px(570 * sx)}; transform: skewX(-7deg); transform-origin: center; }
+      ${renderProofBoundaryCss()}
       ${renderTransitionPresetCss()}`;
 }
 
 function landscapeCss(context) {
   const size = Math.round(Math.min(context.width, context.height) * 0.22);
   return `#main { background: var(--primary-stage-bg, #050608); }
-      .primary-demo-media { position: absolute; inset: 0; width: ${px(context.width)}; height: ${px(context.height)}; z-index: 7; object-fit: var(--primary-fit, contain); object-position: var(--primary-focus-x, 50%) var(--primary-focus-y, 50%); background: var(--primary-stage-bg, #050608); }
+      .primary-demo-media { position: absolute; inset: 0; width: ${px(context.width)}; height: ${px(context.height)}; z-index: 7; opacity: 0; object-fit: var(--primary-fit, contain); object-position: var(--primary-focus-x, 50%) var(--primary-focus-y, 50%); background: var(--primary-stage-bg, #050608); }
       .primary-demo-pip { position: absolute; right: 48px; bottom: 48px; width: ${px(size)}; height: ${px(size)}; z-index: 8; object-fit: cover; object-position: 50% 42%; border: 4px solid var(--primary-pip-border, #f3f0ea); border-radius: 50%; box-shadow: var(--primary-pip-shadow, 0 18px 42px rgba(0, 0, 0, .42)); }
-      #card-host { z-index: 10; }`;
+      #card-host { z-index: 10; }
+      ${renderProofBoundaryCss()}`;
 }
 
 function renderTimelineJs(items) {
-  return items.map(renderTransitionPresetTimeline).join("\n      ");
+  return [
+    ...items.map(renderTransitionPresetTimeline),
+    ...proofBoundaries(items).map(renderProofBoundaryTimeline)
+  ].join("\n      ");
+}
+
+function proofBoundaries(items) {
+  const boundaries = [];
+  for (let index = 0; index < items.length - 1; index += 1) {
+    const current = items[index];
+    const next = items[index + 1];
+    if (!current.directProofExit || !next.directProofEnter) continue;
+    const duration = 0.18;
+    boundaries.push({
+      id: `${current.id}-to-${next.id}`,
+      start: current.end - duration / 2,
+      duration
+    });
+  }
+  return boundaries;
+}
+
+function renderProofBoundaryCss() {
+  return `.primary-proof-boundary { position: absolute; inset: 0; z-index: 12; opacity: 0; visibility: hidden; pointer-events: none; background: linear-gradient(110deg, rgba(255,255,255,.28), rgba(255,238,130,.68), rgba(255,255,255,.34)); mix-blend-mode: screen; backdrop-filter: blur(11px); will-change: opacity, filter; }`;
+}
+
+function renderProofBoundaryTimeline(boundary) {
+  const selector = `#primary-proof-boundary-${boundary.id}`;
+  const rise = boundary.duration / 2;
+  const middle = boundary.start + rise;
+  const end = boundary.start + boundary.duration;
+  return [
+    `tl.set("${selector}", { autoAlpha: 0, filter: "blur(0px)" }, 0);`,
+    `tl.to("${selector}", { autoAlpha: 0.9, filter: "blur(7px)", duration: ${fmtTime(rise)}, ease: "power2.in", overwrite: "auto" }, ${fmtTime(boundary.start)});`,
+    `tl.to("${selector}", { autoAlpha: 0, filter: "blur(0px)", duration: ${fmtTime(rise)}, ease: "power2.out", overwrite: "auto" }, ${fmtTime(middle)});`,
+    `tl.set("${selector}", { autoAlpha: 0, filter: "blur(0px)" }, ${fmtTime(end)});`
+  ].join("\n      ");
 }
 
 function compareItems(a, b) {

@@ -40,11 +40,13 @@ if (unknownPolicies.length) {
   process.exit(1);
 }
 config.variants = selectTargets(config.variants, parseList(args.targets || "douyin"));
+const fineCutRegistry = loadFineCutRegistry(root);
+const profileFineCutDefault = fineCutRegistry.profileDefaults?.[config.profile];
 config.editorial = {
   ...(config.editorial || {}),
-  fineCutPreset: String(args["fine-cut"] || config.editorial?.fineCutPreset || loadFineCutRegistry(root).default)
+  fineCutPreset: String(args["fine-cut"] || profileFineCutDefault || config.editorial?.fineCutPreset || fineCutRegistry.default)
 };
-resolveFineCutPreset(config, loadFineCutRegistry(root));
+resolveFineCutPreset(config, fineCutRegistry);
 const requestedTemplatePack = args["template-pack"]
   || (config.profile === "factory-acquisition" ? loadTemplatePackRegistry(root).default : "");
 if (requestedTemplatePack) {

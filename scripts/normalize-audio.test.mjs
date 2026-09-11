@@ -64,7 +64,7 @@ test("首遍 loudnorm JSON 从 FFmpeg 日志中可靠解析", () => {
 
 test("两遍 FFmpeg 参数固定目标、复制视频并输出 AAC 192k / 48kHz", () => {
   const analysis = buildAnalysisArgs("in.mp4");
-  assert.ok(analysis.includes("loudnorm=I=-13:LRA=7:TP=-1.2:print_format=json"));
+  assert.ok(analysis.includes("loudnorm=I=-13:LRA=7:TP=-1.6:print_format=json"));
 
   const normalized = buildNormalizeArgs("in.mp4", "out.mp4", {
     inputI: -10.2,

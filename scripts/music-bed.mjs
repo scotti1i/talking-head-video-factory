@@ -18,6 +18,12 @@ export function validateMusicBed(value, { jobDir, totalDuration }) {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     throw new Error("music-bed.json 必须是单个对象");
   }
+  if (value.enabled === false) {
+    if (typeof value.reason !== "string" || !value.reason.trim()) {
+      throw new Error("music-bed.json 禁用 BGM 时必须写明 reason");
+    }
+    return null;
+  }
   const id = value.id;
   const asset = value.asset;
   const start = value.start ?? 0;

@@ -3,10 +3,11 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
+import { fileURLToPath } from "node:url";
 
 import { loadAudioCues, renderAudioCues, validateAudioCues } from "./audio-cues.mjs";
 
-const ROOT = path.resolve(new URL("..", import.meta.url).pathname);
+const ROOT = fileURLToPath(new URL("..", import.meta.url));
 
 test("缺少 audio-cues.json 时返回空数组", (context) => {
   const jobDir = makeJob(context);
