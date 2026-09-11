@@ -23,7 +23,8 @@
 | `data/takes-packed.md` | 供语义剪辑阅读的紧凑转录 | 脚本 |
 | `data/editor-signals.json` | 低置信度、段内异常停顿、气口候选与 EDL 声学边界 | 脚本标记，人 / Agent 听审 |
 | `data/rough-cut-edl.json` | 保留段，使用原片绝对语义时间 | 人 / Agent |
-| `qa/cuts/approval.json` | 所有切点已逐张检查 | 人 / Agent |
+| `data/resolved-signals.json` | `editor-signals.json` 里 `severity: high` 信号的处理登记（sidecar，EDL 是数组放不下） | 人 / Agent 听审后登记 |
+| `qa/cuts/approval.json` | 所有切点已逐张检查；`by: human` 才算交付门禁 | 人（`--by human`）/ Agent（默认） |
 | `data/captions.json` | 校准后的最终字幕 | 人 / Agent |
 | `data/beats.json` | 解释性卡片 | 人 / Agent |
 | `data/broll.json` | B-roll 时间、素材、意图与理由 | 人 / Agent |
@@ -32,10 +33,52 @@
 | `data/music-bed.json` | 全片或长段连续 BGM；与短音效分离 | 人 / Agent 定语义，脚本校验 |
 | `data/aroll-cues.json` | 纯 A-roll 的短促镜头冲击与跨 take 遮切 | 人 / Agent 定语义和切点，脚本校验 |
 | `data/shorts.json` | Shorts 语义区间 | 人 / Agent |
-| `qa/approval.json` | 最终 MP4 抽帧与完整播放状态 | 人 / Agent |
+| `qa/approval.json` | 最终 MP4 抽帧与完整播放状态；`by: human` 才能 `deliver` | 人（`--by human`）/ Agent（默认） |
 | `qa/audio-report.json` | profile 要求下的响度与 true peak 门禁 | 脚本 |
+| `qa/acceptance.json` / `qa/acceptance.md` | `npm run acceptance` 逐步结果：退出码、末 40 行、证据路径、整体 PASS/FAIL | 脚本 |
 | `review/Rn/manifest.json` | 冻结审片视频哈希、时长与当轮事实源哈希 | 脚本 |
 | `review/Rn/feedback.json` | 时间码、类别、修改指令、作用域、状态和处理结果 | 专业剪辑 / Agent 结构化 |
+| `project.json#legacy` | `npm run migrate` 写入：`migratedAt`、`from`、`reasons[]`（为什么不算 v2 产物） | 脚本 |
+| `requests/<日期>-<slug>.md` | 操作员需求单（仓库级，不在 job 内），commit 到 `client/<主机名>` | 操作员 / Agent |
+| `ops/<主机名>/<slug>/**` | `report:push` 回流的 job 文本证据副本；只存在于 `client/<主机名>` 分支 | 脚本 |
+
+## 审批文件（`qa/cuts/approval.json`、`qa/approval.json`、`variants/*/qa/approval.json`）
+
+```json
+{
+  "status": "approved",
+  "by": "human",
+  "name": "张三",
+  "reviewedAt": "2026-09-11T08:05:12.000Z",
+  "reviewer": "张三",
+  "cutCount": 14,
+  "acousticReviewed": true,
+  "notes": "逐张检查通过"
+}
+```
+
+- `by` 只允许 `human` / `agent`，默认 `agent`；`name` 必填。`reviewer` 是兼容旧字段，与 `name` 相同。
+- `deliver`、`deliver:variants`、`review init` 只接受 `by: human`。Agent 不得替人写 `human`；用户亲自看完后在终端执行 `--by human --name <人名>`。`FACTORY_ALLOW_AGENT_APPROVAL=1` 只给 CI / smoke，执行时大声警告。
+- 批量盖章：job 内任意两份 approval 的 `reviewedAt`（缺失时用 mtime）相差 ≤ 2 秒，`workflow-status` 的「批量盖章」gate 标红，job 不算 ready。
+
+## resolved-signals.json
+
+`data/editor-signals.json` 由 `transcript:audit` 生成、没有 id；登记文件用派生 id 引用：
+
+- `disfluencySignals`：`<原片文件名>#<type>@<start>`，例如 `take-01.mp4#adjacent_repeat@12.34`
+- `cutBoundarySignals`：`<原片文件名>#cut:<range>:<side>@<time>`，例如 `take-01.mp4#cut:3:out@57.2`
+
+`start` / `time` 保留三位小数。格式：
+
+```json
+[
+  { "id": "take-01.mp4#adjacent_repeat@12.34", "reason": "重复是强调语气，保留" },
+  { "id": "take-01.mp4#cut:3:out@57.2", "reason": "听审确认词尾完整，无爆音" }
+]
+```
+
+- 只有仍落在 EDL 保留段内的 high `disfluencySignals` 与全部 high `cutBoundarySignals` 需要登记；已被 EDL 整段剪掉的不用。
+- `reason` 必填一句话；`review init` 与 `npm run status`（「高危信号处理登记」）都读它，未登记的 high 信号会让 `review init` 拒绝冻结 R0。
 
 ## project.json 的内容 profile 与书面脚本
 

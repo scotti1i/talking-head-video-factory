@@ -38,13 +38,13 @@ Windows Inbox
 
 RTX 5060 的目标机预算不应先用宣传数字拍脑袋。迁移后用同一 45.6 秒样片跑一次基准，记录：Whisper 倍速、A-roll 倍速、包装渲染倍速、显存峰值和整机 RAM 峰值。验收目标是包装渲染不慢于 1× 实时、5 分钟素材从导入到 R0 不超过 20 分钟；专业审片时间不计入自动化耗时。
 
-## 迁移与回滚
+## 迁移与回滚（v2：发布 = 打 tag）
 
-1. 在干净 commit 上运行 `npm run deploy:bundle`；脚本排除全部 `jobs/`，不是只排除当前试点。
-2. 将 `dist/*.tar.gz` 和 `.sha256` 复制到目标机，在 WSL 中验哈希并解压。
-3. 运行 `npm ci`，再从 `deploy/windows/` 执行宿主检查、生产 doctor 和 Harness 启动脚本。
-4. Key 只放 `~/.config/talking-head-factory/env`；模板资源在仓库，Whisper 模型与转录缓存是目标机本地状态。
-5. 迁移失败时切回上一个 bundle；客户 Inbox/Outbox 与仓库版本分离，不受代码回滚影响。
+1. 开发机在干净 commit 上打 `vX.Y.Z` tag 并 push；不再生成便携包。
+2. 目标机 `npm run update -- --check` 看到新版后 `npm run update`：自动 `git checkout <tag>` → `npm ci` → `doctor:deployment` → `smoke`，任一失败回滚到上一个 tag，记录在 `~/.config/talking-head-factory/update.log`。
+3. Key、`FACTORY_ROLE`、`FACTORY_JOBS_ROOT` 只放 `~/.config/talking-head-factory/env`；模板资源在仓库，Whisper 模型与转录缓存是目标机本地状态。
+4. job 在 `FACTORY_JOBS_ROOT`（`npm run migrate` 迁入），与代码版本分离，不受回滚影响；客户 Inbox/Outbox 同理。
+5. 已有 v1 部署的机器按 `deploy/windows/CODEX-REINSTALL.md` 的 Gate 0–5 重装。
 
 ## 试点验收
 
