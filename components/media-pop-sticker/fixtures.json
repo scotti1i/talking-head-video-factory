@@ -2,6 +2,9 @@
   {
     "id": "platform-left",
     "label": "左上平台图标",
+    "assets": [
+      { "source": "template-packs/factory-commerce-pop/assets/stickers/web-globe-teaser.svg", "target": "assets/stickers/web-globe-teaser.svg" }
+    ],
     "beat": {
       "type": "media-pop-sticker",
       "kicker": "PLATFORM",
@@ -18,6 +21,9 @@
   {
     "id": "explanation",
     "label": "中部解释插画",
+    "assets": [
+      { "source": "template-packs/factory-commerce-pop/assets/stickers/web-globe-teaser.svg", "target": "assets/stickers/web-globe-teaser.svg" }
+    ],
     "beat": {
       "type": "media-pop-sticker",
       "kicker": "EXPLAINER",
