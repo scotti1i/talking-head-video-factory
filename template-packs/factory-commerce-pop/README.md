@@ -15,6 +15,10 @@
 - 音频：默认 5.5 秒前不加额外 SFX；核心点用 `pop + ding`，每个分支用统一 `pop hit`；最终目标约 `-13 LUFS / -1.2 dBTP`。
 - 调色美颜：先逐拍摄片段匹配曝光，再运行 `factory-neutral-skin-v1` 非生成式终调，统一为明亮中性肤色；边缘保护磨皮后轻回锐，不重建五官。每条真片必须保留至少两组同帧前后对照。
 
+## 音效来源
+
+`assets/sfx/` 下 4 个 WAV（`pop-soft` / `final-ding` / `click-confirm` / `follow-confirm`）于 2026-09-11 由 `scripts/generate-commerce-pop-sfx.mjs` 以确定性 PCM 合成重新生成：客户 2026-09-05 快照不含二进制音效，原始文件已不可追溯。全部为短促原创波形，不采样、不含任何第三方音频；重跑脚本即可得到字节一致的文件。
+
 ## 使用
 
 新 job 选择：
