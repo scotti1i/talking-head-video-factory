@@ -93,6 +93,7 @@ const primary = createPrimaryClips({
   format,
   width,
   height,
+  captionFontSize: config.caption?.fontSize,
   sourceVideo,
   broll
 });
@@ -167,8 +168,8 @@ function validateBeats(items, byId, targetFormat) {
     const formats = beatFormats(beat, label, errors);
     if (!component) errors.push(`${label}: 未注册 type，可用 ${[...byId.keys()].join("/")}`);
     if (!(Number(beat.end) > Number(beat.start))) errors.push(`${label}: 需要 end > start`);
-    if (!beat.kicker) errors.push(`${label}: 缺 kicker`);
-    if (!beat.title) errors.push(`${label}: 缺 title`);
+    if (!beat.kicker && !component?.optionalFields?.includes("kicker")) errors.push(`${label}: 缺 kicker`);
+    if (!beat.title && !component?.optionalFields?.includes("title")) errors.push(`${label}: 缺 title`);
     for (const field of component?.requiredFields || []) {
       if (beat[field] == null) errors.push(`${label}: 缺 ${field}`);
     }
@@ -325,8 +326,15 @@ function stageAssets() {
 }
 
 function stageCjkSubset() {
-  const source = "/System/Library/Fonts/Hiragino Sans GB.ttc";
-  if (!fs.existsSync(source)) throw new Error(`缺少确定性中文字体源: ${source}`);
+  const candidates = [
+    process.env.FACTORY_CJK_FONT,
+    "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+    "/System/Library/Fonts/Hiragino Sans GB.ttc"
+  ].filter(Boolean);
+  const source = candidates.find((candidate) => fs.existsSync(candidate));
+  if (!source) {
+    throw new Error(`缺少确定性中文字体源；设置 FACTORY_CJK_FONT，或安装候选字体: ${candidates.join(", ")}`);
+  }
   const textFile = path.join(jobDir, "tmp", "factory-cjk-chars.txt");
   const output = path.join(jobDir, "assets", "fonts", "FactoryCJK.woff2");
   const text = JSON.stringify({ title: config.title, beats, captions, broll, intro });
@@ -388,7 +396,16 @@ function splitCaptionsToSingleLines(items, maxChars) {
       const partEnd = index === parts.length - 1
         ? end
         : start + ((end - start) * consumedWeight) / totalWeight;
-      return { ...item, s: partStart, e: partEnd, t: part };
+      const splitItem = { ...item, s: partStart, e: partEnd, t: part };
+      if (splitItem.emphasis != null) {
+        const terms = Array.isArray(splitItem.emphasis) ? splitItem.emphasis : [splitItem.emphasis];
+        const matchingTerms = terms.filter((term) =>
+          part.toLocaleLowerCase().includes(String(term).trim().toLocaleLowerCase())
+        );
+        if (!matchingTerms.length) delete splitItem.emphasis;
+        else splitItem.emphasis = Array.isArray(splitItem.emphasis) ? matchingTerms : matchingTerms[0];
+      }
+      return splitItem;
     });
   });
 }
@@ -542,32 +559,59 @@ function themeCss() {
       .caption-over-card { bottom: 430px; font-size: 38px; }
       ${primary.css}
       ${compiledIntro?.cssText || ""}
-      ${layoutCss()}
-      ${captionPlacementCss()}`;
+      ${layoutCss()}`;
 }
 
 function captionPlacementCss() {
   const placement = String(config.caption?.placement || "").trim();
   if (!placement) return "";
-  if (placement !== "douyin-fixed") {
+  if (!["douyin-fixed", "tiktok-safe"].includes(placement)) {
     throw new Error(`caption.placement 不支持 ${placement}`);
   }
   if (format !== "portrait") {
-    throw new Error("caption.placement=douyin-fixed 只支持竖屏画幅");
+    throw new Error(`caption.placement=${placement} 只支持竖屏画幅`);
   }
+  const fontSize = boundedCaptionNumber(config.caption?.fontSize, 46, 40, 80, "caption.fontSize");
+  const safeBottom = boundedCaptionNumber(config.caption?.safeBottom, 430, 300, 720, "caption.safeBottom");
+  const leftInset = boundedCaptionNumber(config.caption?.leftInset, 64, 0, 360, "caption.leftInset");
+  const rightInset = boundedCaptionNumber(config.caption?.rightInset, 188, 0, 360, "caption.rightInset");
+  const captionStrokeWidth = boundedCaptionNumber(theme.tokens.captionStrokeWidth, 1.4, 0, 8, "theme.tokens.captionStrokeWidth");
+  const emphasisStrokeWidth = boundedCaptionNumber(theme.tokens.captionEmphasisStrokeWidth, 2.2, 0, 8, "theme.tokens.captionEmphasisStrokeWidth");
+  const captionColor = theme.tokens.captionText || "#fff";
+  const emphasisColor = theme.tokens.kicker || "#F3FE19";
+  const captionStrokeColor = theme.tokens.captionStrokeColor || "rgba(0, 0, 0, 0.92)";
+  const emphasisStrokeColor = theme.tokens.captionEmphasisStrokeColor || "#000";
+  const captionShadow = theme.tokens.captionShadow || "0 2px 5px rgba(0, 0, 0, 0.72)";
+  const emphasisShadow = theme.tokens.captionEmphasisShadow || captionShadow;
   return `.caption, .caption-over-card {
-      left: 64px;
-      right: 188px;
-      bottom: 430px;
-      color: #fff;
-      font-size: 46px;
+      left: ${leftInset}px;
+      right: ${rightInset}px;
+      bottom: ${safeBottom}px;
+      color: ${captionColor};
+      font-size: ${fontSize}px;
       line-height: 1.1;
       font-weight: 700;
-      -webkit-text-stroke: 1.4px rgba(0, 0, 0, 0.92);
+      -webkit-text-stroke: ${captionStrokeWidth}px ${captionStrokeColor};
       paint-order: stroke fill;
-      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.72);
+      text-shadow: ${captionShadow};
       white-space: nowrap;
+    }
+    .caption-emphasis {
+      color: ${emphasisColor};
+      background: transparent;
+      -webkit-text-stroke: ${emphasisStrokeWidth}px ${emphasisStrokeColor};
+      paint-order: stroke fill;
+      text-shadow: ${emphasisShadow};
     }`;
+}
+
+function boundedCaptionNumber(value, fallback, min, max, label) {
+  if (value == null || value === "") return fallback;
+  const number = Number(value);
+  if (!Number.isFinite(number) || number < min || number > max) {
+    throw new Error(`${label} 必须是 ${min}..${max} 的数字`);
+  }
+  return number;
 }
 
 function layoutCss() {
@@ -626,6 +670,7 @@ function renderHtml() {
       ${fontFaces()}
       ${themeCss()}
       ${sourceOverlay ? "" : theme.overridesCss}
+      ${captionPlacementCss()}
     </style>
   </head>
   <body>
@@ -787,6 +832,159 @@ function renderHtml() {
           ease: "power3.in"
         }, exitAt);
       }
+      function animateProductDomainPop(card, start, dur) {
+        const root = card.querySelector("[data-product-domain-pop]");
+        const banner = card.querySelector("[data-domain-motion]");
+        const product = card.querySelector("[data-product-motion]");
+        if (!root || !banner || !product) return;
+        const hitOffset = Math.max(0, Number(root.dataset.hitOffset || 0));
+        const hit = Math.min(start + dur - 0.12, start + hitOffset);
+        const enterAt = Math.max(start, hit - 0.16);
+        const exitDuration = Math.min(0.14, Math.max(0.10, dur * 0.14));
+        const exitAt = start + dur - exitDuration;
+
+        tl.set(banner, { opacity: 0, y: -150, scale: 0.94, rotation: -3, transformOrigin: "50% 0%" }, start);
+        tl.set(product, { opacity: 0, y: 74, scale: 0.54, rotation: -5, transformOrigin: "50% 65%" }, start);
+        tl.to(banner, { opacity: 1, y: 0, scale: 1, rotation: -1, duration: 0.22, ease: "back.out(1.45)" }, enterAt);
+        tl.to(product, { opacity: 1, y: -4, scale: 1.08, rotation: 1.2, duration: 0.10, ease: "power4.out" }, enterAt);
+        tl.to(product, { y: 0, scale: 1, rotation: 0, duration: 0.07, ease: "power2.inOut" }, hit);
+        tl.to(banner, { opacity: 0, y: -54, scale: 0.97, duration: exitDuration, ease: "power3.in" }, exitAt);
+        tl.to(product, { opacity: 0, y: -18, scale: 0.84, duration: exitDuration, ease: "power3.in" }, exitAt);
+      }
+      function animateMediaPopSticker(card, start, dur) {
+        const root = card.querySelector("[data-media-pop-sticker]");
+        const visual = card.querySelector("[data-media-pop-motion]");
+        if (!root || !visual) return;
+        const hitOffset = Math.max(0, Number(root.dataset.hitOffset || 0));
+        const hit = Math.min(start + dur - 0.10, start + hitOffset);
+        const enterAt = Math.max(start, hit - 0.10);
+        const settleAt = hit + 0.10;
+        const exitDuration = Math.min(0.13, Math.max(0.09, dur * 0.14));
+        const exitAt = start + dur - exitDuration;
+        const placement = root.dataset.placement || "top-center";
+        const direction = placement.includes("left") ? -1 : placement.includes("right") ? 1 : 0;
+        const preserveCenterX = placement === "top-center" || placement === "center-lower" ? -50 : 0;
+
+        tl.set(visual, {
+          opacity: 0,
+          xPercent: preserveCenterX,
+          x: direction * 34,
+          y: 30,
+          scale: 0.58,
+          rotation: direction * 5,
+          transformOrigin: "50% 65%"
+        }, start);
+        tl.to(visual, {
+          opacity: 1,
+          x: direction * -3,
+          y: -4,
+          scale: 1.08,
+          rotation: direction * -1.2,
+          duration: 0.10,
+          ease: "power4.out"
+        }, enterAt);
+        tl.to(visual, {
+          x: 0,
+          y: 0,
+          scale: 1,
+          rotation: 0,
+          duration: 0.08,
+          ease: "power2.inOut"
+        }, settleAt);
+        tl.to(visual, {
+          opacity: 0,
+          x: direction * 18,
+          y: -16,
+          scale: 0.88,
+          duration: exitDuration,
+          ease: "power3.in"
+        }, exitAt);
+      }
+      function animateUiClickSticker(card, start, dur) {
+        const root = card.querySelector("[data-ui-click-sticker]");
+        const surface = card.querySelector("[data-ui-click-motion]");
+        const pointer = card.querySelector("[data-ui-pointer]");
+        const before = card.querySelector("[data-ui-before]");
+        const after = card.querySelector("[data-ui-after]");
+        if (!root || !surface || !pointer || !before || !after) return;
+        const requestedPress = Math.max(0.18, Number(root.dataset.pressOffset || 0.72));
+        const pressAt = Math.min(start + dur - 0.24, start + requestedPress);
+        const exitDuration = Math.min(0.14, Math.max(0.10, dur * 0.14));
+        const exitAt = start + dur - exitDuration;
+
+        tl.set(surface, { opacity: 0, y: 34, scale: 0.72, rotation: -2, transformOrigin: "68% 64%" }, start);
+        tl.set(pointer, { opacity: 0, x: 82, y: 70, scale: 1.08, rotation: -8 }, start);
+        tl.set(before, { opacity: 1 }, start);
+        tl.set(after, { opacity: 0, y: 10 }, start);
+        tl.to(surface, { opacity: 1, y: -3, scale: 1.07, rotation: 0.8, duration: 0.11, ease: "power4.out" }, start);
+        tl.to(surface, { y: 0, scale: 1, rotation: 0, duration: 0.07, ease: "power2.inOut" }, start + 0.11);
+        tl.to(pointer, { opacity: 1, x: 0, y: 0, scale: 1, rotation: 0, duration: 0.20, ease: "power3.out" }, Math.max(start + 0.14, pressAt - 0.24));
+        tl.to(surface, { scale: 0.93, duration: 0.06, ease: "power2.in" }, pressAt);
+        tl.set(before, { opacity: 0 }, pressAt + 0.04);
+        tl.set(after, { opacity: 1, y: 8 }, pressAt + 0.04);
+        tl.to(after, { y: 0, duration: 0.08, ease: "back.out(1.7)" }, pressAt + 0.04);
+        tl.to(surface, { scale: 1.03, duration: 0.08, ease: "back.out(1.8)" }, pressAt + 0.06);
+        tl.to(surface, { scale: 1, duration: 0.06, ease: "power2.out" }, pressAt + 0.14);
+        tl.to(pointer, { opacity: 0, x: 22, y: 28, duration: exitDuration, ease: "power2.in" }, exitAt);
+        tl.to(surface, { opacity: 0, y: 24, scale: 0.92, duration: exitDuration, ease: "power3.in" }, exitAt);
+      }
+      function animateHookStackBanner(card, start, dur) {
+        const root = card.querySelector("[data-hook-stack-banner]");
+        const kicker = card.querySelector('[data-hook-layer="kicker"]');
+        const title = card.querySelector('[data-hook-layer="title"]');
+        const value = card.querySelector('[data-hook-layer="value"]');
+        if (!root || !kicker || !title || !value) return;
+        const hitOffset = Math.max(0, Number(root.dataset.hitOffset || 0.12));
+        const hit = Math.min(start + dur - 0.12, start + hitOffset);
+        const enterAt = Math.max(start, hit - 0.12);
+        const exitDuration = Math.min(0.10, Math.max(0.07, dur * 0.12));
+        const exitAt = start + dur - exitDuration;
+
+        tl.set(kicker, { opacity: 0, x: -48, y: -10, scale: 1.08, rotation: -4 }, start);
+        tl.set(title, { opacity: 0, x: 40, scale: 0.94, rotation: 3 }, start);
+        tl.set(value, { opacity: 0, y: 34, scale: 0.72, rotation: -3 }, start);
+        tl.to(kicker, { opacity: 1, x: 0, y: 0, scale: 1, rotation: -1.8, duration: 0.10, ease: "power4.out" }, enterAt);
+        tl.to(title, { opacity: 1, x: 0, scale: 1, rotation: 0.8, duration: 0.11, ease: "power4.out" }, enterAt + 0.03);
+        tl.to(value, { opacity: 1, y: -3, scale: 1.08, rotation: -0.8, duration: 0.10, ease: "back.out(1.8)" }, enterAt + 0.06);
+        tl.to(value, { y: 0, scale: 1, duration: 0.06, ease: "power2.out" }, enterAt + 0.16);
+        tl.to(root, { opacity: 0, scale: 1.03, duration: exitDuration, ease: "power3.in" }, exitAt);
+      }
+      function animateIrisReveal(card, start, dur) {
+        const root = card.querySelector("[data-iris-reveal]");
+        const hole = card.querySelector("[data-iris-hole]");
+        if (!root || !hole) return;
+        const requested = Math.max(0.08, Number(root.dataset.revealDuration || 0.22));
+        const revealDuration = Math.min(dur, requested);
+        const startScale = Math.max(0.01, Number(root.dataset.startScale || 0.04));
+        const startDiameter = 240 * startScale;
+        tl.set(hole, { width: startDiameter, height: startDiameter }, start);
+        tl.to(hole, { width: 2880, height: 2880, duration: revealDuration, ease: "power3.in" }, start);
+      }
+      function animateKeywordBurst(card, start, dur) {
+        const root = card.querySelector("[data-keyword-burst]");
+        const glyphs = Array.from(card.querySelectorAll("[data-keyword-glyph]"));
+        const kicker = card.querySelector("[data-keyword-kicker]");
+        if (!root || !glyphs.length) return;
+        const hitOffset = Math.max(0, Number(root.dataset.hitOffset || 0.1));
+        const staggerFrames = Math.max(1, Number(root.dataset.staggerFrames || 2));
+        const stagger = staggerFrames / impactMotionFps;
+        const enterAt = Math.min(start + dur - 0.18, start + hitOffset);
+        const exitDuration = Math.min(0.12, Math.max(0.08, dur * 0.14));
+        const exitAt = start + dur - exitDuration;
+
+        if (kicker) {
+          tl.set(kicker, { opacity: 0, y: -12, scale: 0.9 }, start);
+          tl.to(kicker, { opacity: 1, y: 0, scale: 1, duration: 0.10, ease: "power3.out" }, enterAt);
+        }
+        glyphs.forEach((glyph, index) => {
+          const glyphAt = enterAt + index * stagger;
+          const direction = index % 2 === 0 ? -1 : 1;
+          tl.set(glyph, { opacity: 0, y: 22, scale: 0.42, rotation: direction * 10, transformOrigin: "50% 80%" }, start);
+          tl.to(glyph, { opacity: 1, y: -3, scale: 1.12, rotation: direction * -1.5, duration: 0.10, ease: "back.out(1.9)" }, glyphAt);
+          tl.to(glyph, { y: 0, scale: 1, rotation: 0, duration: 0.06, ease: "power2.out" }, glyphAt + 0.10);
+        });
+        tl.to(root, { opacity: 0, y: -12, scale: 0.9, duration: exitDuration, ease: "power3.in" }, exitAt);
+      }
       document.querySelectorAll(".beat").forEach((card) => {
         const start = Number(card.dataset.start || 0);
         const dur = Number(card.dataset.duration || 0);
@@ -799,6 +997,30 @@ function renderHtml() {
         }
         if (card.dataset.kind === "impact-sticker") {
           animateImpactSticker(card, start, dur);
+          return;
+        }
+        if (card.dataset.kind === "product-domain-pop") {
+          animateProductDomainPop(card, start, dur);
+          return;
+        }
+        if (card.dataset.kind === "media-pop-sticker") {
+          animateMediaPopSticker(card, start, dur);
+          return;
+        }
+        if (card.dataset.kind === "ui-click-sticker") {
+          animateUiClickSticker(card, start, dur);
+          return;
+        }
+        if (card.dataset.kind === "hook-stack-banner") {
+          animateHookStackBanner(card, start, dur);
+          return;
+        }
+        if (card.dataset.kind === "iris-reveal") {
+          animateIrisReveal(card, start, dur);
+          return;
+        }
+        if (card.dataset.kind === "keyword-burst") {
+          animateKeywordBurst(card, start, dur);
           return;
         }
         if (card.dataset.kind === "result-grid") {

@@ -4,6 +4,14 @@ import path from "node:path";
 
 import { deepMerge, projectRoot, readJson } from "./lib.mjs";
 
+// pack.json 只放脚本真读的字段。剪辑规则文字写进模板包 README「编辑规则（人读）」，
+// 不许以 *Policy / requiredWorkflow 这类散文式 JSON 混进来（2026-09-11 审计：客户包里大段规则无脚本读取，等于不执行）。
+const PACK_FIELDS = new Set([
+  "schemaVersion", "id", "version", "label", "description", "theme", "preview",
+  "compatibleProfiles", "compatibleLayouts", "caption", "brollPolicy", "components", "assets"
+]);
+const BROLL_POLICY_FIELDS = new Set(["maxCoverage"]);
+
 export function loadTemplatePackRegistry(root = projectRoot()) {
   const file = path.join(root, "template-packs", "registry.json");
   const registry = readJson(file);
@@ -75,6 +83,8 @@ export function stageTemplatePackAssets({ pack, jobDir, root = projectRoot() }) 
 
 function validatePack(pack, file, root) {
   if (pack?.schemaVersion !== 1) throw new Error(`${file}: schemaVersion 必须为 1`);
+  rejectUnknownFields(pack, PACK_FIELDS, file, "pack.json");
+  rejectUnknownFields(pack.brollPolicy, BROLL_POLICY_FIELDS, file, "brollPolicy");
   if (!/^[a-z][a-z0-9-]*$/.test(pack?.id || "")) throw new Error(`${file}: id 不合法`);
   if (!pack.label || !pack.description || !pack.theme) throw new Error(`${file}: 缺 label/description/theme`);
   if (!Array.isArray(pack.compatibleProfiles) || !pack.compatibleProfiles.length) throw new Error(`${file}: compatibleProfiles 必须非空`);
@@ -93,6 +103,14 @@ function validatePack(pack, file, root) {
   }
   const coverage = Number(pack.brollPolicy?.maxCoverage);
   if (!(coverage >= 0 && coverage <= 0.25)) throw new Error(`${file}: brollPolicy.maxCoverage 必须在 0–0.25`);
+}
+
+function rejectUnknownFields(value, allowed, file, label) {
+  if (value == null || typeof value !== "object") return;
+  const unknown = Object.keys(value).filter((key) => !allowed.has(key));
+  if (unknown.length) {
+    throw new Error(`${file}: ${label} 含脚本不读取的字段 ${unknown.join(", ")}；规则文字请写进模板包 README「编辑规则（人读）」`);
+  }
 }
 
 function safeAssetPath(base, relativePath, label) {

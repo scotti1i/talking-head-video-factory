@@ -38,6 +38,7 @@ const TRUTH_FILES = Object.freeze([
   "project.json",
   "data/rough-cut-edl.json",
   "data/captions.json",
+  "data/caption-voice.json",
   "data/beats.json",
   "data/broll.json",
   "data/primary-clips.json",

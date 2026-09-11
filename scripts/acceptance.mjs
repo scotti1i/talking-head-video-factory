@@ -21,7 +21,7 @@ export const ACCEPTANCE_STEPS = Object.freeze([
   { id: "status", script: "status", extraArgs: ["--strict"], evidence: ["project.json", "data/rough-cut-edl.json", "data/captions.json"] },
   { id: "qa:alignment", script: "qa:alignment", evidence: ["qa/alignment-report.json"] },
   { id: "captions:voice-qa", script: "captions:voice-qa", evidence: ["qa/caption-voice-report.json", "data/caption-voice.json"] },
-  { id: "dialogue:qa", script: "dialogue:qa", evidence: ["qa/dialogue-report.json"] },
+  { id: "dialogue:qa", script: "dialogue:qa", evidence: ["qa/dialogue-continuity-report.json"] },
   { id: "audio:qa", script: "audio:qa", optional: true, evidence: ["qa/audio-report.json", "variants/*/qa/audio-report.json"] },
   { id: "review:independent", script: "review:independent", needsRevision: true, evidence: ["review/<revision>/independent-review.json"] }
 ]);

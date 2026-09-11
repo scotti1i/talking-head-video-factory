@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "product-domain-pop",
+  "order": 19,
+  "label": "产品网址弹贴",
+  "kind": "component",
+  "category": "evidence",
+  "description": "在人物头顶落下一条网址纸带，同时在胸腹安全区弹入一张本地透明产品图。",
+  "version": "1.1.0",
+  "lifecycle": "published",
+  "compatibility": "supported",
+  "captionMode": "overlay",
+  "formats": ["portrait", "landscape"],
+  "requiredFields": ["src"],
+  "optionalFields": ["kicker", "alt", "hitOffset", "visualSize", "crossedOut"],
+  "promptHint": "src(本地透明产品图), title(网址), kicker?, alt?, hitOffset?, visualSize(default/compact/large)?, crossedOut?；只在口播明确说出产品类别与网址时使用",
+  "tags": ["产品", "网址", "纸条", "弹入", "外贸"],
+  "source": "commerce-pop/user-reference-analysis-20260828",
+  "apply": { "mode": "beat", "type": "product-domain-pop" },
+  "preview": { "duration": 2.4, "defaultFixture": "product-domain" }
+}

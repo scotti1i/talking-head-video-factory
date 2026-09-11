@@ -56,6 +56,8 @@ function buildGates(jobDir, project, targets) {
     fileGate(jobDir, "cutEvidence", "切点证据", "qa/cuts/report.json"),
     approvalGate(jobDir, "cutApproval", "切点批准", "qa/cuts/approval.json"),
     arrayGate(jobDir, "captions", "最终字幕", "data/captions.json"),
+    reportGate(jobDir, "captionVoiceQa", "字幕—人声覆盖 QA", "qa/caption-voice-report.json"),
+    reportGate(jobDir, "dialogueQa", "段首段尾与局部响度 QA", "qa/dialogue-continuity-report.json"),
     optionalArrayGate(jobDir, "beats", "解释卡片", "data/beats.json"),
     optionalArrayGate(jobDir, "broll", "B-roll", "data/broll.json"),
     optionalArrayGate(jobDir, "primaryClips", "主展示轨", "data/primary-clips.json"),
@@ -145,6 +147,9 @@ function musicBedGate(jobDir) {
   if (!fs.existsSync(file)) return gate("musicBed", "连续 BGM", false, relative);
   try {
     const value = readJson(file);
+    if (value?.enabled === false && typeof value.reason === "string" && value.reason.trim()) {
+      return gate("musicBed", "连续 BGM", true, `已按要求禁用：${value.reason.trim()}`);
+    }
     const asset = typeof value?.asset === "string" ? path.join(jobDir, value.asset) : null;
     const ok = Boolean(value?.id && asset && fs.existsSync(asset) && Number(value?.volume) >= 0 && Number(value?.volume) <= 1);
     return gate("musicBed", "连续 BGM", ok, ok ? value.asset : "合同或素材无效");
@@ -184,6 +189,11 @@ function approvalGate(jobDir, id, name, relative) {
   } catch (error) {
     return gate(id, name, false, error.message);
   }
+}
+
+function reportGate(jobDir, id, name, relative) {
+  const file = path.join(jobDir, relative);
+  return gate(id, name, reportPassed(file), relative);
 }
 
 function targetGate(id, name, targets, predicate) {

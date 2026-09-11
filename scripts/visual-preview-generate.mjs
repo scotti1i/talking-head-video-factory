@@ -3,6 +3,7 @@ import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { jobsRoot, parseArgs } from "./lib.mjs";
 import { inspectComponentPackages } from "./component-registry.mjs";
 import {
@@ -32,7 +33,7 @@ import {
   selectFixtureIds
 } from "./visual-preview-lib.mjs";
 
-const root = path.resolve(new URL("..", import.meta.url).pathname);
+const root = path.resolve(fileURLToPath(new URL("..", import.meta.url)));
 const args = parseArgs();
 const outputRoot = path.join(root, "out", "visual-library");
 const cacheRoot = path.join(outputRoot, "cache");

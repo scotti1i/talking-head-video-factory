@@ -4,11 +4,13 @@ import path from "node:path";
 import { isDeliveryRec709VideoStream, normalizeColorMode, prepareSdrRec709Source, sha256File, videoColorProfile } from "./color-management.mjs";
 import { atomicWriteJson, displayVideoGeometry, ffprobeJson, frameRateValue, parseArgs, readJsonArray, resolveJob, run } from "./lib.mjs";
 import { resolveVideoEncoder, videoEncoderArgs } from "./video-encoder.mjs";
+import { assertNotDerivedInput, filterComplexFileArgs, frameCapFilter } from "./ffmpeg-filter.mjs";
 
 const args = parseArgs();
 const jobDir = resolveJob(args.job);
 const inputPath = path.resolve(jobDir, args.input || "data/rough-cut-edl.json");
-const outputPath = path.resolve(jobDir, args.output || "assets/aroll.mp4");
+// v2：粗剪只出「剪辑母版」assets/aroll-cut.mp4；倍速 / 对白处理 / 响度由 aroll:treat 产出 assets/aroll.mp4（工作母版）
+const outputPath = path.resolve(jobDir, args.output || "assets/aroll-cut.mp4");
 const sourceKey = args.sourceKey || "source";
 const crf = String(args.crf || 20);
 const preset = args.preset || "veryfast";
@@ -29,6 +31,7 @@ for (const [index, segment] of segments.entries()) {
   if (preparedSources.has(source)) continue;
   const sourcePath = path.join(jobDir, source);
   if (!fs.existsSync(sourcePath)) throw new Error(`Missing media: ${sourcePath}`);
+  assertNotDerivedInput(sourcePath, jobDir, "roughcut:render");
   const prepared = colorMode === "auto-sdr"
     ? prepareSdrRec709Source({ jobDir, sourcePath })
     : inspectLegacySource(sourcePath);
@@ -60,7 +63,9 @@ segments.forEach((segment, index) => {
   const fade = Math.min(0.03, duration / 4);
   const fadeOut = Math.max(0, duration - fade);
   filters.push(
-    `[${index}:v]trim=start=${start.toFixed(3)}:end=${end.toFixed(3)},setpts=PTS-STARTPTS,scale=${targetWidth}:${targetHeight}:force_original_aspect_ratio=increase,crop=${targetWidth}:${targetHeight},setsar=1,fps=${fps},format=yuv420p[v${index}]`
+    // 视频量化到整帧后用 trim=end_frame 封顶，保证永远不长于采样级精确的音频段：
+    // 否则 concat 给音频补静音，每个切点最多 1 帧、只增不减，字幕越往后越提前（2026-09-11 实验 30fps×40 切点累积 241ms）
+    `[${index}:v]trim=start=${start.toFixed(3)}:end=${end.toFixed(3)},setpts=PTS-STARTPTS,scale=${targetWidth}:${targetHeight}:force_original_aspect_ratio=increase,crop=${targetWidth}:${targetHeight},setsar=1,fps=${fps}${frameCapFilter(duration, fps)},format=yuv420p[v${index}]`
   );
   filters.push(
     `[${index}:a]atrim=start=${start.toFixed(3)}:end=${end.toFixed(3)},asetpts=PTS-STARTPTS,aformat=sample_rates=48000:channel_layouts=stereo,afade=t=in:st=0:d=${fade.toFixed(3)},afade=t=out:st=${fadeOut.toFixed(3)}:d=${fade.toFixed(3)}[a${index}]`
@@ -84,8 +89,7 @@ try {
     "-hide_banner",
     "-y",
     ...inputs,
-    "-filter_complex_script",
-    filterPath,
+    ...filterComplexFileArgs(filterPath),
     "-map",
     "[outv]",
     "-map",
@@ -186,10 +190,14 @@ function assertRoughCutOutput({ file, width, height, fps, expectedDuration, expe
   if (!Number.isFinite(actualFps) || Math.abs(actualFps - fps) > 0.001) {
     throw new Error(`粗剪输出 fps ${video.avg_frame_rate || video.r_frame_rate} != ${fps}`);
   }
+  // 音频是时间真源：与 EDL 累加只允许 AAC 帧尾补（≤30ms）；视频可以比音频短 ≤2 帧（段末封顶），不可更长
+  const audioDuration = Number(audio.duration || probe.format?.duration);
+  if (!Number.isFinite(audioDuration) || Math.abs(audioDuration - expectedDuration) > 0.03) {
+    throw new Error(`粗剪音频时长 ${audioDuration}s 与 EDL ${expectedDuration.toFixed(3)}s 不一致（>30ms）`);
+  }
   const actualDuration = Number(video.duration || probe.format?.duration);
-  const durationTolerance = Math.max(0.05, 2 / fps);
-  if (!Number.isFinite(actualDuration) || Math.abs(actualDuration - expectedDuration) > durationTolerance) {
-    throw new Error(`粗剪输出时长 ${actualDuration}s 与 EDL ${expectedDuration.toFixed(3)}s 不一致`);
+  if (!Number.isFinite(actualDuration) || actualDuration - expectedDuration > 0.03 || expectedDuration - actualDuration > 2 / fps + 0.03) {
+    throw new Error(`粗剪视频时长 ${actualDuration}s 偏离 EDL ${expectedDuration.toFixed(3)}s（视频不得长于音频，也不得短于 2 帧）`);
   }
   if (String(audio.sample_rate || "") !== "48000") throw new Error(`粗剪输出音频采样率 ${audio.sample_rate || "unknown"} != 48000`);
   if (expectSdr && !isDeliveryRec709VideoStream(video)) throw new Error(`粗剪输出不是 yuv420p/tv/BT.709 SDR: ${file}`);

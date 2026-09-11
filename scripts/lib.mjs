@@ -3,6 +3,7 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 export function parseArgs(argv = process.argv.slice(2)) {
   const args = { _: [] };
@@ -25,7 +26,7 @@ export function parseArgs(argv = process.argv.slice(2)) {
 }
 
 export function projectRoot() {
-  return path.resolve(new URL("..", import.meta.url).pathname);
+  return path.resolve(fileURLToPath(new URL("..", import.meta.url)));
 }
 
 // ============================================================

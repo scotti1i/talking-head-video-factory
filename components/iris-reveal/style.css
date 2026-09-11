@@ -1,0 +1,35 @@
+.beat-iris-reveal {
+  inset: 0;
+  z-index: 40;
+  max-height: none;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  pointer-events: none;
+}
+
+.beat-iris-reveal::before { display: none; }
+
+.beat-iris-reveal .iris-reveal {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.beat-iris-reveal .iris-reveal-hole {
+  position: absolute;
+  top: var(--iris-y);
+  left: var(--iris-x);
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: 0 0 0 220vmax #000;
+  transform: translate(-50%, -50%);
+  transform-origin: 50% 50%;
+  will-change: transform;
+}

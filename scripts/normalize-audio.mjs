@@ -8,7 +8,8 @@ import { parseArgs, resolveJob } from "./lib.mjs";
 export const DEFAULT_LOUDNORM_TARGETS = Object.freeze({
   integratedLufs: -13,
   loudnessRange: 7,
-  truePeakDbfs: -1.2
+  // Leave AAC enough codec headroom so the encoded deliverable stays below the -1 dBFS QA ceiling.
+  truePeakDbfs: -1.6
 });
 
 export function resolvePathInsideJob(jobDir, candidate, { label = "路径", mustExist = false } = {}) {
@@ -130,7 +131,7 @@ export function main(argv = process.argv.slice(2)) {
     output: args.output
   });
   console.log(`音频正规化完成: ${result.outputPath}`);
-  console.log("目标: I=-13 LUFS, LRA=7 LU, TP=-1.2 dBTP; AAC 192k / 48kHz; 视频 stream copy");
+  console.log("目标: I=-13 LUFS, LRA=7 LU, TP=-1.6 dBTP; AAC 192k / 48kHz; 视频 stream copy");
 }
 
 function loudnormBase(targets, suffix) {

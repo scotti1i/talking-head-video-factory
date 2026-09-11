@@ -3,6 +3,9 @@ node_modules/
 __pycache__/
 .codex_tmp/
 
+# Windows/WSL 本机部署配置由 Bootstrap 生成，不进入版本管理。
+deploy/windows/factory.config.psd1
+
 # 每条视频的大文件默认不进版本管理
 jobs/
 jobs/*/assets/*
@@ -73,3 +76,13 @@ scripts/compose-youtube-horizontal-v2.mjs
 
 # 本地真实素材试点：只用于隔离验收，禁止误提交客户素材、转录与审片数据。
 jobs/windows-pilot-*/
+
+# 客户机本地产物（2026-09-11 审计）：模板导出、选片草稿、研究草稿、下载缓存、任何压缩包。
+exports/
+tmp-selection/
+analysis/
+.cache/
+*.zip
+
+# 第三方音效库（LICENSE-SOURCE.md 明确禁止再分发），只允许留在本机，绝不进公开仓库。
+template-packs/*sfx*pack*/

@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "factory-rapid-proof",
+  "version": "1.0.0",
+  "label": "工厂快证据黄字幕",
+  "description": "把公司自有高流量短视频抽象为可复用模板：黄白重描边字幕、首屏分层钩子、圆形揭示、关键词弹跳 CTA 与实景证据硬切节奏。",
+  "theme": "rapid-proof",
+  "compatibleProfiles": ["factory-acquisition"],
+  "compatibleLayouts": ["vertical", "horizontal"],
+  "caption": {
+    "maxCharsPerLine": 24,
+    "singleLine": false,
+    "placement": "tiktok-safe",
+    "fontSize": 64,
+    "safeBottom": 330,
+    "leftInset": 56,
+    "rightInset": 56
+  },
+  "brollPolicy": {
+    "maxCoverage": 0.25
+  },
+  "components": [
+    "hook-stack-banner",
+    "iris-reveal",
+    "keyword-burst"
+  ],
+  "assets": []
+}

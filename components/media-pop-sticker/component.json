@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "media-pop-sticker",
+  "order": 21,
+  "label": "媒体弹贴",
+  "kind": "component",
+  "category": "evidence",
+  "description": "把本地平台图标或轻量解释插画弹到人物周围的指定安全位置。",
+  "version": "1.0.0",
+  "lifecycle": "published",
+  "compatibility": "supported",
+  "captionMode": "overlay",
+  "formats": ["portrait", "landscape"],
+  "requiredFields": ["src", "placement"],
+  "optionalFields": ["kicker", "title", "alt", "size", "shape", "hitOffset"],
+  "promptHint": "src(job 内本地图片), placement(top-left/top-right/top-center/center-lower), size(small/medium/large/wide)?, shape(square/rounded/circle)?, hitOffset?；用于跟随人物指向的平台 Logo、横向评论截图或短促解释贴纸",
+  "tags": ["Logo", "图标", "贴纸", "弹入", "手势"],
+  "source": "commerce-pop/user-directed-broll-logic-20260901",
+  "apply": { "mode": "beat", "type": "media-pop-sticker" },
+  "preview": { "duration": 1.8, "defaultFixture": "platform-left" }
+}

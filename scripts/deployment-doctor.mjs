@@ -35,7 +35,7 @@ const nvidia = commandOk("nvidia-smi", ["--query-gpu=name,driver_version,memory.
 check("nvidia-runtime", nvidia.ok, firstLine(nvidia.output), "WSL2 内无法访问 NVIDIA GPU", production);
 const nvencSmoke = hasNvenc && commandOk("ffmpeg", [
   "-hide_banner", "-loglevel", "error",
-  "-f", "lavfi", "-i", "color=c=black:s=128x128:r=30:d=0.1",
+  "-f", "lavfi", "-i", "color=c=black:s=256x256:r=30:d=0.1",
   "-c:v", "h264_nvenc", "-f", "null", "-"
 ]);
 check("nvenc-smoke", Boolean(nvencSmoke?.ok), nvencSmoke?.ok ? "3-frame encode passed" : "encode unavailable", "NVENC 列表存在但实际编码失败", production);
@@ -44,7 +44,11 @@ const inWsl = process.platform === "linux" && /microsoft/i.test(readText("/proc/
 check("runtime", !production || inWsl, `platform=${process.platform} wsl=${inWsl}`, "生产部署要求在 WSL2 内运行", production);
 
 const memoryGiB = os.totalmem() / 1024 ** 3;
-check("memory", memoryGiB >= 16, `${memoryGiB.toFixed(1)} GiB`, "低于 16GiB 无法稳定渲染");
+const minimumMemoryGiB = inWsl ? 11.5 : 15.5;
+const memoryRemedy = inWsl
+  ? "WSL 至少分配 12GB；16GB 主机可在 .wslconfig 设置 memory=12GB"
+  : "主机至少需要安装 16GB 内存";
+check("memory", memoryGiB >= minimumMemoryGiB, `${memoryGiB.toFixed(1)} GiB`, memoryRemedy);
 if (memoryGiB < 32) checks.push({ id: "memory-recommended", level: "warn", ok: true, detail: `${memoryGiB.toFixed(1)} GiB；建议升级到 32GiB` });
 
 const availableGiB = freeDiskGiB(root);

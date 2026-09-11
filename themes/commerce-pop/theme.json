@@ -1,0 +1,43 @@
+{
+  "id": "commerce-pop",
+  "label": "外贸电商弹贴",
+  "description": "用户提供参考视频的可复用抽象：无框亮黄重点词、仅域名白色纸条、简约蓝绿 UI 与短促 Pop/Bounce。v2，2026-08-28；不包含参考片人物、logo、商品图或第三方媒体。",
+  "source": "user-provided reference analysis; reusable layout tokens only",
+  "fonts": [
+    { "family": "Inter", "file": "Inter-700-latin.woff2", "weight": 700 },
+    { "family": "LXGWWenKaiTC", "file": "LXGWWenKaiTC-400-latin.woff2", "weight": 400 }
+  ],
+  "tokens": {
+    "pageBg": "#101114",
+    "text": "#FFFFFF",
+    "textBody": "#F1F3F5",
+    "fontHead": "Inter, FactoryCJK, sans-serif",
+    "fontBody": "Inter, FactoryCJK, sans-serif",
+    "radius": "14px",
+    "kicker": "#FFE600",
+    "accent": "#FFE600",
+    "accentFillBg": "#1877F2",
+    "accentFillText": "#FFFFFF",
+    "accentFillBorder": "#0E1014",
+    "cardBg": "rgba(16, 17, 20, 0.88)",
+    "cardBorder": "rgba(255, 255, 255, 0.92)",
+    "cardShadow": "0 12px 0 rgba(0, 0, 0, 0.70), 0 26px 54px rgba(0, 0, 0, 0.34)",
+    "cardTopline": "linear-gradient(90deg, #FFE600, #00D878, #1877F2)",
+    "cardBlur": "0px",
+    "chipBg": "#FFFFFF",
+    "chipBorder": "#101114",
+    "chipText": "#101114",
+    "heroNumber": "rgba(255, 230, 0, 0.28)",
+    "boxBg": "rgba(255, 255, 255, 0.96)",
+    "boxHotBg": "#FFE600",
+    "boxHotBorder": "#101114",
+    "boxLabel": "#101114",
+    "mutedText": "rgba(255, 255, 255, 0.70)",
+    "mutedBorder": "rgba(255, 255, 255, 0.34)",
+    "mutedBg": "rgba(16, 17, 20, 0.72)",
+    "scrim": "linear-gradient(180deg, rgba(0,0,0,0) 45%, rgba(0,0,0,0.10) 62%, rgba(0,0,0,0.52) 100%)",
+    "vignette": "radial-gradient(circle at 50% 42%, rgba(0,0,0,0) 48%, rgba(0,0,0,0.16) 100%)",
+    "captionText": "#FFFFFF",
+    "captionShadow": "0 4px 0 #08090B, 0 8px 0 #08090B, 0 16px 26px rgba(0,0,0,0.72)"
+  }
+}

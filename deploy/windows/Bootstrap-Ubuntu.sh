@@ -9,6 +9,8 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 DATA_ROOT="${FACTORY_DATA_ROOT:-/mnt/d/AutoEdit}"
 MODEL="$HOME/.cache/whisper-cpp/ggml-large-v3-turbo.bin"
+MODEL_SHA256="1fc70f774d38eb169993ac391eea357ef47c88757ef72ee5943879b7e8e2bc69"
+HF_ENDPOINT="${FACTORY_HF_ENDPOINT:-https://huggingface.co}"
 WHISPER_ROOT="$HOME/.local/src/whisper.cpp"
 NVM_VERSION="v0.40.4"
 CONFIG_DIR="$HOME/.config/talking-head-factory"
@@ -28,11 +30,13 @@ if (( available_kb < 50 * 1024 * 1024 )); then
 fi
 
 sudo apt-get update
-sudo apt-get install -y git ffmpeg cmake build-essential curl python3-fonttools ca-certificates
+sudo apt-get install -y git ffmpeg cmake build-essential curl unzip fonttools python3-fonttools fonts-noto-cjk ca-certificates
 
 export NVM_DIR="$HOME/.nvm"
 if [[ ! -s "$NVM_DIR/nvm.sh" ]]; then
-  curl -fsSL "https://raw.githubusercontent.com/nvm-sh/nvm/$NVM_VERSION/install.sh" | bash
+  curl -fsSL --retry 5 --retry-all-errors --connect-timeout 20 \
+    "https://raw.githubusercontent.com/nvm-sh/nvm/$NVM_VERSION/install.sh" | \
+    PROFILE=/dev/null METHOD=script bash
 fi
 # shellcheck source=/dev/null
 source "$NVM_DIR/nvm.sh"
@@ -40,14 +44,29 @@ nvm install 22
 nvm alias default 22
 nvm use 22
 
+if [[ -x /usr/local/cuda/bin/nvcc ]]; then
+  export PATH="/usr/local/cuda/bin:$PATH"
+fi
+
 cd "$ROOT"
-npm ci
+# HyperFrames does not use ONNX Runtime's optional CUDA execution provider.
+# Skipping that add-on avoids a separate large GitHub Releases download; GPU
+# transcription and rendering are still provided by whisper.cpp and NVENC.
+ONNXRUNTIME_NODE_INSTALL_CUDA=skip npm ci
 
 mkdir -p "$HOME/.local/src" "$HOME/.local/bin" "$(dirname "$MODEL")"
-if [[ ! -d "$WHISPER_ROOT/.git" ]]; then
-  git clone --depth 1 https://github.com/ggml-org/whisper.cpp.git "$WHISPER_ROOT"
-else
+if [[ ! -f "$WHISPER_ROOT/CMakeLists.txt" ]]; then
+  whisper_archive="$(mktemp)"
+  curl -fL --retry 5 --retry-all-errors --connect-timeout 20 \
+    https://codeload.github.com/ggml-org/whisper.cpp/tar.gz/refs/heads/master \
+    -o "$whisper_archive"
+  mkdir -p "$WHISPER_ROOT"
+  tar -xzf "$whisper_archive" --strip-components=1 -C "$WHISPER_ROOT"
+  rm -f "$whisper_archive"
+elif [[ -d "$WHISPER_ROOT/.git" ]]; then
   git -C "$WHISPER_ROOT" pull --ff-only
+else
+  echo "INFO: 使用已解压的 whisper.cpp 源码；如需升级请删除 $WHISPER_ROOT 后重跑。"
 fi
 
 build_dir="$WHISPER_ROOT/build-cpu"
@@ -68,22 +87,33 @@ if [[ ! -f "$MODEL" ]]; then
   if [[ -f "$windows_model" ]]; then
     cp "$windows_model" "$MODEL"
   else
-    bash "$WHISPER_ROOT/models/download-ggml-model.sh" large-v3-turbo
-    cp "$WHISPER_ROOT/models/ggml-large-v3-turbo.bin" "$MODEL"
+    model_part="${MODEL}.part"
+    curl -fL --retry 10 --retry-all-errors --connect-timeout 20 \
+      --continue-at - -o "$model_part" \
+      "$HF_ENDPOINT/ggerganov/whisper.cpp/resolve/main/ggml-large-v3-turbo.bin"
+    printf '%s  %s\n' "$MODEL_SHA256" "$model_part" | sha256sum -c -
+    mv "$model_part" "$MODEL"
   fi
 fi
+printf '%s  %s\n' "$MODEL_SHA256" "$MODEL" | sha256sum -c -
 
 if ! grep -Fq '$HOME/.local/bin' "$HOME/.bashrc"; then
   printf '\nexport PATH="$HOME/.local/bin:$PATH"\n' >> "$HOME/.bashrc"
+fi
+if [[ -x /usr/local/cuda/bin/nvcc ]] && ! grep -Fq '/usr/local/cuda/bin' "$HOME/.bashrc"; then
+  printf 'export PATH="/usr/local/cuda/bin:$PATH"\n' >> "$HOME/.bashrc"
 fi
 export PATH="$HOME/.local/bin:$PATH"
 
 mkdir -p "$DATA_ROOT/Inbox" "$DATA_ROOT/Outbox" "$CONFIG_DIR"
 config="$ROOT/deploy/windows/factory.config.psd1"
 if [[ ! -f "$config" ]]; then
+  # DataRoot 是 Windows 侧路径（Launch-Harness.ps1 用它放日志）；WSL 内用 wslpath 换算，非 WSL 环境退回默认值。
+  data_root_win="$(wslpath -w "$DATA_ROOT" 2>/dev/null || printf 'D:\\AutoEdit')"
   sed \
     -e "s#/home/factory/#/home/$USER/#g" \
     -e "s#/mnt/d/AutoEdit/Outbox#$DATA_ROOT/Outbox#g" \
+    -e "s#D:\\\\AutoEdit#${data_root_win//\\/\\\\}#g" \
     "$ROOT/deploy/windows/factory.config.example.psd1" > "$config"
 fi
 

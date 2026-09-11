@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "hook-stack-banner",
+  "order": 22,
+  "label": "分层钩子标题",
+  "kind": "component",
+  "category": "emphasis",
+  "description": "用黑白分层横条和一个彩色量化卖点，在首屏快速建立品类与结果预期。",
+  "version": "1.0.0",
+  "lifecycle": "published",
+  "compatibility": "supported",
+  "captionMode": "overlay",
+  "formats": ["portrait", "landscape"],
+  "requiredFields": ["value"],
+  "optionalFields": ["tone", "hitOffset"],
+  "promptHint": "kicker(注意力词), title(品类/主题), value(量化卖点), tone(green/yellow/pink)?, hitOffset?；只用于开场首个明确价值承诺",
+  "tags": ["钩子", "首屏", "标题", "量化卖点", "分层横条"],
+  "source": "rapid-proof/user-confirmed-reference-analysis-20260902",
+  "apply": { "mode": "beat", "type": "hook-stack-banner" },
+  "preview": { "duration": 1.2, "defaultFixture": "value-hook" }
+}
