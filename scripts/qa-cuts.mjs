@@ -6,6 +6,7 @@ const args = parseArgs();
 const jobDir = resolveJob(args.job);
 const projectPath = path.join(jobDir, "project.json");
 const project = fs.existsSync(projectPath) ? readJson(projectPath) : {};
+const playbackRate = Number(project.aroll?.playbackRate || 1);
 const edlPath = path.resolve(jobDir, args.edl || "data/rough-cut-edl.json");
 const videoPath = path.resolve(jobDir, args.video || project.sourceVideo || "assets/aroll.mp4");
 const outputDir = path.resolve(jobDir, args.output || "qa/cuts");
@@ -21,7 +22,7 @@ fs.mkdirSync(outputDir, { recursive: true });
 
 let cursor = 0;
 const cuts = segments.slice(0, -1).map((segment, index) => {
-  cursor += Number(segment.sourceEnd) - Number(segment.sourceStart);
+  cursor += (Number(segment.sourceEnd) - Number(segment.sourceStart)) / playbackRate;  // 工作母版可能已倍速（project.aroll）
   const output = path.join(outputDir, `cut-${String(index + 1).padStart(3, "0")}-${Math.round(cursor * 1000)}ms.jpg`);
   run("python3", [
     path.join(import.meta.dirname, "timeline-view.py"),

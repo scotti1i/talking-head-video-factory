@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "default": "natural-v1",
+  "profileDefaults": {
+    "factory-acquisition": "social-fast-v1"
+  },
+  "presets": {
+    "passthrough": {
+      "label": "直通",
+      "description": "不变速、不处理音频；只统一封装（测试与回归用）。",
+      "playbackRate": 1,
+      "video": [],
+      "audioPre": [],
+      "audioPost": []
+    },
+    "natural-v1": {
+      "label": "自然",
+      "description": "原速；对白链：高低通 + 动态均衡 + 轻压缩 + 限幅（替代逐段手写增益包络）。",
+      "playbackRate": 1,
+      "video": [],
+      "audioPre": [
+        "highpass=f=70",
+        "lowpass=f=16000",
+        "dynaudnorm=f=150:g=7:p=0.95:m=8",
+        "acompressor=threshold=0.12:ratio=3:attack=8:release=140:makeup=1.2"
+      ],
+      "audioPost": [
+        "alimiter=limit=0.891"
+      ]
+    },
+    "social-fast-v1": {
+      "label": "社媒快节奏",
+      "description": "1.1 倍速（atempo 保音高，插在对白链与限幅之间）+ 对白链；参数取自客户 2026-09 六条真片手写滤镜的收敛值，固定在这里不再逐片手写。",
+      "playbackRate": 1.1,
+      "video": [],
+      "audioPre": [
+        "highpass=f=70",
+        "lowpass=f=16000",
+        "dynaudnorm=f=150:g=7:p=0.95:m=8",
+        "acompressor=threshold=0.12:ratio=3:attack=8:release=140:makeup=1.2"
+      ],
+      "audioPost": [
+        "alimiter=limit=0.891"
+      ]
+    }
+  }
+}

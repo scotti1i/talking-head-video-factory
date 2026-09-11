@@ -19,7 +19,7 @@
     "inventory": "node scripts/inventory-media.mjs",
     "transcribe:editor": "node scripts/transcribe-editor.mjs",
     "transcript:audit": "node scripts/audit-editor-transcript.mjs",
-    "captions:build": "node scripts/captions-from-edl.mjs",
+    "captions:build": "node scripts/captions-from-aroll.mjs",
     "status": "node scripts/factory-status.mjs",
     "status:all": "node scripts/workflow-audit.mjs",
     "storage:report": "node scripts/storage-report.mjs",
@@ -59,7 +59,12 @@
     "deliver": "node scripts/deliver.mjs",
     "smoke": "node scripts/create-smoke-job.mjs && node scripts/build-beats-composition.mjs --job jobs/smoke && cd jobs/smoke && npm run check",
     "smoke:full": "npm run smoke && cd jobs/smoke && npm run render:final && cd ../.. && npm run qa -- --job jobs/smoke --video jobs/smoke/renders/final-60fps.mp4 && npm run deliver -- --job jobs/smoke --video jobs/smoke/renders/final-60fps.mp4",
-    "smoke:multi": "node scripts/create-smoke-job.mjs && npm run build:variants -- --job jobs/smoke && npm run check:variants -- --job jobs/smoke"
+    "smoke:multi": "node scripts/create-smoke-job.mjs && npm run build:variants -- --job jobs/smoke && npm run check:variants -- --job jobs/smoke",
+    "captions:build:legacy-edl": "node scripts/captions-from-edl.mjs",
+    "aroll:treat": "node scripts/aroll-treat.mjs",
+    "qa:alignment": "node scripts/qa-alignment.mjs",
+    "review:independent": "node scripts/review-independent.mjs",
+    "test:timing": "node --test scripts/ffmpeg-filter.test.mjs scripts/aroll-treat.test.mjs scripts/whisper-lib.test.mjs scripts/audio-envelope.test.mjs scripts/captions-from-aroll.test.mjs scripts/qa-alignment.test.mjs"
   },
   "dependencies": {
     "hyperframes": "0.8.14"
