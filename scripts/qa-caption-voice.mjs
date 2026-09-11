@@ -157,11 +157,13 @@ function range(item) {
 }
 
 function tokenize(value) {
-  return String(value || "")
+  // CJK 没有词间空格：逐字成 token，这样「一次特 别聪明」和「一次特别聪明」比对结果一致（2026-09-11 v2 中文 job 实测）
+  const tokens = String(value || "")
     .normalize("NFKD")
     .replace(/\p{M}/gu, "")
     .toLocaleLowerCase("es")
     .match(/[\p{L}\p{N}]+/gu) || [];
+  return tokens.flatMap((token) => token.split(/(?=[぀-ヿ㐀-鿿가-힯])|(?<=[぀-ヿ㐀-鿿가-힯])/u).filter(Boolean));
 }
 
 function sameTokens(left, right) {
@@ -181,7 +183,8 @@ function main() {
   const args = parseArgs();
   const jobDir = resolveJob(args.job);
   const captions = readJson(path.join(jobDir, "data", "captions.json"));
-  const beats = readJson(path.join(jobDir, "data", "beats.json"));
+  const beatsPath = path.join(jobDir, "data", "beats.json");
+  const beats = fs.existsSync(beatsPath) ? readJson(beatsPath) : [];  // 无解释卡片的 job 也要能跑人声覆盖 QA
   const contract = readJson(path.join(jobDir, "data", "caption-voice.json"));
   const result = validateCaptionVoice({ captions, beats, contract });
   const report = {

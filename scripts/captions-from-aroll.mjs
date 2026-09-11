@@ -143,10 +143,11 @@ export function groupIntoLines(words, { maxChars = 18, maxDuration = 2.8, gapBre
       index -= 1;
     }
   }
-  // 太短的行向后延到下一行起点（不越过 0.35s）
+  // 行与行衔接：同一语流里（间隔 <0.25s）上一行保持到下一行起点，字幕不闪空；太短的行向后延到下一行起点（不越过 0.35s）
   for (let index = 0; index < lines.length; index += 1) {
     const line = lines[index];
     const next = lines[index + 1];
+    if (next && next.s - line.e < 0.25) line.e = next.s;
     if (line.e - line.s < 0.45) line.e = round(Math.min(line.s + 0.45, next ? next.s : line.e + 0.35));
     if (next && line.e > next.s) line.e = next.s;
     line.s = round(line.s); line.e = round(line.e);
@@ -257,7 +258,7 @@ function main() {
   // 5. 人声区合同（保留旧 text-overlay 区）
   const voicePath = path.join(jobDir, "data", "caption-voice.json");
   const previousVoice = fs.existsSync(voicePath) ? readJson(voicePath) : null;
-  const { contract: voice, captions } = buildVoiceContract(aligned.words, lines, previousVoice, Number(previousVoice?.tolerance ?? 0.04));
+  const { contract: voice, captions } = buildVoiceContract(aligned.words, lines, previousVoice, Number(previousVoice?.tolerance ?? 0.08));
 
   const cleanCaptions = captions.map(({ wordIds: _ids, ...line }) => line);
   atomicWriteJson(captionsPath, cleanCaptions);

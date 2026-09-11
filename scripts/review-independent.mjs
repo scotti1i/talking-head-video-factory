@@ -44,7 +44,7 @@ function renderBoards(video, times, outDir) {
   fs.mkdirSync(outDir, { recursive: true });
   const stills = times.map((t, index) => {
     const file = path.join(outDir, `s-${String(index + 1).padStart(3, "0")}.jpg`);
-    run("ffmpeg", ["-v", "error", "-y", "-ss", String(t), "-i", video, "-frames:v", "1", "-vf", "scale=360:-2,drawtext=text='%{eif\\:trunc(t)\\:d}':x=0:y=0:fontsize=1:fontcolor=white@0", "-q:v", "3", file], { stdio: "pipe" });
+    run("ffmpeg", ["-v", "error", "-y", "-ss", String(t), "-i", video, "-frames:v", "1", "-vf", "scale=360:-2", "-q:v", "3", file], { stdio: "pipe" });
     return { t, file };
   });
   const boards = [];
