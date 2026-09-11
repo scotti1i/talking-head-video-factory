@@ -1,55 +1,12 @@
+param(
+  [string]$Config = "$PSScriptRoot\factory.config.psd1"
+)
+
+# 与 Invoke-Doctor.ps1 同构：只读本机配置拿 Distro / WslRepo，
+# 真正的校验在 WSL 内由 Validate-GeminiKey.sh 完成，密钥不经过 Windows 侧。
 $ErrorActionPreference = 'Stop'
-
-$envPath = '\\wsl.localhost\Ubuntu\home\factory\.config\talking-head-factory\env'
-if (-not (Test-Path -LiteralPath $envPath)) {
-  throw 'WSL 私有配置不存在。'
-}
-
-$keyLine = Get-Content -LiteralPath $envPath |
-  Where-Object { $_ -match '^GEMINI_API_KEY=.' } |
-  Select-Object -Last 1
-if (-not $keyLine) {
-  throw 'GEMINI_API_KEY 未配置。'
-}
-
-$apiKey = $keyLine.Substring('GEMINI_API_KEY='.Length)
-try {
-  $result = Invoke-RestMethod `
-    -Method Get `
-    -Uri 'https://generativelanguage.googleapis.com/v1beta/models' `
-    -Headers @{ 'x-goog-api-key' = $apiKey } `
-    -TimeoutSec 30
-  [pscustomobject]@{
-    Configured = $true
-    Valid = $true
-    HttpStatus = 200
-    ModelCount = @($result.models).Count
-  } | Format-List
-}
-catch {
-  $statusCode = $null
-  $apiStatus = $null
-  if ($_.Exception.Response) {
-    $statusCode = [int]$_.Exception.Response.StatusCode
-  }
-  if ($_.ErrorDetails.Message) {
-    try {
-      $errorBody = $_.ErrorDetails.Message | ConvertFrom-Json
-      $apiStatus = $errorBody.error.status
-    }
-    catch {
-      $apiStatus = 'UNPARSEABLE_ERROR'
-    }
-  }
-  [pscustomobject]@{
-    Configured = $true
-    Valid = $false
-    HttpStatus = $statusCode
-    ApiStatus = $apiStatus
-  } | Format-List
-  exit 2
-}
-finally {
-  $apiKey = $null
-  $keyLine = $null
-}
+if (-not (Test-Path $Config)) { throw "缺少配置文件: $Config" }
+$settings = Import-PowerShellDataFile $Config
+$runner = "$($settings.WslRepo)/deploy/windows/Validate-GeminiKey.sh"
+& wsl.exe -d $settings.Distro -- bash $runner
+if ($LASTEXITCODE -ne 0) { throw 'Gemini Key 校验未通过。' }

@@ -12,25 +12,31 @@ param(
   [double]$FrameSampleFps = 6.0,
 
   [ValidateRange(30, 900)]
-  [int]$ProcessingTimeoutSeconds = 180
+  [int]$ProcessingTimeoutSeconds = 180,
+
+  # 本机部署配置（由 deploy/windows/Bootstrap-Ubuntu.sh 生成），只用来定位 WSL 发行版。
+  [string]$Config = (Join-Path $PSScriptRoot '..\deploy\windows\factory.config.psd1')
 )
 
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 
 function Get-GeminiApiKey {
-  $envPath = '\\wsl.localhost\Ubuntu\home\factory\.config\talking-head-factory\env'
-  if (-not (Test-Path -LiteralPath $envPath)) {
-    throw 'WSL 私有配置不存在。请先运行 deploy/windows/Set-GeminiKey.sh。'
+  # 与 Invoke-Doctor.ps1 同构：Distro 来自 factory.config.psd1，不写死 home\factory 之类的路径；
+  # 密钥由 WSL 内的 bash 读取私有 env 后经 stdout 交回，不经磁盘中转。
+  if (-not (Test-Path -LiteralPath $Config)) {
+    throw "缺少配置文件: $Config（先运行 deploy/windows/Bootstrap-Ubuntu.sh）"
   }
-
-  $keyLine = Get-Content -LiteralPath $envPath |
-    Where-Object { $_ -match '^GEMINI_API_KEY=.' } |
-    Select-Object -Last 1
-  if (-not $keyLine) {
-    throw 'GEMINI_API_KEY 未配置。'
+  $settings = Import-PowerShellDataFile $Config
+  $key = & wsl.exe -d $settings.Distro -- bash -c 'set -a; [ -f "$HOME/.config/talking-head-factory/env" ] && . "$HOME/.config/talking-head-factory/env"; printf %s "${GEMINI_API_KEY:-}"'
+  if ($LASTEXITCODE -ne 0) {
+    throw "无法读取 $($settings.Distro) 内的私有配置。"
   }
-  return $keyLine.Substring('GEMINI_API_KEY='.Length)
+  $key = "$key".Trim()
+  if (-not $key) {
+    throw 'GEMINI_API_KEY 未配置。请先在 WSL 运行 deploy/windows/Set-GeminiKey.sh。'
+  }
+  return $key
 }
 
 function Write-JsonFile {
