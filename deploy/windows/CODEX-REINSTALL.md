@@ -2,18 +2,39 @@
 
 > 给客户 Windows 机器上的 Codex：这是操作员手册，不是开发手册。六个 gate 按顺序执行，每个 gate 结束必须在终端看到一行 `GATE n PASS`；看到 `GATE n FAIL` 或没看到这行，停下把完整输出发给用户，不得跳过、不得自己修脚本。出处：`docs/v2-design-spec.md` §6。
 
-## 前提
+## 这份文档从哪来（先读这段）
 
-- 已完成 v1 部署（WSL2 Ubuntu、Node 22、whisper.cpp、DeepSeek Key），旧仓库在 `~/talking-head-video-factory`。
-- Scott 已给出本次发布的 tag（形如 `v2.0.0`）和仓库访问凭据（deploy key 或只能推 `client/*` 分支的 token）。**凭据由用户亲自输入，不经过对话。**
-- 以下命令除 Gate 0 的 Windows 部分外都在 WSL Ubuntu 终端执行：`wsl -d Ubuntu`。
-
-## Gate 0 · 备份旧仓库（含旧 job）
+**旧仓库里没有这个文件**，它是 v2 才有的。在旧仓库目录里读它一定失败，那是预期的，不是环境坏了，也不需要修。始终从下面这个地址取最新版（仓库公开，不需要任何凭据）：
 
 ```bash
+curl -fsSL https://raw.githubusercontent.com/scotti1i/talking-head-video-factory/v2/deploy/windows/CODEX-REINSTALL.md
+```
+
+## 前提
+
+- 已完成 v1 部署（WSL2 Ubuntu、Node 22、whisper.cpp、DeepSeek Key）。旧仓库位置不假设，Gate 0 自己找。
+- Scott 已给出本次发布的 tag（形如 `v2.0.0`）和仓库访问凭据（只能推 `client/*` 分支的 token）。**凭据由用户亲自输入，不经过对话。**
+- **所有命令都在 WSL Ubuntu 终端执行**（Windows PowerShell 里 `wsl -d Ubuntu` 进去）。不要在 PowerShell 里跑本文的 bash 命令。
+
+## Gate 0 · 定位并备份旧仓库（含旧 job）
+
+先找到旧仓库真实位置：历史上同时存在过 WSL 家目录和 `/mnt/d` 两份，不要假设路径。
+
+```bash
+mkdir -p "$HOME/.config/talking-head-factory"
+OLD_REPO="$(find "$HOME" /mnt/d -maxdepth 5 -type f -path '*/scripts/render-rough-cut-edl.mjs' 2>/dev/null \
+  | head -1 | sed 's#/scripts/render-rough-cut-edl.mjs##')"
+echo "找到旧仓库: ${OLD_REPO:-（没找到）}"
+```
+
+没找到就停下来问用户旧仓库在哪，拿到后 `OLD_REPO="<用户给的路径>"`，不要自己猜。确认路径后备份：
+
+```bash
+echo "$OLD_REPO" > "$HOME/.config/talking-head-factory/old-repo-path"
 DATE="$(date +%Y%m%d)"
 mkdir -p "/mnt/d/AutoEdit/Backup/$DATE"
-tar -czf "/mnt/d/AutoEdit/Backup/$DATE/talking-head-video-factory-v1.tar.gz" -C "$HOME" talking-head-video-factory \
+tar -czf "/mnt/d/AutoEdit/Backup/$DATE/factory-v1.tar.gz" \
+  -C "$(dirname "$OLD_REPO")" "$(basename "$OLD_REPO")" \
   && ls -lh "/mnt/d/AutoEdit/Backup/$DATE/" \
   && echo "GATE 0 PASS" || echo "GATE 0 FAIL"
 ```
@@ -22,11 +43,13 @@ tar -czf "/mnt/d/AutoEdit/Backup/$DATE/talking-head-video-factory-v1.tar.gz" -C 
 
 ## Gate 1 · 克隆 v2 tag 到 WSL
 
+新仓库固定装在 WSL 家目录，与旧仓库并存（旧仓库原地不动，Gate 3 还要从它迁 job）。
+
 ```bash
-TAG="v2.0.0"   # 换成 Scott 给的 tag
-mv "$HOME/talking-head-video-factory" "$HOME/talking-head-video-factory.v1-$(date +%Y%m%d)"
-git clone --branch "$TAG" https://github.com/scotti1i/talking-head-video-factory.git "$HOME/talking-head-video-factory" \
-  && cd "$HOME/talking-head-video-factory" \
+TAG="v2.0.1"   # 换成 Scott 给的 tag
+NEW_REPO="$HOME/talking-head-video-factory-v2"
+git clone --branch "$TAG" https://github.com/scotti1i/talking-head-video-factory.git "$NEW_REPO" \
+  && cd "$NEW_REPO" \
   && git config credential.helper store \
   && git describe --tags --exact-match HEAD \
   && echo "GATE 1 PASS" || echo "GATE 1 FAIL"
@@ -34,12 +57,13 @@ git clone --branch "$TAG" https://github.com/scotti1i/talking-head-video-factory
 
 - `git describe` 必须打印出 `$TAG`；仓库停在 tag 的 detached HEAD 上是**正常状态**，不要 `git checkout main`。
 - 第一次 `npm run report:push` 时 git 会要凭据：让用户亲自粘贴 deploy token（用户名填 `x-access-token`），`credential.helper store` 会记住。
-- 旧仓库改名保留，Gate 3 从它迁移 job；确认 Gate 5 通过后才可删除。
+- 旧仓库原地保留不改名，Gate 3 从它迁移 job；确认 Gate 5 通过后才可删除。
+- 之后所有 gate 都在 `$NEW_REPO` 里执行。新开终端时先 `NEW_REPO="$HOME/talking-head-video-factory-v2"; cd "$NEW_REPO"`。
 
 ## Gate 2 · bootstrap（含 hook 安装与操作员角色）
 
 ```bash
-cd "$HOME/talking-head-video-factory"
+cd "$HOME/talking-head-video-factory-v2"
 bash deploy/windows/Bootstrap-Ubuntu.sh
 ```
 
@@ -54,8 +78,8 @@ DeepSeek Key 如需重设：`bash deploy/windows/Set-DeepSeekKey.sh`（只改 ke
 ## Gate 3 · 迁移旧 job
 
 ```bash
-cd "$HOME/talking-head-video-factory"
-node scripts/gate.mjs 3 -- npm run migrate -- --from "$HOME/talking-head-video-factory.v1-$(date +%Y%m%d)"
+cd "$HOME/talking-head-video-factory-v2"
+node scripts/gate.mjs 3 -- npm run migrate -- --from "$(cat "$HOME/.config/talking-head-factory/old-repo-path")"
 ```
 
 - 先看一遍表格：每个 job 一行，`copied` 为正常；`conflict` / `error` 会让 gate FAIL，把表格发给用户。
@@ -68,7 +92,7 @@ node scripts/gate.mjs 3 -- npm run migrate -- --from "$HOME/talking-head-video-f
 ## Gate 4 · 生产 doctor + 回归样片
 
 ```bash
-cd "$HOME/talking-head-video-factory"
+cd "$HOME/talking-head-video-factory-v2"
 node scripts/gate.mjs 4 -- bash -c "npm run doctor:deployment -- --production --require-hdr && npm run smoke"
 ```
 
@@ -82,7 +106,7 @@ node scripts/gate.mjs 4 -- bash -c "npm run doctor:deployment -- --production --
 选一条已迁移或新导入的真实 job（`<slug>`），按 `.agents/skills/factory-auto-edit/SKILL.md` 完成到 R0 之后：
 
 ```bash
-cd "$HOME/talking-head-video-factory"
+cd "$HOME/talking-head-video-factory-v2"
 node scripts/gate.mjs 5 -- npm run acceptance -- --job jobs/<slug>
 ```
 
