@@ -67,11 +67,20 @@ cd "$HOME/talking-head-video-factory-v2"
 bash deploy/windows/Bootstrap-Ubuntu.sh
 ```
 
-脚本结尾自行打印 `GATE 2 PASS`（失败打印 `GATE 2 FAIL`）。它做了三件治理动作：
+脚本结尾自行打印 `GATE 2 PASS`（失败打印 `GATE 2 FAIL`）。它做了四件治理动作：
 
 - `~/.config/talking-head-factory/env` 写入 `FACTORY_ROLE=operator`；
-- `git config core.hooksPath scripts/git-hooks`，之后任何触及 `scripts/ components/ themes/ template-packs/ console/ deploy/ skills/ docs/ .agents/ package*.json` 的 commit 都会被拒绝，提示 `npm run request`；
-- 跑一次 `npm run doctor:deployment`。
+- `git config core.hooksPath scripts/git-hooks`，之后任何触及 `scripts/ components/ themes/ template-packs/ console/ deploy/ skills/ docs/ .agents/ package*.json` 的 commit 都会被拒绝，提示 `npm run request`（要改代码只能走 `npm run propose`，见「之后的日常」）；
+- 跑一次 `npm run doctor:deployment`；
+- 通过 `powershell.exe` 注册 Windows 计划任务 `TalkingHeadFactoryHeartbeat`：每天 03:30 `wsl.exe -d Ubuntu -- bash <仓库>/deploy/windows/Run-Heartbeat.sh`，做体检、把事件和心跳回流到 `client/<主机名>` 分支、没有命令在跑时自动升级到最新 tag。日志在 `~/.config/talking-head-factory/logs/heartbeat.log`。
+
+计划任务注册不影响 gate 结果，但要单独验证——在 **Windows PowerShell** 里：
+
+```powershell
+schtasks /Query /TN TalkingHeadFactoryHeartbeat
+```
+
+看到一行状态为 `Ready` 即可。若脚本输出 `WARN: 心跳计划任务注册失败`，把 WARN 那行里的命令原样在 PowerShell 执行一次，再查询；仍失败就停下把输出发给用户。手动触发一次验证链路：`schtasks /Run /TN TalkingHeadFactoryHeartbeat`，一分钟后在 WSL 里 `tail -n 20 ~/.config/talking-head-factory/logs/heartbeat.log` 应看到 `[heartbeat]` 行。
 
 DeepSeek Key 如需重设：`bash deploy/windows/Set-DeepSeekKey.sh`（只改 key 一行，不动其他配置）。
 

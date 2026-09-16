@@ -21,6 +21,22 @@ export function clientBranch(host = clientHost()) {
   return `client/${host}`;
 }
 
+// ============================================================
+// 修复分支：client/<host>-fix-<slug>
+// 为什么：spec §F 原写 client/<host>/fix-<slug>，但 git 不允许 refs/heads/client/<host>
+// （报告分支）和 refs/heads/client/<host>/... 同时存在（目录与文件同名）。
+// 保留 client/ 前缀让 deploy token 的分支规则继续覆盖它。
+// ============================================================
+export const FIX_BRANCH_PATTERN = /^client\/([a-z0-9-]+)-fix-([a-z0-9一-鿿._-]+)$/;
+
+export function fixBranch(slug, host = clientHost()) {
+  return `client/${host}-fix-${slug}`;
+}
+
+export function isFixBranch(branch) {
+  return FIX_BRANCH_PATTERN.test(String(branch || ""));
+}
+
 export function git(repoDir, args, { allowFail = false } = {}) {
   const result = spawnSync("git", args, { cwd: repoDir, encoding: "utf8", stdio: "pipe" });
   if (result.status !== 0 && !allowFail) {

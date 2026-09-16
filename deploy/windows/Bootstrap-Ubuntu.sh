@@ -127,6 +127,18 @@ fi
 node "$ROOT/scripts/install-git-hooks.mjs"
 
 npm run doctor:deployment
+
+# 每日心跳计划任务（Windows 侧）：能注册就注册，注册不了不影响 Gate 2
+if command -v powershell.exe >/dev/null 2>&1; then
+  task_ps1="$(wslpath -w "$ROOT/deploy/windows/Install-Scheduled-Task.ps1")"
+  if powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$task_ps1" -Distro "${WSL_DISTRO_NAME:-Ubuntu}" -WslRepo "$ROOT"; then
+    echo "INFO: 心跳计划任务 TalkingHeadFactoryHeartbeat 已注册（每日 03:30）；验证：schtasks /Query /TN TalkingHeadFactoryHeartbeat"
+  else
+    echo "WARN: 心跳计划任务注册失败；稍后在 Windows PowerShell 手动执行：powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"$task_ps1\" -Distro ${WSL_DISTRO_NAME:-Ubuntu} -WslRepo $ROOT"
+  fi
+else
+  echo "WARN: 找不到 powershell.exe，未注册心跳计划任务（非 WSL 或 interop 关闭）"
+fi
 echo
 echo "基础环境完成。"
 echo "下一步：bash deploy/windows/Set-DeepSeekKey.sh，然后按 deploy/windows/CODEX-REINSTALL.md 的 Gate 3 迁移旧 job。"
