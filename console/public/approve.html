@@ -61,7 +61,8 @@
       <h2>切点 <span class="badge count"></span></h2>
       <div class="notice bad blocker" hidden></div>
       <div class="notice ok done" hidden>切点已经通过。</div>
-      <p class="hint">每张图是一个切点前后的连续帧；看有没有跳帧、半句话、重复。</p>
+      <p class="hint">每张图是一个切点前后的连续帧；看有没有跳帧、半句话、重复。点图会把视频跳到那个切点前一秒半播放，听气口。</p>
+      <video class="cut-video" controls playsinline preload="metadata" hidden></video>
       <div class="strips"></div>
       <form class="approve-form">
         <label class="field">姓名 <input name="name" autocomplete="name" placeholder="谁看的" required maxlength="40" /></label>

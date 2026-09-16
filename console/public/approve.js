@@ -118,6 +118,8 @@
     const node = $("#tpl-cuts").content.firstElementChild.cloneNode(true);
     $(".count", node).textContent = `${cuts.cutCount} 个`;
     const strips = $(".strips", node);
+    const video = $(".cut-video", node);
+    if (cuts.video) { video.src = cuts.video; video.hidden = false; }
     for (const image of cuts.images) {
       const figure = document.createElement("figure");
       const img = document.createElement("img");
@@ -127,6 +129,15 @@
       const caption = document.createElement("figcaption");
       caption.textContent = `#${image.index} · ${Number(image.time).toFixed(2)}s`;
       figure.append(img, caption);
+      if (cuts.video) {
+        figure.style.cursor = "pointer";
+        figure.title = "点击跳到这个切点前 1.5 秒播放";
+        figure.addEventListener("click", () => {
+          video.currentTime = Math.max(0, Number(image.time) - 1.5);
+          video.play().catch(() => {});
+          video.scrollIntoView({ behavior: "smooth", block: "center" });
+        });
+      }
       strips.append(figure);
     }
     if (cuts.blocker) { const b = $(".blocker", node); b.hidden = false; b.textContent = `现在还不能通过：${cuts.blocker}`; }

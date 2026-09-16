@@ -143,8 +143,12 @@ export function approvalDetail(slug, { root = jobsRoot() } = {}) {
     const signalsFile = path.join(jobDir, "data", "editor-signals.json");
     const signals = fs.existsSync(signalsFile) ? readJson(signalsFile) : { sources: [] };
     const boundaryWarnings = (signals.sources || []).flatMap((source) => (source.cutBoundarySignals || []).filter((item) => item.severity !== "ok"));
+    // 切点要「听过气口」才能签，页面必须能放工作母版：每张切点图可点跳到该切点前 1.5s 播放
+    const project = fs.existsSync(path.join(jobDir, "project.json")) ? readJson(path.join(jobDir, "project.json")) : {};
+    const master = path.join(jobDir, project.sourceVideo || "assets/aroll.mp4");
     cuts = {
       ...cutsState,
+      video: fs.existsSync(master) ? mediaUrl(master, { root }) : null,
       cutCount: (report.cuts || []).length,
       images: (report.cuts || []).map((cut) => ({ index: cut.index, time: cut.time, url: mediaUrl(path.join(jobDir, cut.image), { root }) })),
       boundaryWarnings: boundaryWarnings.length,
