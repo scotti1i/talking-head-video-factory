@@ -188,7 +188,7 @@ function snapshotFile(jobDir, relativePath) {
   };
 }
 
-function sha256File(file) {
+export function sha256File(file) {
   const hash = crypto.createHash("sha256");
   const descriptor = fs.openSync(file, "r");
   const buffer = Buffer.allocUnsafe(1024 * 1024);

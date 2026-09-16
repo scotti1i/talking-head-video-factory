@@ -62,7 +62,9 @@
 ```
 
 - `by` 只允许 `human` / `agent`，默认 `agent`；`name` 必填。`reviewer` 是兼容旧字段，与 `name` 相同。
-- `deliver`、`deliver:variants`、`review init` 只接受 `by: human`。Agent 不得替人写 `human`；用户亲自看完后在终端执行 `--by human --name <人名>`。`FACTORY_ALLOW_AGENT_APPROVAL=1` 只给 CI / smoke，执行时大声警告。
+- `deliver`、`deliver:variants`、`review init` 只接受 `by: human`。Agent 不得替人写 `human`；用户亲自看完后在终端执行 `--by human --name <人名>`，或在网页审批页（`npm run approve:open -- --job jobs/<slug>`，即 console 的 `/approve?job=<slug>`）点「通过」。`FACTORY_ALLOW_AGENT_APPROVAL=1` 只给 CI / smoke，执行时大声警告。
+- 网页审批写出的文件与终端命令同形（`governance-lib.mjs` 唯一定义），只多三个字段：`via: "console"`、`fullPlayback: true`；终审另有 `revision`（审的是哪一版 `review/Rn`）、`videoHash`（该版 `video.mp4` 的 SHA-256）、`watchedToEnd: true`（浏览器 `ended` 事件真的触发过）。终审的「待审」判定：最新 `review/Rn/video.mp4` 没有对应的 human 签（`revision` 不同，或没记 `revision` 但 `reviewedAt` 早于该视频）。
+- 网页上点「有问题，退回」不写任何 approval，只把一段话追加到 `review/Rn/feedback-inbox.md`；Agent 下一轮先读它。
 - 批量盖章：job 内任意两份 approval 的 `reviewedAt`（缺失时用 mtime）相差 ≤ 2 秒，`workflow-status` 的「批量盖章」gate 标红，job 不算 ready。
 
 ## resolved-signals.json

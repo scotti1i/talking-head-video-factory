@@ -11,6 +11,7 @@
 | 回流证据 | `npm run report:push -- --job jobs/<slug> [--no-push]` | 只推 `project.json/md`、`data/ qa/ review/ delivery/ requests/` 文本，进 `ops/<主机名>/<slug>/` |
 | 收尾验收 | `npm run acceptance -- --job jobs/<slug> [--no-push]` | 顺序跑 status / qa:alignment / captions:voice-qa / dialogue:qa / audio:qa / review:independent，写 `qa/acceptance.{json,md}` 后 `report:push` |
 | 装 hook | `npm run hooks:install` | `core.hooksPath=scripts/git-hooks`；`FACTORY_ROLE=operator` 时拒绝改代码目录 |
+| 网页审批 | `npm run approve:open -- --job jobs/<slug>` | 起 console（未起时）并开浏览器到 `/approve?job=<slug>`：看切点图 / 播完审片视频 → 填姓名 → 「通过」写 `by: human` 的 approval；「有问题，退回」写 `review/Rn/feedback-inbox.md`。`/approve` 不带 job = 待审列表 |
 
 - job 根目录：`FACTORY_JOBS_ROOT`（环境变量或 `~/.config/talking-head-factory/env`）；未设置时仍是 `<仓库>/jobs`。`--job jobs/<slug>` 两种情况都能解析。
 - 审批人：`qa:cuts:approve` / `qa:final:approve` 接受 `--by human|agent --name <人名>`（默认 agent），写 `by` / `name` / `reviewedAt`。`deliver`、`deliver:variants`、`review init` 只接受 `by: human`；`FACTORY_ALLOW_AGENT_APPROVAL=1` 仅供 CI / smoke，会大声警告。

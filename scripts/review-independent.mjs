@@ -13,7 +13,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { atomicWriteJson, factoryConfigDir, factoryEnvValue, parseArgs, projectRoot, readJson, resolveJob, run, videoDuration } from "./lib.mjs";
+import { atomicWriteJson, commandExists, factoryConfigDir, factoryEnvValue, parseArgs, projectRoot, readJson, resolveJob, run, videoDuration } from "./lib.mjs";
 
 const root = projectRoot();
 export const GEMINI_API_BASE = "https://generativelanguage.googleapis.com/v1beta";
@@ -99,11 +99,6 @@ ${boards.map((board) => `- ${board.file}`).join("\n")}
 }
 
 // ---- 审片后端选择 ----
-export function commandExists(name) {
-  const result = spawnSync("sh", ["-c", `command -v ${name}`], { stdio: "pipe", encoding: "utf8" });
-  return result.status === 0;
-}
-
 // explicit（--reviewer）> env.FACTORY_REVIEWER > 自动：codex 命令在 → codex；GEMINI_API_KEY 在 → gemini；否则报错。
 export function selectReviewer({ explicit, env = {}, commandExists: exists = commandExists } = {}) {
   const chosen = String(explicit || env.FACTORY_REVIEWER || "").trim();
