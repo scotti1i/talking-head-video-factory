@@ -16,8 +16,7 @@ import {
   readJsonArray,
   resolveJob,
   run,
-  videoDuration
-} from "./lib.mjs";
+  videoDuration, commandExists } from "./lib.mjs";
 import {
   COMPONENT_FORMATS,
   catalogById,
@@ -346,7 +345,10 @@ function stageCjkSubset() {
   fs.mkdirSync(path.dirname(textFile), { recursive: true });
   fs.mkdirSync(path.dirname(output), { recursive: true });
   fs.writeFileSync(textFile, text);
-  run("pyftsubset", [
+  // apt 的 python3-fonttools 不带 pyftsubset 命令行（客户 WSL 靠多装的 fonttools 包才有）；没有就走模块入口，功能相同
+  const subsetCommand = commandExists("pyftsubset") ? ["pyftsubset"] : ["python3", "-m", "fontTools.subset"];
+  run(subsetCommand[0], [
+    ...subsetCommand.slice(1),
     source,
     "--font-number=0",
     `--text-file=${textFile}`,

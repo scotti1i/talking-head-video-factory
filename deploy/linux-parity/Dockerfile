@@ -13,7 +13,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     FACTORY_CJK_FONT=/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-      ca-certificates curl git unzip ffmpeg fonts-noto-cjk python3 python3-fonttools python3-numpy \
+      ca-certificates curl git unzip ffmpeg fonts-noto-cjk python3 fonttools python3-fonttools python3-brotli python3-numpy \
       libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libxcomposite1 \
       libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2t64 libpango-1.0-0 libcairo2 \
     && rm -rf /var/lib/apt/lists/*
