@@ -25,20 +25,54 @@ export function dtwPresetForModel(modelPath) {
 }
 
 // 把媒体文件转成 16k 单声道 wav，跑 whisper-cli，返回归一化后的 { segments, words, dtw }
-export function transcribeMedia({ source, model = DEFAULT_MODEL, language = "auto", tmpDir, dtw = true, extraArgs = [] }) {
+// -dtw 回退（v2.0.3 spec D）：带 -dtw 跑挂了（非零退出 / 没输出 JSON / JSON 解析不了）就去掉 -dtw 重跑一次，
+//   结果 dtw: null 并记 dtwFallback（stderr 尾 300 字），转录不因 DTW 这个锦上添花的功能整体失败。
+// runner 只给测试注入用，默认就是 lib.run。
+export function transcribeMedia({ source, model = DEFAULT_MODEL, language = "auto", tmpDir, dtw = true, extraArgs = [], runner = run }) {
   if (!fs.existsSync(model)) throw new Error(`Whisper 模型不存在: ${model}`);
   fs.mkdirSync(tmpDir, { recursive: true });
   const stem = `${path.basename(source, path.extname(source))}-${process.pid}`;
   const wav = path.join(tmpDir, `${stem}.wav`);
   const outBase = path.join(tmpDir, `${stem}-whisper`);
-  run("ffmpeg", ["-y", "-loglevel", "error", "-i", source, "-vn", "-ac", "1", "-ar", "16000", wav]);
+  runner("ffmpeg", ["-y", "-loglevel", "error", "-i", source, "-vn", "-ac", "1", "-ar", "16000", wav]);
   const dtwPreset = dtw ? dtwPresetForModel(model) : null;
-  const args = ["-m", model, "-l", language, ...(dtwPreset ? ["-dtw", dtwPreset] : []), "-ojf", "-of", outBase, "-np", ...extraArgs, wav];
-  run("whisper-cli", args);
-  const raw = JSON.parse(fs.readFileSync(`${outBase}.json`, "latin1"));
+  const attempt = (preset) => runWhisperOnce({ runner, model, language, preset, outBase, extraArgs, wav });
+  let result = attempt(dtwPreset);
+  let dtwFallback = null;
+  if (!result.ok && dtwPreset) {
+    dtwFallback = result.stderr.slice(-300);
+    result = attempt(null);
+  }
   fs.rmSync(wav, { force: true });
-  fs.rmSync(`${outBase}.json`, { force: true });
-  return normalizeWhisperJson(raw, { model, language, dtwPreset });
+  if (!result.ok) throw new Error(`whisper-cli 转录失败：${result.stderr.slice(-1500)}`);
+  const normalized = normalizeWhisperJson(result.raw, { model, language, dtwPreset: dtwFallback === null ? dtwPreset : null });
+  if (dtwFallback !== null) {
+    normalized.dtw = null;
+    normalized.dtwFallback = dtwFallback;
+  }
+  return normalized;
+}
+
+// 跑一次 whisper-cli 并读回 JSON；任何一环失败都返回 { ok:false, stderr }，由调用方决定是否回退。
+function runWhisperOnce({ runner, model, language, preset, outBase, extraArgs, wav }) {
+  const jsonFile = `${outBase}.json`;
+  fs.rmSync(jsonFile, { force: true });
+  const args = ["-m", model, "-l", language, ...(preset ? ["-dtw", preset] : []), "-ojf", "-of", outBase, "-np", ...extraArgs, wav];
+  try {
+    // stderr 截下来才有回退原因可记；stdout 仍直通终端（-np 下几乎没有输出）
+    runner("whisper-cli", args, { stdio: ["ignore", "inherit", "pipe"] });
+  } catch (error) {
+    return { ok: false, stderr: String(error.message || error) };
+  }
+  if (!fs.existsSync(jsonFile)) return { ok: false, stderr: `whisper-cli 未输出 ${path.basename(jsonFile)}` };
+  try {
+    const raw = JSON.parse(fs.readFileSync(jsonFile, "latin1"));
+    return { ok: true, raw };
+  } catch (error) {
+    return { ok: false, stderr: `whisper-cli 输出的 JSON 解析失败：${error.message}` };
+  } finally {
+    fs.rmSync(jsonFile, { force: true });
+  }
 }
 
 export function normalizeWhisperJson(raw, { model, language, dtwPreset } = {}) {

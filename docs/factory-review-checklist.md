@@ -1,6 +1,7 @@
 # 工厂口播成片 · 独立审片清单（v2）
 
 > 用法：`npm run review:independent -- --job jobs/<slug> --revision Rn` 把本清单「审片清单」一节原文、静帧板和门禁报告交给一个**没有剪辑上下文**的模型逐条打分；任一 ✗ 即不过，acceptance 失败。
+> 审片后端：`--reviewer codex|claude|gemini`（或 `FACTORY_REVIEWER`）；不指定时有 `codex` 命令用 codex，否则有 `GEMINI_API_KEY`（环境变量或 `~/.config/talking-head-factory/env`）用 gemini，都没有报「缺审片后端」。Gemini 模型取 `FACTORY_GEMINI_MODEL`，未设则 ListModels 选最新 `gemini-*-pro` 并缓存到 `~/.config/talking-head-factory/gemini-model`（换模型删这个文件）。
 > 出处：2026-09-11 客户审计——8 条真片 96 条审片反馈里，同一缺陷平均被投诉 2–5 轮；原因是每轮只响应最后一句话，没有固定标准。下面 10 条就是那 96 条反馈的归纳，每条注明看什么证据。
 
 ## 审片清单

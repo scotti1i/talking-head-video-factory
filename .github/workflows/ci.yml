@@ -1,5 +1,6 @@
 name: ci
 
+# 触发：任何分支的 push 与 pull_request（客户 PR 来自 client/* 分支，也要跑）
 on:
   push:
   pull_request:
@@ -8,6 +9,7 @@ permissions:
   contents: read
 
 jobs:
+  # 单元测试：package.json 里每一个 test:* 都显式列出，新增套件必须来这里补一行
   unit:
     runs-on: ubuntu-latest
     steps:
@@ -19,5 +21,44 @@ jobs:
       - run: npm ci
       - run: npm run audit:public
       - run: npm run test:contracts
-      - run: npm run test:workflow
+      - run: npm run test:color
       - run: npm run test:visual-library
+      - run: npm run test:workflow
+      - run: npm run test:governance
+      - run: npm run test:timing
+
+  # Linux 对齐 smoke（spec G）：建 smoke job → build:beats → hyperframes lint / validate / inspect
+  # 为什么：2026-09-16 v2.0.2 的字体栈 bug 本机 Mac 看不出来，客户 WSL Ubuntu 上才炸。
+  smoke-ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+      # ffmpeg：create-smoke-job 合成样片、build:beats ffprobe；fonts-noto-cjk：中文字幕字体；
+      # python3-fonttools：build:beats 用 pyftsubset 子集化字体。
+      # 其余 lib*：hyperframes inspect 抽样帧要起 chrome-headless-shell（puppeteer-core），
+      # 缺这些共享库时 Chrome 起不来——清单取自 hyperframes doctor 的 debian 依赖表
+      # （Ubuntu 24.04 上 libasound2 已改名 libasound2t64）。
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-noto-cjk python3-fonttools \
+            libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 \
+            libatspi2.0-0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 \
+            libpango-1.0-0 libcairo2 libasound2t64
+      - run: npm ci
+      # hyperframes inspect 不用系统 Chrome；它自己按版本下载 chrome-headless-shell 到
+      # ~/.cache/hyperframes/chrome/。没下载过会直接报「Run: npx hyperframes browser ensure」。
+      - run: npx hyperframes browser ensure
+      - run: npm run smoke
+        env:
+          FACTORY_JOBS_ROOT: ${{ runner.temp }}/jobs
+      - name: 失败时保留 smoke 产物
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-job
+          path: ${{ runner.temp }}/jobs/smoke
+          if-no-files-found: ignore

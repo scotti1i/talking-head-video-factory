@@ -233,6 +233,12 @@ export function run(command, args, options = {}) {
   return result;
 }
 
+// 只问 PATH 里有没有这个命令，不执行它（commandOk 会真跑一次 --version）
+export function commandExists(name) {
+  const result = spawnSync("sh", ["-c", `command -v ${name}`], { stdio: "pipe", encoding: "utf8" });
+  return result.status === 0;
+}
+
 export function commandOk(command, args = ["--version"]) {
   const result = spawnSync(command, args, { stdio: "pipe", encoding: "utf8" });
   return {

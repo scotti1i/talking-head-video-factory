@@ -22,6 +22,76 @@ export function approvalActor(args) {
   return { by, name };
 }
 
+// ============================================================
+// 审批文件的唯一写法（v2.0.3 spec B）
+// 为什么：终端 approve-*.mjs 与网页 /approve 两个入口写同一份 approval.json，
+// 字段形状必须在一处定义，否则 deliver / status 的门禁会读到两套口径。
+// extra 只允许追加字段（via / videoHash / revision），不能覆盖 by / reviewedAt。
+// ============================================================
+export function cutApprovalRecord({ by, name, cutCount, acousticReviewed = false, acousticBoundaryWarnings = 0, notes = "逐张检查通过", now = new Date(), extra = {} }) {
+  return {
+    ...extra,
+    status: "approved",
+    by,
+    name,
+    reviewedAt: now.toISOString(),
+    reviewer: name,
+    cutCount: Number(cutCount),
+    acousticReviewed: Boolean(acousticReviewed),
+    acousticBoundaryWarnings: Number(acousticBoundaryWarnings),
+    notes: String(notes)
+  };
+}
+
+export function finalApprovalRecord({ by, name, frameCount, fullPlayback = false, notes = "已检查全部最终 MP4 抽帧", now = new Date(), extra = {} }) {
+  const played = Boolean(fullPlayback);
+  return {
+    ...extra,
+    status: played ? "publish_ready" : "frames_approved_playback_pending",
+    by,
+    name,
+    reviewedAt: now.toISOString(),
+    reviewer: name,
+    frameCount: Number(frameCount),
+    fullPlayback: played,
+    notes: String(notes)
+  };
+}
+
+// 切点批准前置检查：报告在、每张切点图在、有气口警告必须明确听审过。
+// 返回 { report, boundaryWarnings }；终端与网页共用同一套拒绝理由。
+export function assertCutApprovalAllowed(jobDir, { qaDir = path.join(jobDir, "qa", "cuts"), acousticReviewed = false } = {}) {
+  const reportPath = path.join(qaDir, "report.json");
+  const acousticPath = path.join(jobDir, "data", "editor-signals.json");
+  const edlPath = path.join(jobDir, "data", "rough-cut-edl.json");
+  if (!fs.existsSync(reportPath)) throw new Error(`缺少切点报告: ${reportPath}`);
+  if (!fs.existsSync(acousticPath)) throw new Error("缺少编辑声学审计；先运行 npm run transcript:audit");
+  if (fs.existsSync(edlPath) && fs.statSync(acousticPath).mtimeMs < fs.statSync(edlPath).mtimeMs) {
+    throw new Error("编辑声学审计早于当前 EDL；请重新运行 npm run transcript:audit");
+  }
+  const report = readJson(reportPath);
+  const acoustic = readJson(acousticPath);
+  const boundaryWarnings = (acoustic.sources || []).flatMap((source) => (source.cutBoundarySignals || []).filter((item) => item.severity !== "ok"));
+  if (boundaryWarnings.length && !acousticReviewed) {
+    throw new Error(`有 ${boundaryWarnings.length} 个无可靠气口的切点；听审后使用 --acousticReviewed true 明确确认`);
+  }
+  const missing = (report.cuts || []).filter((cut) => !fs.existsSync(path.join(jobDir, cut.image)));
+  if (missing.length) throw new Error(`缺少 ${missing.length} 张切点图，不能批准`);
+  return { report, boundaryWarnings };
+}
+
+// 终审批准前置检查：规格 QA 报告在且无失败项、有最终 MP4 抽帧。返回 { report, frames }。
+export function assertFinalApprovalAllowed(qaDir) {
+  const reportPath = path.join(qaDir, "report.json");
+  if (!fs.existsSync(reportPath)) throw new Error(`缺少最终 QA 报告: ${reportPath}`);
+  const report = readJson(reportPath);
+  if (report.failures?.length) throw new Error(`规格 QA 仍有失败项: ${report.failures.join("; ")}`);
+  const frameDir = report.framesDir || path.join(qaDir, "final-frames");
+  const frames = fs.existsSync(frameDir) ? fs.readdirSync(frameDir).filter((name) => /\.(jpe?g|png)$/i.test(name)) : [];
+  if (!frames.length) throw new Error("没有最终 MP4 抽帧，不能批准");
+  return { report, frames };
+}
+
 export function readApproval(file) {
   if (!fs.existsSync(file)) return null;
   const approval = readJson(file);

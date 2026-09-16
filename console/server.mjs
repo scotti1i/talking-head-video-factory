@@ -21,8 +21,10 @@ import {
 import { buildPrompt } from "./prompts.mjs";
 import { cancelRun, listRuns, startRun, startVisualPreviewRun, streamRun } from "./runner.mjs";
 import { getVisualAsset, listVisualLibrary, resolveVisualPreview } from "./visual-library.mjs";
+import { approvalDetail, consolePort, pendingApprovals, resolveMediaPath, submitApproval, writeFeedbackInbox } from "./approve.mjs";
+import { jobsRoot } from "../scripts/lib.mjs";
 
-const PORT = Number(process.env.CONSOLE_PORT || 4870);
+const PORT = consolePort();
 const PUBLIC_DIR = path.join(ROOT, "console", "public");
 const MIME = {
   ".html": "text/html; charset=utf-8",
@@ -48,17 +50,58 @@ const server = http.createServer(async (req, res) => {
       if (rejected) return sendJson(res, rejected.status, { error: rejected.error });
       return await api(req, res, url);
     }
-    if (url.pathname.startsWith("/files/")) return serveFile(req, res, decodeURIComponent(url.pathname.slice(7)));
+    if (url.pathname.startsWith("/files/")) return serveFile(req, res, ROOT, decodeURIComponent(url.pathname.slice(7)));
+    // 审批页的媒体（切点图 / 审片视频）：jobs 根目录可能在仓库外，单独一条只认 jobsRoot 之内的路由
+    if (url.pathname.startsWith("/media/")) return serveFile(req, res, jobsRoot(), decodeURIComponent(url.pathname.slice(7)));
+    if (url.pathname === "/approve" || url.pathname === "/approve/feedback") return await approve(req, res, url);
     return serveStatic(req, res, url.pathname === "/" ? "index.html" : decodeURIComponent(url.pathname.slice(1)));
   } catch (error) {
     sendJson(res, 500, { error: error.message });
   }
 });
 
+// ============================================================
+// /approve（v2.0.3 spec B）
+//   GET  /approve[?job=<slug>]  → 审批页（静态 approve.html，页内 JS 读 /api/approve）
+//   POST /approve               → {job, kind:"cuts"|"final", name, fullPlayback:true, watchedToEnd?, acousticReviewed?, revision?}
+//   POST /approve/feedback      → {job, revision?, name?, note} 追加 review/Rn/feedback-inbox.md
+// 数据面在 /api/approve，跟其它 API 一样受 loopback / JSON 门。
+// ============================================================
+async function approve(req, res, url) {
+  if (req.method === "GET") return serveStatic(req, res, "approve.html");
+  const rejected = rejectApiRequest(req);
+  if (rejected) return sendJson(res, rejected.status, { error: rejected.error });
+  if (req.method !== "POST") return sendJson(res, 405, { error: "只接受 GET / POST" });
+  const body = await readBody(req);
+  try {
+    if (url.pathname === "/approve/feedback") return sendJson(res, 200, writeFeedbackInbox(body));
+    const result = submitApproval({
+      job: body.job,
+      kind: body.kind,
+      name: body.name,
+      fullPlayback: body.fullPlayback === true,
+      watchedToEnd: body.watchedToEnd === true,
+      acousticReviewed: body.acousticReviewed === true,
+      revision: body.revision
+    });
+    return sendJson(res, 200, { ...result, file: path.relative(jobsRoot(), result.file) });
+  } catch (error) {
+    return sendJson(res, 400, { error: error.message });
+  }
+}
+
 async function api(req, res, url) {
   const parts = url.pathname.split("/").filter(Boolean); // ["api", ...]
   const body = ["POST", "PUT"].includes(req.method) ? await readBody(req) : null;
 
+  if (req.method === "GET" && url.pathname === "/api/approve") {
+    const job = url.searchParams.get("job");
+    try {
+      return sendJson(res, 200, job ? approvalDetail(job) : { pending: pendingApprovals() });
+    } catch (error) {
+      return sendJson(res, 404, { error: error.message });
+    }
+  }
   if (req.method === "GET" && url.pathname === "/api/state") {
     return sendJson(res, 200, { jobs: listJobs(), themes: listThemes(), runs: listRuns() });
   }
@@ -238,8 +281,8 @@ function serveStatic(req, res, rel) {
   fs.createReadStream(file).pipe(res);
 }
 
-function serveFile(req, res, rel) {
-  const file = safeResolve(ROOT, rel);
+function serveFile(req, res, base, rel) {
+  const file = safeResolve(path.resolve(base), rel);
   if (!fs.existsSync(file) || !fs.statSync(file).isFile()) return sendJson(res, 404, { error: "not found" });
   const type = MIME[path.extname(file).toLowerCase()] || "application/octet-stream";
   const size = fs.statSync(file).size;
