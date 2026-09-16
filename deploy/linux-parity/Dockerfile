@@ -12,7 +12,9 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PUPPETEER_CACHE_DIR=/opt/puppeteer \
     FACTORY_CJK_FONT=/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
+# ports.ubuntu.com 经 TUN 常 503，换清华镜像（http：装 ca-certificates 之前 https 索引会被忽略）+ 重试（只影响本容器，客户机仍用官方源）
+RUN sed -i 's#http://ports.ubuntu.com/ubuntu-ports#http://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports#g; s#http://archive.ubuntu.com/ubuntu#http://mirrors.tuna.tsinghua.edu.cn/ubuntu#g' /etc/apt/sources.list.d/ubuntu.sources \
+    && apt-get -o Acquire::Retries=5 update && apt-get -o Acquire::Retries=5 install -y --no-install-recommends \
       ca-certificates curl git unzip ffmpeg fonts-noto-cjk python3 fonttools python3-fonttools python3-brotli python3-numpy \
       libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libxcomposite1 \
       libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2t64 libpango-1.0-0 libcairo2 \
