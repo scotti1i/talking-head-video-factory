@@ -17,17 +17,18 @@ if [[ "${1:-}" == "--rebuild" || "$want" != "$have" ]] || ! docker image inspect
   # Docker Desktop 会把宿主系统代理 127.0.0.1:1082 原样注入容器，容器里那是它自己；TUN 直连又会中途掉线。
   # 改成显式走 host.docker.internal:1082（Docker Desktop 把它转发到宿主 loopback），2026-09-16 实测 apt 与 curl 都通。
   PROXY="${FACTORY_PARITY_PROXY:-http://host.docker.internal:1082}"
-  docker build --build-arg HTTP_PROXY="$PROXY" --build-arg HTTPS_PROXY="$PROXY" --build-arg http_proxy="$PROXY" --build-arg https_proxy="$PROXY" --build-arg NO_PROXY=localhost,127.0.0.1 \
+  # 客户机与 CI 都是 x86_64；Apple 芯片上默认会建 arm64 镜像，而 chrome-headless-shell 没有 Linux ARM64 版（2026-09-16 踩到）
+  docker build --platform linux/amd64 --build-arg HTTP_PROXY="$PROXY" --build-arg HTTPS_PROXY="$PROXY" --build-arg http_proxy="$PROXY" --build-arg https_proxy="$PROXY" --build-arg NO_PROXY=localhost,127.0.0.1 \
     -t "$IMAGE" -f "$ROOT/deploy/linux-parity/Dockerfile" "$ROOT"
   echo "$want" > "$STAMP"
   [[ "${1:-}" == "--rebuild" ]] && shift || true
 fi
 
 if [[ "${1:-}" == "--shell" ]]; then
-  exec docker run --rm -it -e HTTP_PROXY= -e HTTPS_PROXY= -e http_proxy= -e https_proxy= -v "$ROOT":/src:ro "$IMAGE" bash -c 'cp -r /src/. /work && rm -rf /work/node_modules && ln -s /deps/node_modules /work/node_modules && cd /work && exec bash'
+  exec docker run --rm -it --platform linux/amd64 -e HTTP_PROXY= -e HTTPS_PROXY= -e http_proxy= -e https_proxy= -v "$ROOT":/src:ro "$IMAGE" bash -c 'cp -r /src/. /work && rm -rf /work/node_modules && ln -s /deps/node_modules /work/node_modules && cd /work && exec bash'
 fi
 
-docker run --rm -e HTTP_PROXY= -e HTTPS_PROXY= -e http_proxy= -e https_proxy= -v "$ROOT":/src:ro "$IMAGE" bash -c '
+docker run --rm --platform linux/amd64 -e HTTP_PROXY= -e HTTPS_PROXY= -e http_proxy= -e https_proxy= -v "$ROOT":/src:ro "$IMAGE" bash -c '
   set -euo pipefail
   cp -r /src/. /work && rm -rf /work/node_modules && ln -s /deps/node_modules /work/node_modules && cd /work
   git config --global --add safe.directory /work || true

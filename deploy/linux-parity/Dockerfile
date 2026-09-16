@@ -3,6 +3,7 @@
 # 为什么：2026-09-16 v2.0.2 的字体 lint bug 在 Mac 上看不出来（Hiragino 存在、PingFang 存在），
 #   客户 Gate 4 才炸。打 tag 前必须在这里跑一遍全量测试 + smoke。
 # 用法：deploy/linux-parity/run.sh            （首次自动 build，lockfile 变了自动重建）
+# 架构：由 run.sh 以 --platform linux/amd64 构建（客户机 / CI 都是 x86_64；Apple 芯片默认 arm64 没有 chrome-headless-shell）
 # 不含：whisper.cpp、NVENC——转录与显卡编码只能靠客户机 doctor + 心跳兜底。
 # ============================================================
 FROM ubuntu:24.04
