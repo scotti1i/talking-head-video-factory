@@ -19,6 +19,7 @@
     "console",
     "deploy/windows",
     "deploy/linux-parity",
+    "deploy/ops",
     "docs",
     "fine-cut",
     "profiles",
