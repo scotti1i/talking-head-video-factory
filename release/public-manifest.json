@@ -18,6 +18,7 @@
     "components",
     "console",
     "deploy/windows",
+    "deploy/linux-parity",
     "docs",
     "fine-cut",
     "profiles",

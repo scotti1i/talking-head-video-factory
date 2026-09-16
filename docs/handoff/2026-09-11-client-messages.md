@@ -28,7 +28,7 @@
 > 1. 只用 `npm run <命令>` 做处理，不写 ffmpeg / ffprobe 以外的任何命令行处理，不写滤镜。
 > 2. 不修改 `scripts/ components/ themes/ template-packs/ console/ deploy/ skills/ docs/` 下任何文件；管线做不到的事运行 `npm run request -- --title "..." --detail "..."`，然后停下告诉用户「已提需求，等发布」。
 > 3. 不以 `review/` 或 `renders/` 里的视频当输入做任何加工；要改就回到 EDL / 字幕 / beats 重渲。
-> 4. 审批文件里 `by` 只能写 `agent`；`human` 只能由用户亲自在终端执行 `--by human --name <人名>` 写入。
+> 4. 审批文件里 `by` 只能写 `agent`；`human` 只能由用户亲自在 `npm run approve:open` 打开的网页上看完点「通过」写入，你不得替人批、不得手改 approval.json。
 > 5. 每条片收尾必跑 `npm run acceptance -- --job jobs/<slug>`，把报告结论逐条原样转述给用户，不要总结成「通过」。
 > 6. 每次开工先 `npm run update -- --check`，有新版先告诉用户再装。
 >

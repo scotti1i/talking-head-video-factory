@@ -58,12 +58,16 @@ description: "工厂外贸口播自动剪辑（操作员模式）：只读导入
 
 3. 阅读书面文稿、`takes-packed.md` 与 `editor-signals.md`，按语义写 `rough-cut-edl.json`。禁止用静音检测代替判断。`editor-signals.json` 里 `severity: high` 的信号，要么改 EDL 剪掉，要么听审后把 `{ id, reason }` 写进 `data/resolved-signals.json`（id 格式见 `docs/data-contract.md`）。
 
-4. 渲染与处理 A-roll（`roughcut:render` → `aroll:treat`，工作母版 `assets/aroll.mp4` 与 `project.json.aroll` 合同由此产生），逐切点检查（`qa:cuts`，切点位置已按倍速换算），把切点图和波形给用户看；用户确认后**由用户**执行 `qa:cuts:approve -- --by human --name <人名>`。然后 `captions:build`（对工作母版转录一次，字幕 / 人声区 / 词表同源）→ `qa:alignment`（逐段音画对齐 ≤1 帧，不过就回到 EDL 重做，不许改字幕时间），并建立 `data/dialogue-continuity.json`：逐 take 检查首个有效音节、异语言拍摄口令、尾词保护和局部响度跳变；B-roll 还要声明没有遮住未剪掉的静音或制造短 A-roll 闪回。运行 `npm run dialogue:qa -- --job jobs/<slug>` 通过后，才套用已注册模板包并构建 review MP4。
+4. 渲染与处理 A-roll（`roughcut:render` → `aroll:treat`，工作母版 `assets/aroll.mp4` 与 `project.json.aroll` 合同由此产生），逐切点检查（`qa:cuts`，切点位置已按倍速换算），然后 `npm run approve:open -- --job jobs/<slug>`：切点在网页上批（用户看切点图、点图听气口、填姓名点「通过」，写入 `by: human`）；不在终端替人批。然后 `captions:build`（对工作母版转录一次，字幕 / 人声区 / 词表同源）→ `qa:alignment`（逐段音画对齐 ≤1 帧，不过就回到 EDL 重做，不许改字幕时间），并建立 `data/dialogue-continuity.json`：逐 take 检查首个有效音节、异语言拍摄口令、尾词保护和局部响度跳变；B-roll 还要声明没有遮住未剪掉的静音或制造短 A-roll 闪回。运行 `npm run dialogue:qa -- --job jobs/<slug>` 通过后，才套用已注册模板包并构建 review MP4。
 
-5. 建立审片版本（要求切点批准 `by: human` 且 high 信号已登记）：
+5. 出审片版本并交网页终审（要求切点批准 `by: human` 且 high 信号已登记）。先构建、渲染并做规格 QA——`qa/report.json` 与 `final-frames` 是网页终审的前置门，缺了页面会拦：
 
    ```bash
-   npm run review -- init --job jobs/<slug> --revision R0 --video <job-relative-review-video>
+   npm run build:variants -- --job jobs/<slug>
+   npm run check:variants -- --job jobs/<slug>
+   npm run render:variants -- --job jobs/<slug>
+   npm run qa:variants -- --job jobs/<slug>
+   npm run review -- init --job jobs/<slug> --revision R0 --video variants/<variant>/renders/<outputName>
    npm run approve:open -- --job jobs/<slug>
    ```
 

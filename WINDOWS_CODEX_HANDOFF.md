@@ -148,7 +148,7 @@ D:\AutoEdit\Inbox\smoke-001\
 - 至少能选择 `factory-clean`、`factory-proof` 两个公共模板包；公司自有参考素材可按 `docs/theme-replication.md` 新增模板。
 - R0 MP4 可完整播放，随后吸收至少 3 条时间码反馈生成 R1，R0 哈希保持不变。
 - Outbox 至少包含 MP4、SRT、干净 A-roll、EDL、反馈记录、QA 和素材清单。
-- 切点批准与最终批准由用户亲自在终端执行 `--by human --name <人名>`；`npm run status` 里「批量盖章」必须为绿。
+- 切点批准与最终批准由用户在 `npm run approve:open` 打开的网页上亲自点「通过」（v2.0.3 起，不再用终端命令）；`npm run status` 里「批量盖章」必须为绿。
 - 收尾 `npm run acceptance -- --job jobs/smoke-001` 通过，且 GitHub 出现 `client/<主机名>` 分支的 `ops(...)` commit。
 
 ## 6. 性能与故障判断
