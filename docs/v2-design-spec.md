@@ -80,3 +80,43 @@ Gate 0 备份（zip 现有仓库目录到 `D:\AutoEdit\Backup\<date>`）→ Gate
 - 不把叙事舞台引擎（Remotion）移植进来；不动 hyperframes 组合器体系。
 - 不做便携 zip 发布；发布 = 打 tag。
 - 不为客户新写模板包；只收编、补测试、修 bug。
+
+---
+
+# v2.0.3 增补 · 零代码客户、全自动（2026-09-16，Scott 拍板「全都干掉」）
+
+> 前提修正：客户完全没有代码基础。人只做四件事——拖素材进 Inbox、跟 Codex 说话、看审片视频、点「通过」。其余全自动。运行系统永远是「tag」或「tag + 一个开着的 PR」。
+
+## A. 入口：根目录 `AGENTS.md` 角色路由（替代贴话术）
+- Codex 桌面版打开工作区自动读根 `AGENTS.md`。顶部加「角色路由」：`~/.config/talking-head-factory/env` 里 `FACTORY_ROLE=operator` → 只按「操作员手册」段执行；否则按原开发规范。
+- 操作员手册用人话词汇触发：「做这条片」= 走 SKILL 全流程到 R0 并弹审片；「审片」= 打开审批页；「升级」= `npm run update`；「怎么了 / 出问题了」= 读最近事件 + 跑 doctor 并汇报；「提需求」= `npm run request`；「修一下」= `npm run propose`。
+- 六条硬规则保留（只用 npm run、不改运行 tag 上的代码、不拿成片当输入、审批 by 只能 agent、收尾必跑 acceptance、开工先 update --check）。
+
+## B. 网页一键审批（唯一必须留人的地方，但零终端）
+- `npm run console` 增加 `/approve` 页：列出待审批 job——切点（`qa/cuts/report.json` 存在且无 `by:human` approval）与终审（`review/Rn/video.mp4` 存在且无 `by:human` final approval）。内嵌播放审片视频 / 展示切点图，输入姓名 + 勾「我完整看完了」→ POST 写 approval.json `{ by:"human", name, reviewedAt, videoHash, fullPlayback:true, via:"console" }`。
+- `npm run approve:open -- --job jobs/<slug>`：起 console（若未起）并自动开浏览器到该 job 的审批页（WSL 里用 `wslview` / `explorer.exe`，Mac 用 `open`）。Codex 在 R0 生成后自动调它。
+
+## C. 独立审片 Gemini 后端
+- `review:independent --reviewer gemini`：REST `generateContent`，静帧板 PNG inline base64，提示词不变。模型取 `FACTORY_GEMINI_MODEL`，未设则调 ListModels 选最新支持 generateContent 的 `gemini-*-pro`。
+- 默认审片人自动选择：有 `codex` 命令 → codex；否则有 `GEMINI_API_KEY` → gemini；都没有 → 明确报错「缺审片后端」。
+
+## D. whisper `-dtw` 回退
+- `-dtw` 跑失败（非零退出或输出无 JSON）→ 自动重跑不带 `-dtw`，转录记录 `dtwFallback: <stderr 尾>`。
+
+## E. 出错上报 + 心跳 + 自动升级
+- `scripts/run-with-beacon.mjs <script> [args]`：pipeline 命令统一经它运行（package.json 里 SKILL 用到的命令改成走它）；持 `~/.config/talking-head-factory/running.lock`；非零退出 → 写事件 `~/.config/talking-head-factory/events/<ts>.json`（命令、退出码、末 80 行、job、tag、doctor 摘要）→ best-effort `report:push --events`（失败不影响退出码）。
+- `npm run heartbeat`：doctor 摘要 + `update --check` + 盘位 + 未上报事件 → `ops/<host>/heartbeat/<date>.json` push；无 lock 且有新 tag → 自动 `npm run update`（失败回滚已存在）。
+- Windows 计划任务：`deploy/windows/Install-Scheduled-Task.ps1` 注册每日一次 `wsl -d Ubuntu -- bash <repo>/deploy/windows/Run-Heartbeat.sh`；`CODEX-REINSTALL.md` Gate 2 末尾由 Codex 通过 `powershell.exe -ExecutionPolicy Bypass -File` 调用它。
+
+## F. `propose` + PR 流程（他们自己修，走 PR，不直接进主干）
+- `npm run propose -- --title "..."`：从当前 tag 建分支 `client/<host>/fix-<slug>`，hook 在 `client/*/fix-*` 分支上放行代码目录，但仍拒绝 `scripts/gate-protected.json` 列表内文件（qa-*.mjs 阈值、approve-*.mjs、governance-lib.mjs、review-feedback-lib.mjs、deliver*.mjs、aroll-treat/registry.json 的 playbackRate）——改这些走 `request`。
+- `npm run propose -- --submit`：本地 `npm test`（全部套件 + `test:timing` + `test:governance`）必须全绿 → commit → push → GitHub REST 开 PR 到 `v2`（token 取 git credential store 或 `FACTORY_GITHUB_TOKEN`；token 需 Contents RW + Pull requests RW）→ 打印 PR 链接。`--status` 查 PR 状态。
+- `update` 在 fix 分支上的行为：PR open → 不动，提示等待；PR merged → checkout 最新 tag；PR closed 未合并 → `git format-patch` 存档到 `ops/<host>/rejected/<branch>/` 并 push，再 checkout 最新 tag。运行状态永远是 tag 或 tag+开着的 PR。
+- 我们这边承诺：PR 一个工作日内审完；打 tag 前先处理完所有客户 PR；冲突由我们 rebase。
+
+## G. CI 与 Linux 对齐
+- `ci.yml` 加 `smoke-ubuntu` job：apt `ffmpeg fonts-noto-cjk python3-fonttools`，`FACTORY_JOBS_ROOT=$RUNNER_TEMP/jobs npm run smoke`；unit job 加 `test:timing`、`test:governance`。PR 与 push 都跑。
+- `deploy/linux-parity/`：Ubuntu 24.04 Docker（apt ffmpeg 6.x、fonts-noto-cjk、node 22、whisper.cpp CPU）+ `run.sh` 跑全量测试与 smoke；打 tag 前必跑。出处：2026-09-16 v2.0.2 的字体 bug 本机 Mac 看不出来。
+
+## H. 我们这边
+- 每日定时读 `client/*` 分支：有事件、48h 无心跳、有 open PR → 飞书通知 Scott（另行配置）。
