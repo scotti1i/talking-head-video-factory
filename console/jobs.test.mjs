@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import test from "node:test";
 import { appendComponentBeat, findBeatGap, ROOT } from "./jobs.mjs";
+import { jobsRoot } from "../scripts/lib.mjs";
 
 test("竖横屏分别寻找拍子空档", () => {
   const beats = [{ start: 0, end: 5, formats: ["portrait"] }];
@@ -18,7 +19,7 @@ test("未声明 formats 的拍子同时占用竖横屏", () => {
 
 test("真实 job 写入按画幅分槽并拒绝越界与重叠", () => {
   const slug = `.visual-library-test-${process.pid}`;
-  const dir = path.join(ROOT, "jobs", slug);
+  const dir = path.join(jobsRoot(), slug);  // 与 console/jobs.mjs 同一个根，FACTORY_JOBS_ROOT 外置时测试才成立
   fs.mkdirSync(path.join(dir, "data"), { recursive: true });
   fs.writeFileSync(path.join(dir, "project.json"), JSON.stringify({ title: "test", duration: 8 }));
   fs.writeFileSync(path.join(dir, "data", "beats.json"), "[]");

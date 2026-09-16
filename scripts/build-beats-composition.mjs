@@ -153,6 +153,11 @@ function loadTheme(requested) {
   }
   const dir = path.join(root, "themes", id);
   const data = readJson(path.join(dir, "theme.json"));
+  // 字体栈在这里一次性确定化：组件 style.css 的 {{fontHead}} / {{fontBody}} 和 intro 都直接拿 token，
+  // 只在 themeCss 里过滤等于漏了一半（2026-09-16 客户 Gate 4：smoke 的组件 CSS 带出 "PingFang SC"，HyperFrames lint 报无 @font-face）
+  for (const [key, value] of Object.entries(data.tokens || {})) {
+    if (/^font/i.test(key) && typeof value === "string") data.tokens[key] = deterministicFontStack(value);
+  }
   const overridesPath = path.join(dir, "overrides.css");
   data.overridesCss = fs.existsSync(overridesPath) ? fs.readFileSync(overridesPath, "utf8") : "";
   data.dir = dir;

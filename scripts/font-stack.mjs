@@ -19,7 +19,8 @@ export function deterministicFontStack(stack) {
     .split(",")
     .map((item) => item.trim())
     .filter((item) => item && !banned.test(item));
-  const named = families.filter((item) => !GENERIC_FAMILIES.has(unquote(item).toLowerCase()));
+  // 幂等：已经带 FactoryCJK 的栈再过一遍不会重复追加（主题载入时已确定化，themeCss 再调一次也安全）
+  const named = families.filter((item) => !GENERIC_FAMILIES.has(unquote(item).toLowerCase()) && unquote(item) !== "FactoryCJK");
   const generic = families.filter((item) => GENERIC_FAMILIES.has(unquote(item).toLowerCase()));
   return [...named, "FactoryCJK", ...generic].join(", ");
 }
