@@ -53,6 +53,9 @@ cd "$ROOT"
 # Skipping that add-on avoids a separate large GitHub Releases download; GPU
 # transcription and rendering are still provided by whisper.cpp and NVENC.
 ONNXRUNTIME_NODE_INSTALL_CUDA=skip npm ci
+# hyperframes 的 inspect / render 只认它自己下载到 ~/.cache/hyperframes/ 的 chrome-headless-shell；没有会报「Run: npx hyperframes browser ensure」
+# （2026-09-16 Linux 对齐容器暴露；幂等，已有时秒过）
+npx hyperframes browser ensure
 
 mkdir -p "$HOME/.local/src" "$HOME/.local/bin" "$(dirname "$MODEL")"
 if [[ ! -f "$WHISPER_ROOT/CMakeLists.txt" ]]; then

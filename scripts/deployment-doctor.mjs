@@ -53,6 +53,10 @@ if (memoryGiB < 32) checks.push({ id: "memory-recommended", level: "warn", ok: t
 
 const availableGiB = freeDiskGiB(root);
 check("disk", availableGiB >= 50, `${availableGiB.toFixed(1)} GiB available`, "渲染前至少需要 50GiB 可用空间");
+// hyperframes inspect / render 要起 chrome-headless-shell；Linux 上只认 ~/.cache/hyperframes/ 里它自己装的那份
+const browserDirs = [path.join(os.homedir(), ".cache", "hyperframes"), path.join(os.homedir(), ".cache", "puppeteer")];
+const browserBinary = browserDirs.flatMap((dir) => findFiles(dir, /^(chrome-headless-shell|chrome)(\.exe)?$/, 6)).find(Boolean) || null;
+check("hyperframes-browser", Boolean(browserBinary), browserBinary ? path.relative(os.homedir(), browserBinary) : "not found", "运行 npx hyperframes browser ensure（Bootstrap 已包含；update 也会补）", production);
 
 const model = path.resolve(process.env.WHISPER_MODEL || path.join(os.homedir(), ".cache", "whisper-cpp", "ggml-large-v3-turbo.bin"));
 check("whisper-model", fs.existsSync(model), model, "缺少 Whisper 模型");
@@ -109,4 +113,15 @@ function requiredFonts() {
     for (const font of theme.fonts || []) files.add(font.file);
   }
   return [...files].sort();
+}
+
+function findFiles(dir, pattern, depth) {
+  if (depth < 0 || !fs.existsSync(dir)) return [];
+  const out = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) out.push(...findFiles(full, pattern, depth - 1));
+    else if (pattern.test(entry.name)) out.push(full);
+  }
+  return out;
 }

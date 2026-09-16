@@ -164,6 +164,8 @@ function shell(command, args, cwd) {
 export function realSteps(repoDir) {
   const steps = {
     install: () => shell("npm", ["ci", "--no-audit", "--no-fund"], repoDir),
+    // hyperframes 只认它自己下载的 chrome-headless-shell；npm ci 不会带上，升级后补一次（幂等，已有时秒过）
+    browser: () => shell("npx", ["hyperframes", "browser", "ensure"], repoDir),
     hooks: () => shell("node", [path.join(repoDir, "scripts", "install-git-hooks.mjs")], repoDir)
   };
   if (process.env.FACTORY_SKIP_DOCTOR !== "1") steps.doctor = () => shell("npm", ["run", "doctor:deployment"], repoDir);

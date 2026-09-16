@@ -9,7 +9,6 @@ FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND=noninteractive \
     ONNXRUNTIME_NODE_INSTALL_CUDA=skip \
-    PUPPETEER_CACHE_DIR=/opt/puppeteer \
     FACTORY_CJK_FONT=/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc
 
 RUN apt-get -o Acquire::Retries=5 update && apt-get -o Acquire::Retries=5 install -y --no-install-recommends \
@@ -29,9 +28,8 @@ WORKDIR /deps
 COPY package.json package-lock.json ./
 RUN npm ci --no-audit --no-fund
 
-# hyperframes inspect 需要 chrome-headless-shell
-RUN npx --yes @puppeteer/browsers install chrome-headless-shell@stable --path /opt/puppeteer >/tmp/browser.txt \
-    && cat /tmp/browser.txt
+# hyperframes inspect 需要 chrome-headless-shell：只认它自己 `browser ensure` 装到 ~/.cache/hyperframes/ 的那份（与 CI、客户机同一机制）
+RUN cd /deps && npx hyperframes browser ensure 2>&1 | tail -3 && ls ~/.cache/hyperframes
 
 WORKDIR /work
 CMD ["bash"]
