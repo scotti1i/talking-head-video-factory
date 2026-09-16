@@ -86,3 +86,4 @@ analysis/
 
 # 第三方音效库（LICENSE-SOURCE.md 明确禁止再分发），只允许留在本机，绝不进公开仓库。
 template-packs/*sfx*pack*/
+deploy/linux-parity/.lock-sha

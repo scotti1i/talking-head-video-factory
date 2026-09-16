@@ -14,8 +14,10 @@ have="$(cat "$STAMP" 2>/dev/null || true)"
 
 if [[ "${1:-}" == "--rebuild" || "$want" != "$have" ]] || ! docker image inspect "$IMAGE" >/dev/null 2>&1; then
   echo "== build ${IMAGE}（lockfile / Dockerfile 变化或镜像不存在）"
-  # Docker Desktop 会把宿主系统代理（127.0.0.1:1082）注入容器，容器里那是它自己 → 清空，走宿主 TUN 直连（2026-09-16）
-  docker build --build-arg HTTP_PROXY= --build-arg HTTPS_PROXY= --build-arg http_proxy= --build-arg https_proxy= --build-arg NO_PROXY=* \
+  # Docker Desktop 会把宿主系统代理 127.0.0.1:1082 原样注入容器，容器里那是它自己；TUN 直连又会中途掉线。
+  # 改成显式走 host.docker.internal:1082（Docker Desktop 把它转发到宿主 loopback），2026-09-16 实测 apt 与 curl 都通。
+  PROXY="${FACTORY_PARITY_PROXY:-http://host.docker.internal:1082}"
+  docker build --build-arg HTTP_PROXY="$PROXY" --build-arg HTTPS_PROXY="$PROXY" --build-arg http_proxy="$PROXY" --build-arg https_proxy="$PROXY" --build-arg NO_PROXY=localhost,127.0.0.1 \
     -t "$IMAGE" -f "$ROOT/deploy/linux-parity/Dockerfile" "$ROOT"
   echo "$want" > "$STAMP"
   [[ "${1:-}" == "--rebuild" ]] && shift || true
