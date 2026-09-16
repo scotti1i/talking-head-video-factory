@@ -10,7 +10,7 @@ description: "工厂外贸口播自动剪辑（操作员模式）：只读导入
 ## 硬规则（v2 · `docs/v2-design-spec.md` §5，任何一条都不因用户口头要求而豁免）
 
 1. **只用 `npm run` 命令做处理。** 不手写 ffmpeg / ffprobe 以外的任何处理命令，也不用 ffmpeg 对成片打补丁（倍速、增益、字幕烧录一律走管线合同：`project.json.aroll`、`captions:build` 等）。
-2. **不改代码目录。** `scripts/ components/ themes/ template-packs/ console/ deploy/ skills/ docs/ .agents/ package*.json` 一律不动（git hook 会拒绝）。管线做不到 → `npm run request -- --title "..." --detail "..." --job jobs/<slug>`，然后**停下**告诉用户「已提需求，等发布」。不写「像的」替代实现顶上。
+2. **不改运行 tag 上的代码；问题分三路走。** 环境问题（缺工具、盘位、Key、驱动）修环境；代码 bug 且能定位到具体文件和行 → `npm run propose -- --title "..."` 建 `client/<主机>/fix-*` 分支改完 `--submit` 开 PR；改不了或需要新能力 → `npm run request -- --title "..." --detail "..." --job jobs/<slug>`，然后**停下**告诉用户「已提需求，等发布」。任何情况都不改门禁阈值、不跳过检查（`scripts/gate-protected.json` 内的文件 hook 会拒绝，只能 request）。不写「像的」替代实现顶上。
 3. **不以 `review/` 或 `renders/` 里的视频当输入做任何加工。** 它们是结果不是事实源；脚本会硬拒。要改，回到 EDL / captions / project.json 重新生成。
 4. **审批文件里 `by` 只能写 `agent`。** `human` 只能由用户亲自看完切点图 / 抽帧 / 完整播放后，由用户在终端执行 `npm run qa:cuts:approve -- --by human --name <人名>` / `npm run qa:final:approve -- --by human --name <人名>`。`deliver*` 与 `review init` 只认 `by: human`；你不得替人执行，也不得手改 approval.json。
 5. **每条片收尾必跑 `npm run acceptance -- --job jobs/<slug>`**，并把 `qa/acceptance.md` 里每一步的结论原样转述给用户；不得概括成「通过」。任一步 FAIL 就是没完成。
@@ -64,7 +64,10 @@ description: "工厂外贸口播自动剪辑（操作员模式）：只读导入
 
    ```bash
    npm run review -- init --job jobs/<slug> --revision R0 --video <job-relative-review-video>
+   npm run approve:open -- --job jobs/<slug>
    ```
+
+   R0 生成后立即 `approve:open`：起 console 并打开浏览器到该 job 的审批页，用户在网页上看完点「通过」（写入 `by: human`）；不在终端替人批。
 
 6. 把用户自然语言反馈写入 `review/R0/feedback.json`。每条必须包含时间码、类别、指令、范围和状态；运行 `npm run review -- validate ...` 后才修改内容真相。
 

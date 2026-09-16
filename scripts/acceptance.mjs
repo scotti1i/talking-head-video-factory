@@ -37,13 +37,14 @@ export function latestRevision(jobDir) {
   return `R${Math.max(...numbers)}`;
 }
 
-// package.json 里有名字还不够：脚本文件也得在（另一位同事的命令可能还没发布）
+// package.json 里有名字还不够：脚本文件也得在（另一位同事的命令可能还没发布）。
+// 命令经 run-with-beacon.mjs 外壳时，真正的目标是最后一个 scripts/ token，全部都要存在。
 export function scriptAvailable(root, scriptName) {
   const pkg = readJson(path.join(root, "package.json"));
   const command = pkg.scripts?.[scriptName];
   if (!command) return { ok: false, command: null };
-  const target = String(command).split(/\s+/).find((token) => token.startsWith("scripts/"));
-  if (target && !fs.existsSync(path.join(root, target))) return { ok: false, command };
+  const targets = String(command).split(/\s+/).filter((token) => token.startsWith("scripts/"));
+  if (targets.some((target) => !fs.existsSync(path.join(root, target)))) return { ok: false, command };
   return { ok: true, command };
 }
 

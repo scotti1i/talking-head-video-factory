@@ -1,10 +1,13 @@
 #!/bin/sh
 # ============================================================
-# pre-commit —— 操作员机器上禁止改代码目录
+# pre-commit —— 操作员机器上禁止改代码目录；修复分支放行但护住门禁文件
 # 为什么：spec §4——客户机 Codex 只做操作员；代码只在主仓库改、打 tag
 # 发布，客户机只 update。FACTORY_ROLE=operator 时（环境变量或
 # ~/.config/talking-head-factory/env）触及代码目录的 commit 一律拒绝，
 # 提示走 npm run request。开发机 FACTORY_ROLE=developer 或未设置：放行。
+# v2.0.3 §F：在 npm run propose 建的 client/<host>-fix-<slug> 分支上，
+# 代码目录放行（走 PR 由我们审），但 scripts/gate-protected.json 列出的
+# 门禁 / 审批 / 交付 / hook / CI 文件仍然拒绝——这些只能 request。
 # 安装：node scripts/install-git-hooks.mjs（core.hooksPath=scripts/git-hooks）
 # ============================================================
 set -eu
@@ -19,18 +22,48 @@ fi
 
 [ "$role" = "operator" ] || exit 0
 
+branch="$(git symbolic-ref --short -q HEAD 2>/dev/null || true)"
+staged="$(git diff --cached --name-only --diff-filter=ACMRD)"
+
+# ---------- 修复分支：只护门禁文件 ----------
+if printf '%s' "$branch" | grep -Eq '^client/[a-z0-9-]+-fix-[^/]+$'; then
+  toplevel="$(git rev-parse --show-toplevel)"
+  protected_file="$toplevel/scripts/gate-protected.json"
+  if [ ! -f "$protected_file" ]; then
+    echo "!!! 拒绝提交：缺少 ${protected_file}，无法判断门禁文件；请 npm run update" >&2
+    exit 1
+  fi
+  # paths 数组每行一个字符串："a/b.mjs", 或 "dir/",；目录前缀匹配，文件精确匹配
+  pattern="$(sed -n 's/^ *"\([^"]*\)",\{0,1\}$/\1/p' "$protected_file" \
+    | grep -v '^$' \
+    | sed -e 's/[.]/\\./g' -e 's#^#^#' -e 's#\([^/]\)$#\1$#' \
+    | paste -sd '|' -)"
+  touched="$(printf '%s\n' "$staged" | grep -E "$pattern" || true)"
+  [ -z "$touched" ] && exit 0
+  cat >&2 <<EOF
+!!! 拒绝提交：门禁与审批相关文件只能走 npm run request（分支 $branch 允许改其他代码）。
+触及的文件：
+$(printf '%s\n' "$touched" | sed 's/^/  - /')
+
+清单见 scripts/gate-protected.json。撤销：git checkout -- <文件>
+提需求：npm run request -- --title "<一句话>" --detail "<要改哪个阈值 / 门禁、为什么>"
+EOF
+  exit 1
+fi
+
+# ---------- 运行 tag / 其他分支：代码目录一律不动 ----------
 pattern='^(scripts|components|themes|template-packs|console|deploy|skills|docs|\.agents)/|^package\.json$|^package-lock\.json$'
-touched="$(git diff --cached --name-only --diff-filter=ACMRD | grep -E "$pattern" || true)"
+touched="$(printf '%s\n' "$staged" | grep -E "$pattern" || true)"
 
 [ -z "$touched" ] && exit 0
 
 cat >&2 <<EOF
-!!! 拒绝提交：当前机器是操作员角色（FACTORY_ROLE=operator），不能修改代码目录。
+!!! 拒绝提交：当前机器是操作员角色（FACTORY_ROLE=operator），不能修改运行 tag 上的代码。
 触及的文件：
 $(printf '%s\n' "$touched" | sed 's/^/  - /')
 
-管线做不到的事请提需求单，等发布后 npm run update：
-  npm run request -- --title "<一句话>" --detail "<做不到什么、期望结果、涉及的 job>"
-撤销本地改动：git checkout -- <文件>  （或 git stash）
+代码 bug 且能定位到具体行：npm run propose -- --title "<一句话>"（建修复分支走 PR）
+管线做不到 / 需要新能力：npm run request -- --title "<一句话>" --detail "<做不到什么、期望结果、涉及的 job>"
+撤销本地改动：git checkout -- <文件>
 EOF
 exit 1
