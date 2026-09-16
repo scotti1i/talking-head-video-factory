@@ -45,6 +45,60 @@
 | `project.json#legacy` | `npm run migrate` 写入：`migratedAt`、`from`、`reasons[]`（为什么不算 v2 产物） | 脚本 |
 | `requests/<日期>-<slug>.md` | 操作员需求单（仓库级，不在 job 内），commit 到 `client/<主机名>` | 操作员 / Agent |
 | `ops/<主机名>/<slug>/**` | `report:push` 回流的 job 文本证据副本；只存在于 `client/<主机名>` 分支 | 脚本 |
+| `ops/<主机名>/events/<ts>-<script>.json` | `run-with-beacon` 记录的失败事件（见下「事件与心跳」）；本机原件在 `~/.config/talking-head-factory/events/`，推完改名 `.pushed.json` | 脚本 |
+| `ops/<主机名>/heartbeat/<YYYY-MM-DD>.json` | 每日心跳：doctor 摘要、tag 比对、盘位、未上报事件数、各 job 最近 acceptance、自动升级结果 | 脚本 |
+| `ops/<主机名>/rejected/<branch>/*.patch` | 被拒或放弃的 propose 分支 `format-patch` 存档 + `README.md` | 脚本 |
+| `~/.config/talking-head-factory/propose/<branch>.json` | propose 状态：`{ branch, title, host, base, tag, pr, url, createdAt, submittedAt, resolved }`（不进仓库） | 脚本 |
+
+## 事件与心跳（`~/.config/talking-head-factory/`，v2.0.3）
+
+事件文件 `events/<ts>-<script>.json`，由 `scripts/run-with-beacon.mjs` 在被包裹命令非零退出时写入：
+
+```json
+{
+  "schemaVersion": 1,
+  "at": "2026-09-16T03:12:44.120Z",
+  "host": "desktop-factory-01",
+  "tag": "v2.0.3",
+  "script": "qa-cuts",
+  "command": "node /home/x/repo/scripts/qa-cuts.mjs --job jobs/demo",
+  "args": ["--job", "jobs/demo"],
+  "exitCode": 1,
+  "signal": null,
+  "job": "/home/x/factory-jobs/demo",
+  "slug": "demo",
+  "log": "/home/x/.config/talking-head-factory/logs/qa-cuts-2026-09-16T03-12-40-001Z.log",
+  "tailLines": ["…最多 80 行 stdout+stderr…"],
+  "doctorSummary": { "ok": false, "failed": ["disk: 31.2 GiB available"], "warned": ["nvenc"] }
+}
+```
+
+- `tag` 来自 `git describe --tags --always`；`doctorSummary` 是 `deployment-doctor --json` 的失败项摘要（非生产模式），跑不出来为 `null`。
+- `running.lock`：`{ pid, startedAt, command, script, job }`；pid 不存活即陈旧锁，下一个命令直接覆盖。
+- 文件名 `<ts>` 为 ISO 时间去掉冒号与点（`2026-09-16T03-12-44-120Z`），可排序、NTFS 可放。
+
+心跳文件 `heartbeat/<YYYY-MM-DD>.json`（同日多次运行覆盖同一文件）：
+
+```json
+{
+  "schemaVersion": 1,
+  "at": "2026-09-16T03:30:00.000Z",
+  "host": "desktop-factory-01",
+  "tag": "v2.0.3",
+  "head": { "branch": null, "sha": "a1b2c3d" },
+  "update": { "latest": "v2.0.3", "newer": false, "fetched": true },
+  "running": null,
+  "diskFreeGiB": 412.5,
+  "unpushedEvents": 0,
+  "doctor": { "ok": true, "failed": [], "warned": ["nvenc"] },
+  "acceptance": { "demo": { "overall": "PASS", "ranAt": "2026-09-15T10:00:00.000Z", "revision": "R1" } },
+  "autoUpdate": { "attempted": false, "reason": "已是最新" }
+}
+```
+
+- `running` 有值 = 当时有命令持锁：`{ pid, command, startedAt }`，此时不自动升级。
+- `autoUpdate` 尝试过时为 `{ attempted: true, ok, from, to, target, exitCode, tail[≤20], at }`；失败时 `update` 已自行回滚，`to` 仍是旧 tag。
+- `acceptance` 只列 `FACTORY_JOBS_ROOT` 下有 `qa/acceptance.json` 的 job。
 
 ## 审批文件（`qa/cuts/approval.json`、`qa/approval.json`、`variants/*/qa/approval.json`）
 

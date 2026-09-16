@@ -112,7 +112,7 @@ node scripts/gate.mjs 4 -- bash -c "npm run doctor:deployment -- --production --
 
 ## Gate 5 · 用一条真片跑 acceptance 并 push
 
-选一条已迁移或新导入的真实 job（`<slug>`），按 `.agents/skills/factory-auto-edit/SKILL.md` 完成到 R0 之后：
+选一条已迁移或新导入的真实 job（`<slug>`），按 `.agents/skills/factory-auto-edit/SKILL.md` 完成到 R0。**审批在浏览器里做，不在终端**：R0 生成后执行 `npm run approve:open -- --job jobs/<slug>`，它会起 console 并打开该 job 的审批页；用户在页面上看完切点图 / 完整播放审片视频，填姓名点「通过」，approval.json 才会写入 `by: human`。你不得在终端替人执行任何 `--by human` 命令，也不得手改 approval.json。然后：
 
 ```bash
 cd "$HOME/talking-head-video-factory-v2"
@@ -130,14 +130,18 @@ node scripts/gate.mjs 5 -- npm run acceptance -- --job jobs/<slug>
 | 场景 | 命令 |
 |---|---|
 | 每次开工 | `npm run update -- --check`（退出码 3 = 有新版，先告诉用户） |
-| 升级 | `npm run update`（自动 checkout 新 tag → npm ci → doctor → smoke，失败回滚） |
-| 管线做不到 | `npm run request -- --title "..." --detail "..." --job jobs/<slug>`，然后停下等发布 |
+| 升级 | `npm run update`（自动 checkout 新 tag → npm ci → doctor → smoke，失败回滚；在修复分支上按 PR 状态处理） |
+| 审片 / 审批 | `npm run approve:open -- --job jobs/<slug>`（浏览器里点通过，终端不批） |
+| 出问题了 | 读 `~/.config/talking-head-factory/events/` 最新一个 `.json` + `npm run doctor:deployment`，原文转述 |
+| 管线做不到 / 要改门禁 | `npm run request -- --title "..." --detail "..." --job jobs/<slug>`，然后停下等发布 |
+| 代码 bug 能定位到行 | `npm run propose -- --title "..."` → 改 → `npm run propose -- --submit`（本地测试全绿才会开 PR）→ 给用户 PR 链接 |
 | 每条片收尾 | `npm run acceptance -- --job jobs/<slug>` |
 | 单独回流证据 | `npm run report:push -- --job jobs/<slug>` |
+| 每日自动 | 计划任务 `TalkingHeadFactoryHeartbeat` 03:30 跑 `npm run heartbeat`（体检 + 回流 + 自动升级）；手动跑也行 |
 
 ## 禁止
 
 - 跳过任何 gate，或在没看到 `GATE n PASS` 时进入下一步。
-- 在客户机器上编辑 `scripts/` 等代码目录（hook 会拒绝；绕过 hook 视为事故）。
+- 在运行 tag 上编辑 `scripts/` 等代码目录（hook 会拒绝；绕过 hook 视为事故）。要改代码只走 `npm run propose`；`scripts/gate-protected.json` 里的门禁 / 审批 / 交付 / hook / CI 文件连 propose 都不能碰，只能 `request`。
 - 把 `review/` 或 `renders/` 里的视频当输入再加工。
-- 在 approval 文件里写 `by: human`——只有用户亲自看完后由用户在终端执行 `--by human --name <人名>`。
+- 在 approval 文件里写 `by: human`——只有用户亲自在 `npm run approve:open` 打开的网页上看完点「通过」才会写入。
