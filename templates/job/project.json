@@ -14,18 +14,23 @@
   "caption": {
     "enabled": true,
     "maxCharsPerLine": 18,
+    "singleLine": true,
+    "mode": "static",
+    "placement": "douyin-fixed",
+    "bottom": 520,
     "hideDuring": []
   },
   "editorial": {
     "editingMode": "semantic-edl",
-    "fineCutPreset": "standard"
+    "contractVersion": 1
   },
   "qa": {
     "sampleTimes": [5, 30, 60]
   },
   "delivery": {
     "includeCover": true,
-    "coverFile": "cover/cover.png"
+    "coverFile": "cover/cover.png",
+    "downloadsRoot": ""
   },
   "shorts": {
     "sourceVideo": "variants/douyin-vertical/renders/douyin-vertical-60fps.mp4",
@@ -47,7 +52,11 @@
       "outputName": "douyin-vertical-60fps.mp4",
       "downloadFolderName": "口播视频-抖音竖屏",
       "caption": {
-        "maxCharsPerLine": 18
+        "maxCharsPerLine": 18,
+        "singleLine": true,
+        "mode": "static",
+        "placement": "douyin-fixed",
+        "bottom": 520
       },
       "render": {
         "fps": 60,

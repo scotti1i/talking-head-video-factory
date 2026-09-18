@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "id": "legacy-neon-guides",
+  "label": "Legacy Neon Guides",
+  "kind": "legacy-composition",
+  "description": "旧通用合成器里的霓虹逻辑引导、HUD、演示面板与章节提示。renderer 仍在，但标准 fixture 已不存在。",
+  "lifecycle": "archived",
+  "compatibility": "preview-only",
+  "formats": ["vertical", "horizontal"],
+  "sources": [
+    { "path": "scripts/build-composition.mjs", "role": "legacy-renderer" },
+    { "path": "scripts/hud-overlays.mjs", "role": "hud-renderer" },
+    { "path": "visual-assets/evidence/legacy-neon-guides/split.jpg", "role": "frozen-preview", "note": "首版真实成片抽帧" },
+    { "path": "visual-assets/evidence/legacy-neon-guides/platform-map.jpg", "role": "reconstructed-preview", "note": "标准 fixture 已清理；其余结构从归档 renderer 重建" }
+  ],
+  "preview": { "state": "ready", "poster": "visual-assets/evidence/legacy-neon-guides/split.jpg", "format": "vertical" },
+  "items": [
+    { "id": "helper-card", "label": "解释卡", "kind": "component", "status": "ready", "provenance": "最小回归真实成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/legacy-neon-guides/helper-card.jpg", "format": "vertical" } },
+    { "id": "platform-map", "label": "平台地图", "kind": "component", "status": "ready", "provenance": "归档 renderer 重建 fixture", "preview": { "state": "ready", "poster": "visual-assets/evidence/legacy-neon-guides/platform-map.jpg", "format": "vertical" } },
+    { "id": "split", "label": "双栏对比", "kind": "component", "status": "ready", "provenance": "2026-07-04 首版真实成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/legacy-neon-guides/split.jpg", "format": "vertical" } },
+    { "id": "equation", "label": "等式变化", "kind": "component", "status": "ready", "provenance": "归档 renderer 重建 fixture", "preview": { "state": "ready", "poster": "visual-assets/evidence/legacy-neon-guides/equation.jpg", "format": "vertical" } },
+    { "id": "funnel", "label": "漏斗", "kind": "component", "status": "ready", "provenance": "归档 renderer 重建 fixture", "preview": { "state": "ready", "poster": "visual-assets/evidence/legacy-neon-guides/funnel.jpg", "format": "vertical" } },
+    { "id": "asset", "label": "资产汇聚", "kind": "component", "status": "ready", "provenance": "归档 renderer 重建 fixture", "preview": { "state": "ready", "poster": "visual-assets/evidence/legacy-neon-guides/asset.jpg", "format": "vertical" } },
+    { "id": "hub", "label": "中心辐射", "kind": "component", "status": "ready", "provenance": "归档 renderer 重建 fixture", "preview": { "state": "ready", "poster": "visual-assets/evidence/legacy-neon-guides/hub.jpg", "format": "vertical" } },
+    { "id": "flow", "label": "步骤流", "kind": "component", "status": "ready", "provenance": "归档 renderer 重建 fixture", "preview": { "state": "ready", "poster": "visual-assets/evidence/legacy-neon-guides/flow.jpg", "format": "vertical" } },
+    { "id": "hud-command", "label": "HUD 命令", "kind": "component", "status": "ready", "provenance": "归档 renderer 重建 fixture", "preview": { "state": "ready", "poster": "visual-assets/evidence/legacy-neon-guides/hud-command.jpg", "format": "vertical" } },
+    { "id": "hud-flow", "label": "HUD 流程", "kind": "component", "status": "ready", "provenance": "归档 renderer 重建 fixture", "preview": { "state": "ready", "poster": "visual-assets/evidence/legacy-neon-guides/hud-flow.jpg", "format": "vertical" } },
+    { "id": "hud-zones", "label": "HUD 分区", "kind": "component", "status": "ready", "provenance": "归档 renderer 重建 fixture", "preview": { "state": "ready", "poster": "visual-assets/evidence/legacy-neon-guides/hud-zones.jpg", "format": "vertical" } },
+    { "id": "hud-unlock", "label": "HUD 解锁", "kind": "component", "status": "ready", "provenance": "归档 renderer 重建 fixture", "preview": { "state": "ready", "poster": "visual-assets/evidence/legacy-neon-guides/hud-unlock.jpg", "format": "vertical" } },
+    { "id": "demo-panel", "label": "软件演示面板", "kind": "layout", "status": "ready", "provenance": "归档 renderer 重建 fixture", "preview": { "state": "ready", "poster": "visual-assets/evidence/legacy-neon-guides/demo-panel.jpg", "format": "vertical" } },
+    { "id": "chapter-chip", "label": "章节提示", "kind": "component", "status": "ready", "provenance": "最小回归真实成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/legacy-neon-guides/chapter-chip.jpg", "format": "vertical" } }
+  ],
+  "migrationCandidates": [
+    { "targetId": "beats-v2-face-safe", "note": "split/flow 等已被当前组件覆盖；HUD 与演示面板仍待迁移。" }
+  ],
+  "lineage": {
+    "parents": ["brandkit-neon-rich-v1"],
+    "supersedes": ["brandkit-neon-rich-v1"],
+    "supersededBy": ["beats-v2-face-safe"]
+  },
+  "apply": { "mode": "none" }
+}

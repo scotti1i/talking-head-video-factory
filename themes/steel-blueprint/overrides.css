@@ -1,7 +1,7 @@
-/* 等宽大写标注 + 卡内隐约制图网格 */
-      .kicker { font-family: ui-monospace, monospace; text-transform: uppercase;
+/* 回形针签名:等宽大写标注 + 卡内隐约制图网格 */
+      .kicker { font-family: "SF Mono", Menlo, ui-monospace, monospace; text-transform: uppercase;
         letter-spacing: 0.18em; text-shadow: none; }
       .beat { background-image: repeating-linear-gradient(0deg, rgba(143, 179, 199, 0.05) 0 1px, transparent 1px 44px),
         repeating-linear-gradient(90deg, rgba(143, 179, 199, 0.05) 0 1px, transparent 1px 44px),
         linear-gradient(135deg, rgba(22, 30, 40, 0.92), rgba(16, 23, 31, 0.92)); }
-      .pipeline b, .split-side small, .hero-number { font-family: ui-monospace, monospace; }
+      .pipeline b, .split-side small, .hero-number { font-family: "SF Mono", Menlo, ui-monospace, monospace; }

@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "youtube-horizontal-explainer-v1",
+  "label": "YouTube 横屏 · Explainer v1",
+  "kind": "layout",
+  "description": "左侧动态解释白板、右侧 9:16 人像的第一代 YouTube 横屏专用布局。",
+  "lifecycle": "archived",
+  "compatibility": "preview-only",
+  "formats": ["horizontal"],
+  "sources": [
+    { "path": "scripts/build-youtube-horizontal-job.mjs", "role": "legacy-renderer" }
+  ],
+  "items": [
+    { "id": "hero", "label": "开场判断", "kind": "component", "status": "ready", "preview": { "state": "ready", "poster": "visual-assets/evidence/youtube-horizontal-explainer-v1/hero.jpg", "format": "horizontal" } },
+    { "id": "case", "label": "案例", "kind": "component", "status": "ready", "preview": { "state": "ready", "poster": "visual-assets/evidence/youtube-horizontal-explainer-v1/case.jpg", "format": "horizontal" } },
+    { "id": "leverage", "label": "杠杆对比", "kind": "component", "status": "ready", "preview": { "state": "ready", "poster": "visual-assets/evidence/youtube-horizontal-explainer-v1/leverage.jpg", "format": "horizontal" } },
+    { "id": "flow", "label": "组织流程", "kind": "component", "status": "ready", "preview": { "state": "ready", "poster": "visual-assets/evidence/youtube-horizontal-explainer-v1/flow.jpg", "format": "horizontal" } },
+    { "id": "workflow", "label": "工作流检查", "kind": "component", "status": "ready", "preview": { "state": "ready", "poster": "visual-assets/evidence/youtube-horizontal-explainer-v1/workflow.jpg", "format": "horizontal" } },
+    { "id": "matrix", "label": "行业矩阵", "kind": "component", "status": "ready", "preview": { "state": "ready", "poster": "visual-assets/evidence/youtube-horizontal-explainer-v1/matrix.jpg", "format": "horizontal" } },
+    { "id": "myth", "label": "反常识公式", "kind": "component", "status": "ready", "preview": { "state": "ready", "poster": "visual-assets/evidence/youtube-horizontal-explainer-v1/myth.jpg", "format": "horizontal" } },
+    { "id": "knowledge", "label": "知识关系图", "kind": "component", "status": "ready", "preview": { "state": "ready", "poster": "visual-assets/evidence/youtube-horizontal-explainer-v1/knowledge.jpg", "format": "horizontal" } },
+    { "id": "stack", "label": "能力栈", "kind": "component", "status": "ready", "preview": { "state": "ready", "poster": "visual-assets/evidence/youtube-horizontal-explainer-v1/stack.jpg", "format": "horizontal" } },
+    { "id": "decision", "label": "决策分支", "kind": "component", "status": "ready", "preview": { "state": "ready", "poster": "visual-assets/evidence/youtube-horizontal-explainer-v1/decision.jpg", "format": "horizontal" } },
+    { "id": "cta", "label": "横屏 CTA", "kind": "component", "status": "ready", "preview": { "state": "ready", "poster": "visual-assets/evidence/youtube-horizontal-explainer-v1/cta.jpg", "format": "horizontal" } }
+  ],
+  "migrationCandidates": [
+    { "targetId": "beats-v2-face-safe", "note": "当前统一 builder 已提供横屏左解释区、右人物重排。" }
+  ],
+  "lineage": {
+    "parents": ["claude-glass-v0"],
+    "supersedes": [],
+    "supersededBy": ["beats-v2-face-safe"]
+  },
+  "apply": { "mode": "none" }
+}

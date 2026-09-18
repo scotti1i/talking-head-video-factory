@@ -2,7 +2,6 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import test from "node:test";
-import { fileURLToPath } from "node:url";
 import {
   atomicReplaceDir,
   cacheIsReady,
@@ -18,7 +17,7 @@ import {
   tempTestDir
 } from "./visual-preview-lib.mjs";
 
-const ROOT = path.resolve(fileURLToPath(new URL("..", import.meta.url)));
+const ROOT = path.resolve(new URL("..", import.meta.url).pathname);
 
 test("stableStringify 不受对象 key 顺序影响", () => {
   assert.equal(stableStringify({ b: 2, a: 1 }), stableStringify({ a: 1, b: 2 }));

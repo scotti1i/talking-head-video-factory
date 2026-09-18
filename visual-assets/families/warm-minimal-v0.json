@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "warm-minimal-v0",
+  "label": "Warm Minimal · v0",
+  "kind": "legacy-composition",
+  "description": "最早的暖色纸感横屏生成器。十种卡型已存在，但脚本写死输出路径，只作为历史结构证据。",
+  "lifecycle": "archived",
+  "compatibility": "unsupported",
+  "formats": ["horizontal"],
+  "sources": [
+    { "path": "skills/talkinghead-edit/archive/scripts-v0/_deprecated/gen_template.warm-v0.py", "role": "archived-renderer" },
+    { "path": "visual-assets/evidence/warm-minimal-v0/diagram.jpg", "role": "frozen-preview", "note": "《AI 视频工厂》真实成片抽帧" }
+  ],
+  "preview": { "state": "ready", "poster": "visual-assets/evidence/warm-minimal-v0/diagram.jpg", "format": "horizontal" },
+  "items": [
+    { "id": "statement", "label": "判断金句", "kind": "component", "status": "ready", "provenance": "《AI 视频工厂》真实成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/warm-minimal-v0/statement.jpg", "format": "horizontal" } },
+    { "id": "hero", "label": "巨型数字", "kind": "component", "status": "ready", "provenance": "《AI 视频工厂》真实成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/warm-minimal-v0/hero.jpg", "format": "horizontal" } },
+    { "id": "split", "label": "左右对比", "kind": "component", "status": "ready", "provenance": "《AI 视频工厂》真实成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/warm-minimal-v0/split.jpg", "format": "horizontal" } },
+    { "id": "duel", "label": "替换对决", "kind": "component", "status": "ready", "provenance": "《AI 视频工厂》真实成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/warm-minimal-v0/duel.jpg", "format": "horizontal" } },
+    { "id": "pipeline", "label": "流程链", "kind": "component", "status": "ready", "provenance": "《AI 视频工厂》真实成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/warm-minimal-v0/pipeline.jpg", "format": "horizontal" } },
+    { "id": "panel", "label": "纸感面板", "kind": "component", "status": "ready", "provenance": "《AI 视频工厂》真实成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/warm-minimal-v0/panel.jpg", "format": "horizontal" } },
+    { "id": "trio", "label": "三栏卡", "kind": "component", "status": "ready", "provenance": "《AI 视频工厂》真实成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/warm-minimal-v0/trio.jpg", "format": "horizontal" } },
+    { "id": "chips", "label": "标签组", "kind": "component", "status": "ready", "provenance": "《AI 视频工厂》真实成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/warm-minimal-v0/chips.jpg", "format": "horizontal" } },
+    { "id": "diagram", "label": "关系图", "kind": "component", "status": "ready", "provenance": "《AI 视频工厂》真实成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/warm-minimal-v0/diagram.jpg", "format": "horizontal" } },
+    { "id": "cta", "label": "结尾行动卡", "kind": "component", "status": "ready", "provenance": "《AI 视频工厂》真实成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/warm-minimal-v0/cta.jpg", "format": "horizontal" } }
+  ],
+  "migrationCandidates": [
+    { "targetId": "beats-v2-face-safe", "note": "结构已由当前十种 beats 覆盖，纸感由主题承担。" }
+  ],
+  "lineage": {
+    "parents": [],
+    "supersedes": [],
+    "supersededBy": ["claude-glass-v0", "beats-v2-face-safe"]
+  },
+  "apply": { "mode": "none" }
+}

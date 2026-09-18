@@ -3,8 +3,7 @@ import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
-import { jobsRoot, parseArgs } from "./lib.mjs";
+import { parseArgs } from "./lib.mjs";
 import { inspectComponentPackages } from "./component-registry.mjs";
 import {
   PREVIEW_DURATION,
@@ -33,7 +32,7 @@ import {
   selectFixtureIds
 } from "./visual-preview-lib.mjs";
 
-const root = path.resolve(fileURLToPath(new URL("..", import.meta.url)));
+const root = path.resolve(new URL("..", import.meta.url).pathname);
 const args = parseArgs();
 const outputRoot = path.join(root, "out", "visual-library");
 const cacheRoot = path.join(outputRoot, "cache");
@@ -45,7 +44,7 @@ const registryPath = path.join(root, "themes", "registry.json");
 const sharedFontsDir = path.join(root, "themes", "_shared", "fonts");
 const sharedGsapPath = path.join(root, "themes", "_shared", "vendor", "gsap.min.js");
 const systemCjkFontPath = "/System/Library/Fonts/Hiragino Sans GB.ttc";
-const defaultSource = path.join(jobsRoot(), "beats-regression", "assets", "aroll-front-focus.mp4");
+const defaultSource = path.join(root, "jobs", "beats-regression", "assets", "aroll-front-focus.mp4");
 const htmlOnly = Boolean(args["html-only"] || args.htmlOnly);
 
 if (args.help) {

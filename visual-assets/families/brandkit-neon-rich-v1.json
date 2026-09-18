@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "brandkit-neon-rich-v1",
+  "label": "Brandkit · Neon Rich v1",
+  "kind": "legacy-composition",
+  "description": "冻结的暗色霓虹 rich 横屏品牌包，包含终端、仪表、B-roll 与 montage 等专有结构。",
+  "lifecycle": "archived",
+  "compatibility": "preview-only",
+  "formats": ["horizontal"],
+  "sources": [
+    { "path": "skills/talkinghead-edit/archive/brandkit-v1/BRAND.md", "role": "style-contract" },
+    { "path": "skills/talkinghead-edit/archive/brandkit-v1/engine.py", "role": "archived-renderer" },
+    { "path": "visual-assets/evidence/brandkit-neon-rich-v1/gauge.jpg", "role": "frozen-preview", "note": "GEO 真实 4K60 成片抽帧" }
+  ],
+  "preview": { "state": "ready", "poster": "visual-assets/evidence/brandkit-neon-rich-v1/gauge.jpg", "format": "horizontal" },
+  "items": [
+    { "id": "statement", "label": "霓虹判断卡", "kind": "component", "status": "ready", "provenance": "GEO 真实 4K60 成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/brandkit-neon-rich-v1/statement.jpg", "format": "horizontal" } },
+    { "id": "panel", "label": "信息面板", "kind": "component", "status": "ready", "provenance": "GEO 真实 4K60 成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/brandkit-neon-rich-v1/panel.jpg", "format": "horizontal" } },
+    { "id": "flow", "label": "流程图", "kind": "component", "status": "ready", "provenance": "GEO 真实 4K60 成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/brandkit-neon-rich-v1/flow.jpg", "format": "horizontal" } },
+    { "id": "terminal", "label": "终端窗口", "kind": "component", "status": "ready", "provenance": "GEO 真实 4K60 成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/brandkit-neon-rich-v1/terminal.jpg", "format": "horizontal" } },
+    { "id": "chips", "label": "标签组", "kind": "component", "status": "ready", "provenance": "GEO 真实 4K60 成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/brandkit-neon-rich-v1/chips.jpg", "format": "horizontal" } },
+    { "id": "gauge", "label": "仪表盘", "kind": "component", "status": "ready", "provenance": "GEO 真实 4K60 成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/brandkit-neon-rich-v1/gauge.jpg", "format": "horizontal" } },
+    { "id": "diagram", "label": "关系图", "kind": "component", "status": "ready", "provenance": "GEO 真实 4K60 成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/brandkit-neon-rich-v1/diagram.jpg", "format": "horizontal" } },
+    { "id": "trio", "label": "三栏结构", "kind": "component", "status": "ready", "provenance": "GEO 真实 4K60 成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/brandkit-neon-rich-v1/trio.jpg", "format": "horizontal" } },
+    { "id": "broll", "label": "B-roll 舞台", "kind": "layout", "status": "ready", "provenance": "GEO 真实 4K60 成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/brandkit-neon-rich-v1/broll.jpg", "format": "horizontal" } },
+    { "id": "montage", "label": "蒙太奇舞台", "kind": "layout", "status": "ready", "provenance": "GEO 真实 4K60 成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/brandkit-neon-rich-v1/montage.jpg", "format": "horizontal" } }
+  ],
+  "migrationCandidates": [
+    { "targetId": "beats-v2-face-safe", "note": "通用信息结构迁移到 beats；terminal/gauge/montage 仍待独立组件化。" }
+  ],
+  "lineage": {
+    "parents": [],
+    "supersedes": [],
+    "supersededBy": ["legacy-neon-guides", "beats-v2-face-safe"]
+  },
+  "apply": { "mode": "none" }
+}

@@ -7,7 +7,6 @@
 import fs from "node:fs";
 import path from "node:path";
 import {
-  assertNotDerivedInput,
   escapeHtml,
   fmtTime,
   parseArgs,
@@ -16,7 +15,8 @@ import {
   readJsonArray,
   resolveJob,
   run,
-  videoDuration, commandExists } from "./lib.mjs";
+  videoDuration
+} from "./lib.mjs";
 import {
   COMPONENT_FORMATS,
   catalogById,
@@ -27,12 +27,24 @@ import { loadAudioCues, renderAudioCues } from "./audio-cues.mjs";
 import { loadMusicBed, renderMusicBed } from "./music-bed.mjs";
 import { renderCaptionMarkup } from "./caption-emphasis.mjs";
 import { normalizeCaptionHideRanges } from "./caption-visibility.mjs";
+import {
+  STATIC_CAPTION_MODE,
+  createSingleWordClips,
+  normalizeCaptionWords,
+  renderPhraseCaptionWords,
+  resolveCaptionPreset
+} from "./dynamic-captions.mjs";
 import { deterministicFontStack } from "./font-stack.mjs";
+import {
+  collectEditorialHashes,
+  hashesMatch,
+  validateEditorialPlan,
+  validateTimelineContract
+} from "./editorial-contract.mjs";
 import { compileIntro } from "./intros/index.mjs";
 import { createArollCues } from "./timeline/aroll-cues.mjs";
 import { createCameraCues } from "./timeline/camera-cues.mjs";
 import { createPrimaryClips } from "./timeline/primary-clips.mjs";
-import { applyTemplatePack } from "./template-pack.mjs";
 
 const args = parseArgs();
 const root = projectRoot();
@@ -42,23 +54,37 @@ if (!fs.existsSync(configPath)) {
   console.error(`缺少 project.json: ${configPath}`);
   process.exit(1);
 }
-const { project: config } = applyTemplatePack(readJson(configPath), root);
-const theme = loadTheme(args.theme || config.theme);
+const config = readJson(configPath);
+const themeRegistry = readJson(path.join(root, "themes", "registry.json"));
+const theme = loadTheme(args.theme || config.theme, themeRegistry);
 const width = Number(config.width || 1080);
 const height = Number(config.height || 1920);
 const format = resolveFormat(config, width, height);
 const layoutMode = String(config.layout || "").toLowerCase();
+const shotcraftSpeakerStage = layoutMode === "shotcraft-speaker-stage";
 const sourcePreserve = layoutMode === "source-preserve";
 const sourceFill = layoutMode === "source-fill";
 const sourceOverlay = sourcePreserve || sourceFill;
 const sourceVideo = config.sourceVideo || "assets/aroll.mp4";
 const sourcePath = path.join(jobDir, sourceVideo);
-// spec §4：review/ 与 renders/ 下的成片不得回流当母版
-assertNotDerivedInput(sourcePath, jobDir, "build:beats");
 if (!fs.existsSync(sourcePath)) {
   console.error(`缺少母版 A-roll: ${sourcePath}`);
   console.error("先跑粗剪渲染(npm run roughcut:render)或把成品 A-roll 放到该路径。");
   process.exit(1);
+}
+const sourceStat = fs.statSync(sourcePath);
+// Chromium may reuse stale byte-range media even after a query-string change.
+// A distinct pathname guarantees that privacy/layout revisions reach snapshots
+// and final renders.
+const sourceParsed = path.parse(sourceVideo);
+const sourceVersion = `${sourceStat.size}-${Math.round(sourceStat.mtimeMs)}`;
+const sourceUrl = path.join(
+  sourceParsed.dir,
+  `${sourceParsed.name}-${sourceVersion}${sourceParsed.ext}`
+).replaceAll("\\", "/");
+const versionedSourcePath = path.join(jobDir, sourceUrl);
+if (!fs.existsSync(versionedSourcePath)) {
+  fs.symlinkSync(path.basename(sourcePath), versionedSourcePath);
 }
 const sourceDuration = Number(config.duration) > 0 ? Number(config.duration) : videoDuration(sourcePath);
 const requestedDuration = args.duration == null ? null : Number(args.duration);
@@ -76,12 +102,32 @@ const allBeats = validateBeats(
 );
 const allCaptions = readJsonArray(path.join(jobDir, "data", "captions.json"));
 const rawBroll = readJsonArray(path.join(jobDir, "data", "broll.json"));
+validateEditorialContract();
 const truncateTimeline = Boolean(config.truncateTimeline || requestedDuration != null);
 const beats = truncateTimeline ? trimBeats(allBeats, duration) : allBeats;
 const timelineCaptions = truncateTimeline ? trimCaptions(allCaptions, duration) : allCaptions;
-const captions = config.caption?.singleLine
+const captionConfig = config.caption || {};
+const captionPreset = resolveCaptionPreset(themeRegistry, captionConfig.mode);
+const captionMode = captionPreset.mode;
+const captions = captionMode === STATIC_CAPTION_MODE && config.caption?.singleLine
   ? splitCaptionsToSingleLines(timelineCaptions, Number(config.caption.maxCharsPerLine) || 14)
   : timelineCaptions;
+const captionPanel = {
+  background: captionConfig.background || "transparent",
+  border: captionConfig.border || "none",
+  width: Number(captionConfig.width || 720),
+  centerOffset: Number(captionConfig.centerOffset ?? -60),
+  paddingY: Number(captionConfig.paddingY || 0),
+  paddingX: Number(captionConfig.paddingX || 0),
+  radius: Number(captionConfig.radius || 0),
+  bottom: Number(captionConfig.bottom ?? 52),
+  fontSize: Number(captionConfig.fontSize || 43),
+  fontWeight: Number(captionConfig.fontWeight || 600),
+  lineHeight: Number(captionConfig.lineHeight || 1.18),
+  color: captionConfig.color || "#FFFFFF",
+  textStroke: captionConfig.textStroke || "1.2px rgba(0, 0, 0, 0.82)",
+  textShadow: captionConfig.textShadow || "0 2px 7px rgba(0, 0, 0, 0.88)"
+};
 const broll = validateBroll(truncateTimeline ? trimBroll(rawBroll, duration) : rawBroll, duration);
 const audioCues = loadAudioCues({ jobDir, totalDuration: duration });
 const musicBed = loadMusicBed({ jobDir, totalDuration: duration });
@@ -92,9 +138,9 @@ const primary = createPrimaryClips({
   format,
   width,
   height,
-  captionFontSize: config.caption?.fontSize,
   sourceVideo,
-  broll
+  broll,
+  items: config.editorial?.primaryClipsRenderMode === "baked" ? [] : undefined
 });
 const compiledIntro = compileIntro(config.intro, {
   jobDir,
@@ -143,8 +189,41 @@ const cardRanges = [
   ...captionHideRanges
 ];
 
-function loadTheme(requested) {
-  const registry = readJson(path.join(root, "themes", "registry.json"));
+function validateEditorialContract() {
+  if (Number(config.editorial?.contractVersion || 0) < 1) return;
+  const editorialPlan = readJson(path.join(jobDir, "data", "editorial-plan.json"));
+  const semanticTakeMap = readJson(path.join(jobDir, "data", "semantic-take-map.json"));
+  const edl = readJsonArray(path.join(jobDir, "data", "rough-cut-edl.json"));
+  const primaryPath = path.join(jobDir, "data", "primary-clips.json");
+  const primaryClips = fs.existsSync(primaryPath) ? readJsonArray(primaryPath) : [];
+  const plan = validateEditorialPlan(editorialPlan, { semanticTakeMap });
+  const timeline = validateTimelineContract({
+    editorialPlan,
+    semanticTakeMap,
+    edl,
+    captions: allCaptions,
+    beats: allBeats,
+    broll: rawBroll,
+    primaryClips,
+    stage: "visual"
+  });
+  const errors = [...plan.errors, ...timeline.errors];
+  if (errors.length) throw new Error(`规划器/视觉合同失败:\n- ${errors.join("\n- ")}`);
+  const visualReportPath = path.join(
+    path.basename(path.dirname(jobDir)) === "variants" ? path.dirname(path.dirname(jobDir)) : jobDir,
+    "qa",
+    "visual",
+    "report.json"
+  );
+  if (!fs.existsSync(visualReportPath)) throw new Error("缺少视觉引用报告；先运行 npm run visual:check");
+  const visualReport = readJson(visualReportPath);
+  const currentHashes = collectEditorialHashes(jobDir, "visual");
+  if (visualReport.status !== "passed" || !hashesMatch(visualReport.hashes, currentHashes)) {
+    throw new Error("视觉引用报告已失效；请重新运行 npm run visual:check");
+  }
+}
+
+function loadTheme(requested, registry) {
   const id = requested || registry.default;
   if (!registry.themes.includes(id)) {
     console.error(`未注册的主题: ${id}(可用: ${registry.themes.join(", ")})`);
@@ -152,11 +231,6 @@ function loadTheme(requested) {
   }
   const dir = path.join(root, "themes", id);
   const data = readJson(path.join(dir, "theme.json"));
-  // 字体栈在这里一次性确定化：组件 style.css 的 {{fontHead}} / {{fontBody}} 和 intro 都直接拿 token，
-  // 只在 themeCss 里过滤等于漏了一半（2026-09-16 客户 Gate 4：smoke 的组件 CSS 带出 "PingFang SC"，HyperFrames lint 报无 @font-face）
-  for (const [key, value] of Object.entries(data.tokens || {})) {
-    if (/^font/i.test(key) && typeof value === "string") data.tokens[key] = deterministicFontStack(value);
-  }
   const overridesPath = path.join(dir, "overrides.css");
   data.overridesCss = fs.existsSync(overridesPath) ? fs.readFileSync(overridesPath, "utf8") : "";
   data.dir = dir;
@@ -172,8 +246,8 @@ function validateBeats(items, byId, targetFormat) {
     const formats = beatFormats(beat, label, errors);
     if (!component) errors.push(`${label}: 未注册 type，可用 ${[...byId.keys()].join("/")}`);
     if (!(Number(beat.end) > Number(beat.start))) errors.push(`${label}: 需要 end > start`);
-    if (!beat.kicker && !component?.optionalFields?.includes("kicker")) errors.push(`${label}: 缺 kicker`);
-    if (!beat.title && !component?.optionalFields?.includes("title")) errors.push(`${label}: 缺 title`);
+    if (!beat.kicker) errors.push(`${label}: 缺 kicker`);
+    if (!beat.title) errors.push(`${label}: 缺 title`);
     for (const field of component?.requiredFields || []) {
       if (beat[field] == null) errors.push(`${label}: 缺 ${field}`);
     }
@@ -231,7 +305,16 @@ function trimBeats(items, totalDuration) {
 function trimCaptions(items, totalDuration) {
   return items
     .filter((item) => captionStart(item) < totalDuration)
-    .map((item) => ({ ...item, e: Math.min(captionEnd(item), totalDuration) }))
+    .map((item) => {
+      const end = Math.min(captionEnd(item), totalDuration);
+      const words = Array.isArray(item.words)
+        ? item.words
+          .filter((word) => Number(word.s ?? word.start) < end)
+          .map((word) => ({ ...word, e: Math.min(Number(word.e ?? word.end), end) }))
+          .filter((word) => Number(word.e) > Number(word.s ?? word.start))
+        : item.words;
+      return { ...item, e: end, ...(words == null ? {} : { words }) };
+    })
     .filter((item) => Number(item.e) > captionStart(item));
 }
 
@@ -322,6 +405,11 @@ function stageAssets() {
   for (const font of theme.fonts || []) {
     copyOrLink(path.join(sharedFonts, font.file), path.join(jobDir, "assets", "fonts", font.file));
   }
+  if (captionMode !== STATIC_CAPTION_MODE) {
+    // 公开版：SampleReplicaBlack（Arial Black 子集，Monotype 专有）不随仓库分发；本机有就用，没有退回系统 "Arial Black"
+    const replica = path.join(sharedFonts, "SampleReplicaBlack-LatinCyrillic.woff2");
+    if (fs.existsSync(replica)) copyOrLink(replica, path.join(jobDir, "assets", "fonts", "SampleReplicaBlack-LatinCyrillic.woff2"));
+  }
   copyOrLink(
     path.join(root, "themes", "_shared", "vendor", "gsap.min.js"),
     path.join(jobDir, "vendor", "gsap.min.js")
@@ -330,25 +418,15 @@ function stageAssets() {
 }
 
 function stageCjkSubset() {
-  const candidates = [
-    process.env.FACTORY_CJK_FONT,
-    "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
-    "/System/Library/Fonts/Hiragino Sans GB.ttc"
-  ].filter(Boolean);
-  const source = candidates.find((candidate) => fs.existsSync(candidate));
-  if (!source) {
-    throw new Error(`缺少确定性中文字体源；设置 FACTORY_CJK_FONT，或安装候选字体: ${candidates.join(", ")}`);
-  }
+  const source = "/System/Library/Fonts/Hiragino Sans GB.ttc";
+  if (!fs.existsSync(source)) throw new Error(`缺少确定性中文字体源: ${source}`);
   const textFile = path.join(jobDir, "tmp", "factory-cjk-chars.txt");
   const output = path.join(jobDir, "assets", "fonts", "FactoryCJK.woff2");
   const text = JSON.stringify({ title: config.title, beats, captions, broll, intro });
   fs.mkdirSync(path.dirname(textFile), { recursive: true });
   fs.mkdirSync(path.dirname(output), { recursive: true });
   fs.writeFileSync(textFile, text);
-  // apt 的 python3-fonttools 不带 pyftsubset 命令行（客户 WSL 靠多装的 fonttools 包才有）；没有就走模块入口，功能相同
-  const subsetCommand = commandExists("pyftsubset") ? ["pyftsubset"] : ["python3", "-m", "fontTools.subset"];
-  run(subsetCommand[0], [
-    ...subsetCommand.slice(1),
+  run("pyftsubset", [
     source,
     "--font-number=0",
     `--text-file=${textFile}`,
@@ -403,16 +481,7 @@ function splitCaptionsToSingleLines(items, maxChars) {
       const partEnd = index === parts.length - 1
         ? end
         : start + ((end - start) * consumedWeight) / totalWeight;
-      const splitItem = { ...item, s: partStart, e: partEnd, t: part };
-      if (splitItem.emphasis != null) {
-        const terms = Array.isArray(splitItem.emphasis) ? splitItem.emphasis : [splitItem.emphasis];
-        const matchingTerms = terms.filter((term) =>
-          part.toLocaleLowerCase().includes(String(term).trim().toLocaleLowerCase())
-        );
-        if (!matchingTerms.length) delete splitItem.emphasis;
-        else splitItem.emphasis = Array.isArray(splitItem.emphasis) ? matchingTerms : matchingTerms[0];
-      }
-      return splitItem;
+      return { ...item, s: partStart, e: partEnd, t: part };
     });
   });
 }
@@ -479,22 +548,51 @@ function captionDisplayWidth(text) {
 
 function renderCaptions() {
   if (config.caption && config.caption.enabled === false) return "";
-  return captions
-    .map((item, index) => {
-      const start = captionStart(item);
-      const end = captionEnd(item);
-      if (overlaps(start, end, captionHideRanges)) return "";
-      const dur = Math.max(0.1, end - start);
-      const text = renderCaptionMarkup(item);
-      if (!text) return "";
-      const classes = ["clip", "caption"];
-      if (overlaps(start, end, cardRanges)) classes.push("caption-over-card");
-      if (overlaps(start, end, primary.ranges)) classes.push("caption-primary");
-      if (overlaps(start, end, primary.pipRanges)) classes.push("caption-primary-pip");
-      return `<div id="caption-${index + 1}" class="${classes.join(" ")}" data-start="${fmtTime(start)}" data-duration="${fmtTime(dur)}" data-track-index="${1000 + index}">${text}</div>`;
-    })
-    .filter(Boolean)
-    .join("");
+  if (captionMode === "single-word-pop") return renderSingleWordCaptions();
+  return captions.map((item, index) => renderCaptionCue(item, index)).filter(Boolean).join("");
+}
+
+function renderCaptionCue(item, index) {
+  const start = captionStart(item);
+  const end = captionEnd(item);
+  if (overlaps(start, end, captionHideRanges)) return "";
+  const words = captionMode === "phrase-highlight" ? normalizeCaptionWords(item) : [];
+  const dynamic = words.length > 0;
+  const text = dynamic ? renderPhraseCaptionWords(item) : renderCaptionMarkup(item);
+  if (!text) return "";
+  const classes = captionClasses(start, end);
+  if (dynamic) classes.push("caption-dynamic", "caption-phrase-highlight");
+  const motion = dynamic ? ' data-caption-motion="phrase-highlight"' : "";
+  return `<div id="caption-${index + 1}" class="${classes.join(" ")}" data-start="${fmtTime(start)}" data-duration="${fmtTime(Math.max(0.1, end - start))}" data-track-index="${1000 + index}"${motion}>${text}</div>`;
+}
+
+function renderSingleWordCaptions() {
+  let clipIndex = 0;
+  return captions.flatMap((item, cueIndex) => {
+    const cueStart = captionStart(item);
+    const cueEnd = captionEnd(item);
+    if (overlaps(cueStart, cueEnd, captionHideRanges)) return [];
+    const wordClips = createSingleWordClips(item);
+    if (!wordClips.length) return [renderCaptionCue(item, cueIndex)];
+    return wordClips.map((word, wordIndex) => {
+      const start = Number(word.s);
+      const end = Number(word.e);
+      const classes = captionClasses(start, end);
+      classes.push("caption-dynamic", "caption-single-word");
+      if (word.highlighted) classes.push("caption-single-word-highlight");
+      const trackIndex = 2000 + clipIndex;
+      clipIndex += 1;
+      return `<div id="caption-${cueIndex + 1}-word-${wordIndex + 1}" class="${classes.join(" ")}" data-caption-motion="single-word-pop" data-start="${fmtTime(start)}" data-duration="${fmtTime(Math.max(0.1, end - start))}" data-track-index="${trackIndex}"><span class="caption-single-word-text">${escapeHtml(word.t.trim())}</span></div>`;
+    });
+  }).filter(Boolean).join("");
+}
+
+function captionClasses(start, end) {
+  const classes = ["clip", "caption"];
+  if (overlaps(start, end, cardRanges)) classes.push("caption-over-card");
+  if (overlaps(start, end, primary.ranges)) classes.push("caption-primary");
+  if (overlaps(start, end, primary.pipRanges)) classes.push("caption-primary-pip");
+  return classes;
 }
 
 function renderBeat(beat, index) {
@@ -530,7 +628,9 @@ function fontFaces() {
         `@font-face { font-family: "${font.family}"; src: url("assets/fonts/${font.file}") format("woff2"); font-weight: ${font.weight}; }`
     )
     .join("\n      ");
-  return `@font-face { font-family: "FactoryCJK"; src: url("assets/fonts/FactoryCJK.woff2") format("woff2"); font-weight: 100 900; }\n      ${themed}`;
+  const dynamic = captionMode === STATIC_CAPTION_MODE ? "" : `
+      @font-face { font-family: "SampleReplicaBlack"; src: url("assets/fonts/SampleReplicaBlack-LatinCyrillic.woff2") format("woff2"); font-weight: 900; }`;
+  return `@font-face { font-family: "FactoryCJK"; src: url("assets/fonts/FactoryCJK.woff2") format("woff2"); font-weight: 100 900; }${dynamic}\n      ${themed}`;
 }
 
 function themeCss() {
@@ -566,62 +666,94 @@ function themeCss() {
       .caption-over-card { bottom: 430px; font-size: 38px; }
       ${primary.css}
       ${compiledIntro?.cssText || ""}
-      ${layoutCss()}`;
+      ${layoutCss()}
+      ${captionPlacementCss()}`;
 }
 
 function captionPlacementCss() {
   const placement = String(config.caption?.placement || "").trim();
   if (!placement) return "";
-  if (!["douyin-fixed", "tiktok-safe"].includes(placement)) {
+  if (placement !== "douyin-fixed") {
     throw new Error(`caption.placement 不支持 ${placement}`);
   }
   if (format !== "portrait") {
-    throw new Error(`caption.placement=${placement} 只支持竖屏画幅`);
+    throw new Error("caption.placement=douyin-fixed 只支持竖屏画幅");
   }
-  const fontSize = boundedCaptionNumber(config.caption?.fontSize, 46, 40, 80, "caption.fontSize");
-  const safeBottom = boundedCaptionNumber(config.caption?.safeBottom, 430, 300, 720, "caption.safeBottom");
-  const leftInset = boundedCaptionNumber(config.caption?.leftInset, 64, 0, 360, "caption.leftInset");
-  const rightInset = boundedCaptionNumber(config.caption?.rightInset, 188, 0, 360, "caption.rightInset");
-  const captionStrokeWidth = boundedCaptionNumber(theme.tokens.captionStrokeWidth, 1.4, 0, 8, "theme.tokens.captionStrokeWidth");
-  const emphasisStrokeWidth = boundedCaptionNumber(theme.tokens.captionEmphasisStrokeWidth, 2.2, 0, 8, "theme.tokens.captionEmphasisStrokeWidth");
-  const captionColor = theme.tokens.captionText || "#fff";
-  const emphasisColor = theme.tokens.kicker || "#F3FE19";
-  const captionStrokeColor = theme.tokens.captionStrokeColor || "rgba(0, 0, 0, 0.92)";
-  const emphasisStrokeColor = theme.tokens.captionEmphasisStrokeColor || "#000";
-  const captionShadow = theme.tokens.captionShadow || "0 2px 5px rgba(0, 0, 0, 0.72)";
-  const emphasisShadow = theme.tokens.captionEmphasisShadow || captionShadow;
+  const configuredBottom = Number(config.caption?.bottom ?? 430);
+  if (!Number.isFinite(configuredBottom) || configuredBottom < 0 || configuredBottom > height - 80) {
+    throw new Error(`caption.bottom 超出竖屏安全范围: ${config.caption?.bottom}`);
+  }
   return `.caption, .caption-over-card {
-      left: ${leftInset}px;
-      right: ${rightInset}px;
-      bottom: ${safeBottom}px;
-      color: ${captionColor};
-      font-size: ${fontSize}px;
+      left: 64px;
+      right: 188px;
+      bottom: ${configuredBottom}px;
+      color: #fff;
+      font-size: 46px;
       line-height: 1.1;
       font-weight: 700;
-      -webkit-text-stroke: ${captionStrokeWidth}px ${captionStrokeColor};
+      -webkit-text-stroke: 1.4px rgba(0, 0, 0, 0.92);
       paint-order: stroke fill;
-      text-shadow: ${captionShadow};
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.72);
       white-space: nowrap;
-    }
-    .caption-emphasis {
-      color: ${emphasisColor};
-      background: transparent;
-      -webkit-text-stroke: ${emphasisStrokeWidth}px ${emphasisStrokeColor};
-      paint-order: stroke fill;
-      text-shadow: ${emphasisShadow};
     }`;
 }
 
-function boundedCaptionNumber(value, fallback, min, max, label) {
-  if (value == null || value === "") return fallback;
-  const number = Number(value);
-  if (!Number.isFinite(number) || number < min || number > max) {
-    throw new Error(`${label} 必须是 ${min}..${max} 的数字`);
+function dynamicCaptionCss() {
+  if (captionMode === STATIC_CAPTION_MODE) return "";
+  const portrait = format === "portrait";
+  const fontSize = Number(portrait ? captionPreset.fontSizePortrait : captionPreset.fontSizeLandscape);
+  const maxWidthRatio = Number(portrait ? captionPreset.maxWidthRatioPortrait : captionPreset.maxWidthRatioLandscape);
+  if (!(fontSize > 0) || !(maxWidthRatio > 0 && maxWidthRatio <= 1)) {
+    throw new Error(`caption preset ${captionMode} 的字号或宽度比例非法`);
   }
-  return number;
+  const centered = portrait && !sourceOverlay
+    ? `.caption-dynamic:not(.caption-primary) { left: 50%; right: auto; width: ${Math.round(maxWidthRatio * 100)}%; transform: translateX(-50%); }`
+    : "";
+  return `${centered}
+      .caption-dynamic {
+        max-width: ${Math.round(maxWidthRatio * 100)}%;
+        color: ${captionPreset.textColor};
+        font-family: "SampleReplicaBlack", "Arial Black", "FactoryCJK", sans-serif;
+        font-size: ${fontSize}px;
+        line-height: 1.05;
+        font-weight: 900;
+        letter-spacing: 0.005em;
+        white-space: normal;
+        -webkit-text-stroke: 0.075em ${captionPreset.outlineColor};
+        paint-order: stroke fill;
+        text-shadow: 0 0.055em 0 ${captionPreset.outlineColor}, 0 0.12em 0.24em ${captionPreset.shadowColor};
+      }
+      .caption-words { display: block; text-wrap: balance; }
+      .caption-word, .caption-single-word-text { display: inline-block; transform-origin: 50% 82%; will-change: transform, color; }
+      .caption-emoji {
+        position: absolute;
+        left: 50%;
+        top: -0.9em;
+        transform: translateX(-50%);
+        font-size: 0.68em;
+        line-height: 1;
+        -webkit-text-stroke: 0;
+        text-shadow: 0 0.08em 0.2em rgba(0, 0, 0, 0.52);
+      }
+      .caption-single-word { font-size: ${fontSize}px; }
+      .caption-single-word-highlight { color: ${captionPreset.activeColor}; }
+      .caption-primary.caption-dynamic { white-space: normal; }`;
 }
 
 function layoutCss() {
+  if (shotcraftSpeakerStage) {
+    return `#main { background: oklch(97.5% 0.008 82); }
+      #camera-wrap { left: 64px; right: auto; top: 48px; bottom: 48px; width: 620px; border: 1px solid oklch(52% 0.115 65 / .55); border-radius: 30px; overflow: hidden; box-shadow: 0 24px 70px rgba(43, 32, 21, .2); }
+      #video-wrap { inset: 0; }
+      #talking-video { object-fit: cover; object-position: 50% 42%; filter: saturate(1.01) contrast(1.01); }
+      .vignette { display: none; }
+      .presenter-stage-copy { position: absolute; z-index: 2; left: 790px; right: 92px; top: 0; bottom: 0; display: flex; align-items: center; }
+      .presenter-stage-copy h1 { max-width: 930px; margin: 0 0 90px; color: oklch(18% 0.006 82); font-family: "FactoryCJK", sans-serif; font-size: 82px; font-weight: 700; line-height: 1.16; letter-spacing: -.018em; }
+      .presenter-stage-copy h1 em { color: oklch(52% 0.115 65); font-style: italic; }
+      #presenter-stage-copy::after { content: ""; position: absolute; left: 0; top: calc(50% + 118px); width: 220px; height: 6px; border-radius: 3px; background: oklch(52% 0.115 65); }
+      .caption, .caption-over-card { left: 790px; right: 92px; bottom: 76px; color: oklch(24% 0.006 82) !important; font-family: "FactoryCJK", sans-serif; font-size: 36px; line-height: 1.12; font-weight: 600; text-align: left; white-space: nowrap; -webkit-text-stroke: 0 !important; text-shadow: none !important; }
+      #card-host { z-index: 10; }`;
+  }
   if (sourceOverlay) {
     return `#main { background: ${theme.tokens.text}; }
       #video-wrap { inset: 0; overflow: hidden; background: ${theme.tokens.text}; }
@@ -634,7 +766,17 @@ function layoutCss() {
       .beat h2 { color: #f7f7f4; font-size: 34px; line-height: 1.08; }
       .beat p { color: rgba(247, 247, 244, 0.82); font-size: 21px; line-height: 1.18; }
       .beat .hero-number { right: 18px; bottom: 16px; font-size: 66px; }
-      .caption, .caption-over-card { left: calc(50% - 60px); right: auto; bottom: 52px; width: 720px; max-width: calc(100% - 160px); transform: translateX(-50%); font-size: 43px; line-height: 1.14; text-align: center; white-space: nowrap; }
+      .beat.beat-micro-overlay .micro-overlay { max-width: 620px; min-height: 96px; border: 1px solid rgba(244, 197, 66, 0.68); border-radius: 12px; background: #0d141c; }
+      .beat.beat-micro-overlay .micro-overlay.micro-overlay--action,
+      .beat.beat-micro-overlay .micro-overlay.micro-overlay--question,
+      .beat.beat-micro-overlay .micro-overlay.micro-overlay--locator { color: #f7f7f4; background: #0d141c; }
+      .beat.beat-micro-overlay .micro-overlay .micro-overlay-mark { flex-basis: 84px; color: #111315; background: #f4c542; }
+      .beat.beat-micro-overlay .micro-overlay .micro-overlay-mark svg { width: 40px; height: 40px; }
+      .beat.beat-micro-overlay .micro-overlay .micro-overlay-copy { padding: 13px 18px 15px; }
+      .beat.beat-micro-overlay .micro-overlay .kicker { margin-bottom: 5px; color: #f4c542; font-size: 14px; opacity: 1; }
+      .beat.beat-micro-overlay .micro-overlay h2 { max-width: 500px; color: #f7f7f4; font-size: 30px; line-height: 1.04; }
+      .beat.beat-micro-overlay .micro-overlay p { max-width: 500px; margin-top: 6px; color: #c9ced5; font-size: 18px; line-height: 1.12; opacity: 1; }
+      .caption, .caption-over-card { left: calc(50% + ${captionPanel.centerOffset}px); right: auto; bottom: ${captionPanel.bottom}px; width: ${captionPanel.width}px; max-width: calc(100% - 160px); transform: translateX(-50%); padding: ${captionPanel.paddingY}px ${captionPanel.paddingX}px; border-radius: ${captionPanel.radius}px; border: ${captionPanel.border}; background: ${captionPanel.background}; box-sizing: border-box; color: ${captionPanel.color}; font-size: ${captionPanel.fontSize}px; line-height: ${captionPanel.lineHeight}; font-weight: ${captionPanel.fontWeight}; text-align: center; white-space: nowrap; -webkit-text-stroke: ${captionPanel.textStroke}; paint-order: stroke fill; text-shadow: ${captionPanel.textShadow}; }
       .cta-row span { font-size: 19px; }
       .beat-cta { top: auto; bottom: 104px; width: 650px; }`;
   }
@@ -650,8 +792,13 @@ function layoutCss() {
       .caption-over-card { bottom: 80px; font-size: 34px; }`;
 }
 
-function renderGsapScript() {
-  return '<script src="vendor/gsap.min.js"></script>';
+function inlineGsap() {
+  const gsapPath = path.join(jobDir, "vendor", "gsap.min.js");
+  const source = fs
+    .readFileSync(gsapPath, "utf8")
+    .replaceAll("Math.random()", "0.5")
+    .replaceAll("</script", "<\\/script");
+  return `<script>${source}</script>`;
 }
 
 function writeMotionSpec() {
@@ -677,17 +824,18 @@ function renderHtml() {
       ${fontFaces()}
       ${themeCss()}
       ${sourceOverlay ? "" : theme.overridesCss}
-      ${captionPlacementCss()}
+      ${dynamicCaptionCss()}
     </style>
   </head>
   <body>
     <div id="main" data-composition-id="main" data-width="${width}" data-height="${height}" data-start="0" data-duration="${fmtTime(duration)}">
+      ${renderPresenterStageCopy()}
       <div id="camera-wrap">
-        <div id="video-wrap" data-layout-allow-overflow>
-          <video id="talking-video" src="${escapeHtml(sourceVideo)}" data-start="0" data-duration="${fmtTime(duration)}" data-track-index="1" muted playsinline preload="auto"></video>
+        <div id="video-wrap">
+          <video id="talking-video" src="${escapeHtml(sourceUrl)}" data-start="0" data-duration="${fmtTime(duration)}" data-track-index="1" muted playsinline preload="auto"></video>
         </div>
       </div>
-      <audio id="talking-audio" src="${escapeHtml(sourceVideo)}" data-start="0" data-duration="${fmtTime(duration)}" data-track-index="2" preload="auto"></audio>
+      <audio id="talking-audio" src="${escapeHtml(sourceUrl)}" data-start="0" data-duration="${fmtTime(duration)}" data-track-index="2" preload="auto"></audio>
       ${renderMusicBed(musicBed)}
       ${renderAudioCues(audioCues)}
       ${primary.html}
@@ -708,7 +856,7 @@ function renderHtml() {
         ${renderCaptions()}
       </div>
     </div>
-    ${renderGsapScript()}
+    ${inlineGsap()}
     <script>
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
@@ -731,6 +879,44 @@ function renderHtml() {
         tl.set(clip, { autoAlpha: 0 }, 0);
         tl.set(clip, { autoAlpha: 1 }, start);
         tl.set(clip, { autoAlpha: 0 }, start + dur);
+      });
+      const captionBaseColor = ${JSON.stringify(captionPreset.textColor || "#FFFFFF")};
+      const captionActiveColor = ${JSON.stringify(captionPreset.activeColor || "#FFFFFF")};
+      document.querySelectorAll('[data-caption-motion="phrase-highlight"]').forEach((caption) => {
+        const captionStart = Number(caption.dataset.start || 0);
+        const emoji = caption.querySelector(".caption-emoji");
+        if (emoji) {
+          tl.fromTo(emoji,
+            { opacity: 0, y: 14, scale: 0.6, rotation: -10 },
+            { opacity: 1, y: 0, scale: 1, rotation: 0, duration: 0.28, ease: "back.out(1.65)", immediateRender: false },
+            captionStart);
+        }
+        caption.querySelectorAll(".caption-word").forEach((word) => {
+          const start = Number(word.dataset.wordStart || captionStart);
+          const end = Number(word.dataset.wordEnd || start + 0.2);
+          const windowDuration = Math.min(0.22, Math.max(0.06, end - start));
+          const rise = windowDuration * 0.44;
+          const settle = windowDuration - rise;
+          tl.fromTo(word,
+            { color: captionActiveColor, y: 7, scale: 0.82 },
+            { color: captionActiveColor, y: -2, scale: 1.10, duration: rise, ease: "power4.out", immediateRender: false },
+            start);
+          tl.to(word, { y: 0, scale: 1, duration: settle, ease: "back.out(2.1)" }, start + rise);
+          tl.to(word, { color: captionBaseColor, duration: 0.001, ease: "none" }, end);
+        });
+      });
+      document.querySelectorAll('[data-caption-motion="single-word-pop"]').forEach((caption) => {
+        const start = Number(caption.dataset.start || 0);
+        const dur = Number(caption.dataset.duration || 0.2);
+        const text = caption.querySelector(".caption-single-word-text");
+        if (!text) return;
+        const rise = Math.min(0.105, Math.max(0.055, dur * 0.34));
+        const settle = Math.min(0.075, Math.max(0.04, dur * 0.22));
+        tl.fromTo(text,
+          { opacity: 0, y: 18, scale: 0.76 },
+          { opacity: 1, y: -3, scale: 1.12, duration: rise, ease: "power4.out", immediateRender: false },
+          start);
+        tl.to(text, { y: 0, scale: 1, duration: settle, ease: "back.out(2.2)" }, start + rise);
       });
       const impactMotionFps = ${Number(config.render?.fps || 30)};
       function impactMotionPreset(variant, icon) {
@@ -839,159 +1025,6 @@ function renderHtml() {
           ease: "power3.in"
         }, exitAt);
       }
-      function animateProductDomainPop(card, start, dur) {
-        const root = card.querySelector("[data-product-domain-pop]");
-        const banner = card.querySelector("[data-domain-motion]");
-        const product = card.querySelector("[data-product-motion]");
-        if (!root || !banner || !product) return;
-        const hitOffset = Math.max(0, Number(root.dataset.hitOffset || 0));
-        const hit = Math.min(start + dur - 0.12, start + hitOffset);
-        const enterAt = Math.max(start, hit - 0.16);
-        const exitDuration = Math.min(0.14, Math.max(0.10, dur * 0.14));
-        const exitAt = start + dur - exitDuration;
-
-        tl.set(banner, { opacity: 0, y: -150, scale: 0.94, rotation: -3, transformOrigin: "50% 0%" }, start);
-        tl.set(product, { opacity: 0, y: 74, scale: 0.54, rotation: -5, transformOrigin: "50% 65%" }, start);
-        tl.to(banner, { opacity: 1, y: 0, scale: 1, rotation: -1, duration: 0.22, ease: "back.out(1.45)" }, enterAt);
-        tl.to(product, { opacity: 1, y: -4, scale: 1.08, rotation: 1.2, duration: 0.10, ease: "power4.out" }, enterAt);
-        tl.to(product, { y: 0, scale: 1, rotation: 0, duration: 0.07, ease: "power2.inOut" }, hit);
-        tl.to(banner, { opacity: 0, y: -54, scale: 0.97, duration: exitDuration, ease: "power3.in" }, exitAt);
-        tl.to(product, { opacity: 0, y: -18, scale: 0.84, duration: exitDuration, ease: "power3.in" }, exitAt);
-      }
-      function animateMediaPopSticker(card, start, dur) {
-        const root = card.querySelector("[data-media-pop-sticker]");
-        const visual = card.querySelector("[data-media-pop-motion]");
-        if (!root || !visual) return;
-        const hitOffset = Math.max(0, Number(root.dataset.hitOffset || 0));
-        const hit = Math.min(start + dur - 0.10, start + hitOffset);
-        const enterAt = Math.max(start, hit - 0.10);
-        const settleAt = hit + 0.10;
-        const exitDuration = Math.min(0.13, Math.max(0.09, dur * 0.14));
-        const exitAt = start + dur - exitDuration;
-        const placement = root.dataset.placement || "top-center";
-        const direction = placement.includes("left") ? -1 : placement.includes("right") ? 1 : 0;
-        const preserveCenterX = placement === "top-center" || placement === "center-lower" ? -50 : 0;
-
-        tl.set(visual, {
-          opacity: 0,
-          xPercent: preserveCenterX,
-          x: direction * 34,
-          y: 30,
-          scale: 0.58,
-          rotation: direction * 5,
-          transformOrigin: "50% 65%"
-        }, start);
-        tl.to(visual, {
-          opacity: 1,
-          x: direction * -3,
-          y: -4,
-          scale: 1.08,
-          rotation: direction * -1.2,
-          duration: 0.10,
-          ease: "power4.out"
-        }, enterAt);
-        tl.to(visual, {
-          x: 0,
-          y: 0,
-          scale: 1,
-          rotation: 0,
-          duration: 0.08,
-          ease: "power2.inOut"
-        }, settleAt);
-        tl.to(visual, {
-          opacity: 0,
-          x: direction * 18,
-          y: -16,
-          scale: 0.88,
-          duration: exitDuration,
-          ease: "power3.in"
-        }, exitAt);
-      }
-      function animateUiClickSticker(card, start, dur) {
-        const root = card.querySelector("[data-ui-click-sticker]");
-        const surface = card.querySelector("[data-ui-click-motion]");
-        const pointer = card.querySelector("[data-ui-pointer]");
-        const before = card.querySelector("[data-ui-before]");
-        const after = card.querySelector("[data-ui-after]");
-        if (!root || !surface || !pointer || !before || !after) return;
-        const requestedPress = Math.max(0.18, Number(root.dataset.pressOffset || 0.72));
-        const pressAt = Math.min(start + dur - 0.24, start + requestedPress);
-        const exitDuration = Math.min(0.14, Math.max(0.10, dur * 0.14));
-        const exitAt = start + dur - exitDuration;
-
-        tl.set(surface, { opacity: 0, y: 34, scale: 0.72, rotation: -2, transformOrigin: "68% 64%" }, start);
-        tl.set(pointer, { opacity: 0, x: 82, y: 70, scale: 1.08, rotation: -8 }, start);
-        tl.set(before, { opacity: 1 }, start);
-        tl.set(after, { opacity: 0, y: 10 }, start);
-        tl.to(surface, { opacity: 1, y: -3, scale: 1.07, rotation: 0.8, duration: 0.11, ease: "power4.out" }, start);
-        tl.to(surface, { y: 0, scale: 1, rotation: 0, duration: 0.07, ease: "power2.inOut" }, start + 0.11);
-        tl.to(pointer, { opacity: 1, x: 0, y: 0, scale: 1, rotation: 0, duration: 0.20, ease: "power3.out" }, Math.max(start + 0.14, pressAt - 0.24));
-        tl.to(surface, { scale: 0.93, duration: 0.06, ease: "power2.in" }, pressAt);
-        tl.set(before, { opacity: 0 }, pressAt + 0.04);
-        tl.set(after, { opacity: 1, y: 8 }, pressAt + 0.04);
-        tl.to(after, { y: 0, duration: 0.08, ease: "back.out(1.7)" }, pressAt + 0.04);
-        tl.to(surface, { scale: 1.03, duration: 0.08, ease: "back.out(1.8)" }, pressAt + 0.06);
-        tl.to(surface, { scale: 1, duration: 0.06, ease: "power2.out" }, pressAt + 0.14);
-        tl.to(pointer, { opacity: 0, x: 22, y: 28, duration: exitDuration, ease: "power2.in" }, exitAt);
-        tl.to(surface, { opacity: 0, y: 24, scale: 0.92, duration: exitDuration, ease: "power3.in" }, exitAt);
-      }
-      function animateHookStackBanner(card, start, dur) {
-        const root = card.querySelector("[data-hook-stack-banner]");
-        const kicker = card.querySelector('[data-hook-layer="kicker"]');
-        const title = card.querySelector('[data-hook-layer="title"]');
-        const value = card.querySelector('[data-hook-layer="value"]');
-        if (!root || !kicker || !title || !value) return;
-        const hitOffset = Math.max(0, Number(root.dataset.hitOffset || 0.12));
-        const hit = Math.min(start + dur - 0.12, start + hitOffset);
-        const enterAt = Math.max(start, hit - 0.12);
-        const exitDuration = Math.min(0.10, Math.max(0.07, dur * 0.12));
-        const exitAt = start + dur - exitDuration;
-
-        tl.set(kicker, { opacity: 0, x: -48, y: -10, scale: 1.08, rotation: -4 }, start);
-        tl.set(title, { opacity: 0, x: 40, scale: 0.94, rotation: 3 }, start);
-        tl.set(value, { opacity: 0, y: 34, scale: 0.72, rotation: -3 }, start);
-        tl.to(kicker, { opacity: 1, x: 0, y: 0, scale: 1, rotation: -1.8, duration: 0.10, ease: "power4.out" }, enterAt);
-        tl.to(title, { opacity: 1, x: 0, scale: 1, rotation: 0.8, duration: 0.11, ease: "power4.out" }, enterAt + 0.03);
-        tl.to(value, { opacity: 1, y: -3, scale: 1.08, rotation: -0.8, duration: 0.10, ease: "back.out(1.8)" }, enterAt + 0.06);
-        tl.to(value, { y: 0, scale: 1, duration: 0.06, ease: "power2.out" }, enterAt + 0.16);
-        tl.to(root, { opacity: 0, scale: 1.03, duration: exitDuration, ease: "power3.in" }, exitAt);
-      }
-      function animateIrisReveal(card, start, dur) {
-        const root = card.querySelector("[data-iris-reveal]");
-        const hole = card.querySelector("[data-iris-hole]");
-        if (!root || !hole) return;
-        const requested = Math.max(0.08, Number(root.dataset.revealDuration || 0.22));
-        const revealDuration = Math.min(dur, requested);
-        const startScale = Math.max(0.01, Number(root.dataset.startScale || 0.04));
-        const startDiameter = 240 * startScale;
-        tl.set(hole, { width: startDiameter, height: startDiameter }, start);
-        tl.to(hole, { width: 2880, height: 2880, duration: revealDuration, ease: "power3.in" }, start);
-      }
-      function animateKeywordBurst(card, start, dur) {
-        const root = card.querySelector("[data-keyword-burst]");
-        const glyphs = Array.from(card.querySelectorAll("[data-keyword-glyph]"));
-        const kicker = card.querySelector("[data-keyword-kicker]");
-        if (!root || !glyphs.length) return;
-        const hitOffset = Math.max(0, Number(root.dataset.hitOffset || 0.1));
-        const staggerFrames = Math.max(1, Number(root.dataset.staggerFrames || 2));
-        const stagger = staggerFrames / impactMotionFps;
-        const enterAt = Math.min(start + dur - 0.18, start + hitOffset);
-        const exitDuration = Math.min(0.12, Math.max(0.08, dur * 0.14));
-        const exitAt = start + dur - exitDuration;
-
-        if (kicker) {
-          tl.set(kicker, { opacity: 0, y: -12, scale: 0.9 }, start);
-          tl.to(kicker, { opacity: 1, y: 0, scale: 1, duration: 0.10, ease: "power3.out" }, enterAt);
-        }
-        glyphs.forEach((glyph, index) => {
-          const glyphAt = enterAt + index * stagger;
-          const direction = index % 2 === 0 ? -1 : 1;
-          tl.set(glyph, { opacity: 0, y: 22, scale: 0.42, rotation: direction * 10, transformOrigin: "50% 80%" }, start);
-          tl.to(glyph, { opacity: 1, y: -3, scale: 1.12, rotation: direction * -1.5, duration: 0.10, ease: "back.out(1.9)" }, glyphAt);
-          tl.to(glyph, { y: 0, scale: 1, rotation: 0, duration: 0.06, ease: "power2.out" }, glyphAt + 0.10);
-        });
-        tl.to(root, { opacity: 0, y: -12, scale: 0.9, duration: exitDuration, ease: "power3.in" }, exitAt);
-      }
       document.querySelectorAll(".beat").forEach((card) => {
         const start = Number(card.dataset.start || 0);
         const dur = Number(card.dataset.duration || 0);
@@ -1004,30 +1037,6 @@ function renderHtml() {
         }
         if (card.dataset.kind === "impact-sticker") {
           animateImpactSticker(card, start, dur);
-          return;
-        }
-        if (card.dataset.kind === "product-domain-pop") {
-          animateProductDomainPop(card, start, dur);
-          return;
-        }
-        if (card.dataset.kind === "media-pop-sticker") {
-          animateMediaPopSticker(card, start, dur);
-          return;
-        }
-        if (card.dataset.kind === "ui-click-sticker") {
-          animateUiClickSticker(card, start, dur);
-          return;
-        }
-        if (card.dataset.kind === "hook-stack-banner") {
-          animateHookStackBanner(card, start, dur);
-          return;
-        }
-        if (card.dataset.kind === "iris-reveal") {
-          animateIrisReveal(card, start, dur);
-          return;
-        }
-        if (card.dataset.kind === "keyword-burst") {
-          animateKeywordBurst(card, start, dur);
           return;
         }
         if (card.dataset.kind === "result-grid") {
@@ -1171,6 +1180,37 @@ function renderHtml() {
   </body>
 </html>
 `;
+}
+
+function renderPresenterStageCopy() {
+  if (!shotcraftSpeakerStage) return "";
+  const cues = config.presenterStage?.cues;
+  if (cues != null) {
+    if (!Array.isArray(cues) || !cues.length) throw new Error("presenterStage.cues 必须是非空数组");
+    return cues.map((cue, index) => {
+      const start = Number(cue.start);
+      const end = Number(cue.end);
+      const copy = String(cue.copy || "").trim();
+      const emphasis = String(cue.emphasis || "").trim();
+      if (!Number.isFinite(start) || !Number.isFinite(end) || start < 0 || end <= start || end > duration + 0.01) {
+        throw new Error(`presenterStage.cues[${index}] 时间无效`);
+      }
+      if (!copy) throw new Error(`presenterStage.cues[${index}].copy 不能为空`);
+      const escaped = escapeHtml(copy);
+      const content = emphasis && copy.includes(emphasis)
+        ? escaped.replace(escapeHtml(emphasis), `<em>${escapeHtml(emphasis)}</em>`)
+        : escaped;
+      return `<div id="presenter-stage-copy-${index + 1}" class="clip presenter-stage-copy" data-start="${fmtTime(start)}" data-duration="${fmtTime(end - start)}" data-track-index="${10 + index}" aria-hidden="true"><h1>${content}</h1></div>`;
+    }).join("\n      ");
+  }
+  const copy = String(config.presenterStage?.copy || "").trim();
+  if (!copy) throw new Error("layout=shotcraft-speaker-stage 需要 presenterStage.copy");
+  const emphasis = String(config.presenterStage?.emphasis || "").trim();
+  const escaped = escapeHtml(copy);
+  const content = emphasis && copy.includes(emphasis)
+    ? escaped.replace(escapeHtml(emphasis), `<em>${escapeHtml(emphasis)}</em>`)
+    : escaped;
+  return `<div id="presenter-stage-copy" class="presenter-stage-copy" aria-hidden="true"><h1>${content}</h1></div>`;
 }
 
 stageAssets();

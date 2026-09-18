@@ -1,0 +1,24 @@
+[
+  {
+    "id": "regression-punch",
+    "type": "punch",
+    "start": 2.2,
+    "duration": 0.2,
+    "scale": 1.06
+  },
+  {
+    "id": "regression-flash-punch",
+    "type": "flash-punch",
+    "start": 18,
+    "duration": 0.2,
+    "scale": 1.1
+  },
+  {
+    "id": "regression-whip-cut",
+    "type": "whip-cut",
+    "start": 24,
+    "duration": 0.18,
+    "direction": "left",
+    "scale": 1.1
+  }
+]

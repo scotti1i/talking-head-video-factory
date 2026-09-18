@@ -1,0 +1,857 @@
+{
+  "schemaVersion": 1,
+  "source": "visual-recipes/shotcraft-registry.json + vendor/video-shotcraft/scene-recipes/PROVENANCE.json",
+  "policy": {
+    "plannerMayReference": "ported-only",
+    "implementation": "copy-upstream-parameters-into-stage/motions.ts",
+    "forbid": [
+      "rewrite-from-card-name",
+      "tune-easing-per-job"
+    ]
+  },
+  "hooks": {
+    "text.reveal": "文字揭示",
+    "text.emphasis": "主角字强调",
+    "text.number": "数字",
+    "node.enter": "节点建立",
+    "node.focus": "节点聚焦",
+    "badge.fx": "判定徽章动效",
+    "graph.edgeStyle": "连线样式",
+    "evidence.focus": "证据聚焦框",
+    "evidence.zoom": "证据推近",
+    "scene.handoff": "场景交接",
+    "background": "舞台背景",
+    "scene": "场景本体",
+    "data.compare": "前后对比",
+    "data.bars": "柱条"
+  },
+  "motions": [
+    {
+      "id": "shotcraft/blur-slide",
+      "stageId": "reveal.blur-slide",
+      "hook": "text.reveal",
+      "appliesTo": [
+        "concept.phrases",
+        "split.tag",
+        "label.items(size:xl)",
+        "graph.notes"
+      ],
+      "status": "ported",
+      "upstream": {
+        "file": "BlurSlide.tsx",
+        "sha256": "1ad15a7dd560d43fe4a6f40a823d69d6f87ac4f5fc31196f556b31342fd8932f"
+      },
+      "params": {
+        "dy": 40,
+        "blur": 10,
+        "easing": "outCubic",
+        "dur": "16f"
+      },
+      "defaultRule": "文字揭示默认；短语没有词级时间时使用"
+    },
+    {
+      "id": "shotcraft/type-rhythm-sync",
+      "stageId": "reveal.karaoke",
+      "hook": "text.reveal",
+      "appliesTo": [
+        "concept.phrases(words)"
+      ],
+      "status": "ported",
+      "upstream": {
+        "file": "KaraokeFillSync.tsx",
+        "sha256": "eddd5a37905bbc7be54066a349dec2c48ebc1e856b30b9f6de906b6c6a374579"
+      },
+      "params": {
+        "fill": "clip-path inset 按词内进度",
+        "underline": "8px 跟随右缘"
+      },
+      "defaultRule": "短语能在 words-timeline 里逐字对上时自动选用（编译器解析 words）"
+    },
+    {
+      "id": "shotcraft/marker-underline-title",
+      "stageId": "emphasis.marker-underline",
+      "hook": "text.emphasis",
+      "appliesTo": [
+        "concept.term",
+        "split.tag",
+        "label.items(size:xl)"
+      ],
+      "status": "ported",
+      "upstream": {
+        "file": "MarkerUnderlineTitle.tsx",
+        "sha256": "5881cb0b5e38b53eec9dae5093b9dfdb4c69d5b6cf76cf587bc9b123d0e38477"
+      },
+      "params": {
+        "draw": "10f, 1-(1-t)^2.2",
+        "stroke": "中轴微歪 + 变宽 + 毛糙多边形"
+      },
+      "defaultRule": "主角字号（xl / term / tag）落定后 10f 描画；plan 用 underline:true 显式开启"
+    },
+    {
+      "id": "shotcraft/element-body-moves",
+      "stageId": "object.contact-lift",
+      "hook": "node.focus",
+      "appliesTo": [
+        "graph.nodes(highlight)"
+      ],
+      "status": "ported",
+      "upstream": {
+        "file": "ContactShadowLift.tsx",
+        "sha256": "f29a6d77b407b9c6ad8caa8fe9e5c12cfa2d51202d6ea8258cae5015a736843c"
+      },
+      "params": {
+        "liftY": -28,
+        "scale": 1.08,
+        "shadow": "1→1.72 放大, 0.55→0.18 变淡"
+      },
+      "defaultRule": "节点处于 highlight 窗内时抬起；替代旧的 1.055 缩放"
+    },
+    {
+      "id": "shotcraft/slam-entrance-moves",
+      "stageId": "node.enter.slam",
+      "hook": "node.enter",
+      "appliesTo": [
+        "graph.nodes"
+      ],
+      "status": "ported",
+      "upstream": {
+        "file": "ScoreSlam.tsx",
+        "sha256": "e2ce99bd4e387e0ff03ffc22948d787fc1e7696f72ffe482f50daabd9336e878"
+      },
+      "params": {
+        "drop": "6f scale 2.5→0.97 rot 5→0 y -80→0 Easing.in(quad)",
+        "settle": "8f outCubic",
+        "ring": "60→860 14f",
+        "shake": "18px 5f exp"
+      },
+      "defaultRule": "结论型节点（在场景末段建立且带 highlight 到场景结束）默认 slam；其余 pop"
+    },
+    {
+      "id": "shotcraft/icon-performance-moves",
+      "stageId": "badge.pop-burst",
+      "hook": "badge.fx",
+      "appliesTo": [
+        "graph.nodes.badge"
+      ],
+      "status": "ported",
+      "upstream": {
+        "file": "PopBurstConfirm.tsx",
+        "sha256": "cca22774f4d75754795f96e0060f727a8b062c3005b7bab5cf45fce86f02b80f"
+      },
+      "params": {
+        "anticipate": "0.6x 3f",
+        "overshoot": "1.35x 6f, back(2) 11f",
+        "particles": "10 根 14f",
+        "ring": "2.5x 20f"
+      },
+      "defaultRule": "判定徽章（✓ / ✕ / 红色）默认 burst；说明型徽章 impact"
+    },
+    {
+      "id": "shotcraft/impact-feedback",
+      "stageId": "badge.impact",
+      "hook": "badge.fx",
+      "appliesTo": [
+        "graph.nodes",
+        "graph.nodes.badge"
+      ],
+      "status": "ported",
+      "upstream": {
+        "file": "(Fx.tsx 已实现)",
+        "sha256": null
+      },
+      "params": {
+        "ring": "16f outCubic",
+        "dots": 6
+      },
+      "defaultRule": "节点建立与说明型徽章"
+    },
+    {
+      "id": "shotcraft/scanline-annotate-focus",
+      "stageId": "evidence.brackets",
+      "hook": "evidence.focus",
+      "appliesTo": [
+        "evidence.focus"
+      ],
+      "status": "ported",
+      "upstream": {
+        "file": "ScanlineAnnotateFocus.tsx",
+        "sha256": "c0bff214f004465455400f468847b0ed73f672a6d75b05d6ee8b3704b9d82fd7"
+      },
+      "params": {
+        "brackets": "四角 1.75→1 outBack",
+        "flash": "7% 白闪",
+        "label": "淡入上移"
+      },
+      "defaultRule": "聚焦框高度 < 80px（一句话）默认 brackets；大块用 box"
+    },
+    {
+      "id": "shotcraft/crash-zoom-punch",
+      "stageId": "evidence.crash-zoom",
+      "hook": "evidence.zoom",
+      "appliesTo": [
+        "evidence.focus"
+      ],
+      "status": "ported",
+      "upstream": {
+        "file": "CrashZoomReal.tsx",
+        "sha256": "495a5afc91a4c93424d15edf35c8767d1ff90f4d9515bb9194f68d7f355a181f"
+      },
+      "params": {
+        "push": "6f bezier(.55,0,.7,1) 到 2.6x",
+        "settle": "5f 回 2.45x"
+      },
+      "defaultRule": "focus.zoom='crash' 显式；默认 shared（25f+10f）"
+    },
+    {
+      "id": "shotcraft/odometer-digit-roll",
+      "stageId": "data.odometer",
+      "hook": "text.number",
+      "appliesTo": [
+        "label.items(odometer)"
+      ],
+      "status": "ported",
+      "upstream": {
+        "file": "OdometerDigitRoll.tsx",
+        "sha256": "e91c46c1c80f68f83fbed2c1c39e5ad22d6be5799f3541978f56b9e61ee73af2"
+      },
+      "params": {
+        "spin": "0.85 行/帧",
+        "decel": "位 i 在 20+i*7f 起 16f outCubic 过冲半格 + 6f 回弹",
+        "ghost": "±0.5 行 0.25/0.12"
+      },
+      "defaultRule": "标签文字为纯数字且 odometer:true"
+    },
+    {
+      "id": "shotcraft/glow-flyline-moves",
+      "stageId": "edge.flyline",
+      "hook": "graph.edgeStyle",
+      "appliesTo": [
+        "graph.edges(highlight)"
+      ],
+      "status": "ported",
+      "upstream": {
+        "file": "FlylineArc.tsx",
+        "sha256": "6c2f3a636d343474dcb489393ad7c71d6f454c1962113c9c90988bfa5f48ae4c"
+      },
+      "params": {
+        "grow": "22f outCubic",
+        "head": "r26 光晕 + r9 实心",
+        "tail": "0.4→1 按离头距离平方",
+        "settle": "10f"
+      },
+      "defaultRule": "highlight 窗内的连线默认 flyline；其余 line"
+    },
+    {
+      "id": "shotcraft/circle-match-iris",
+      "stageId": "handoff.circle-iris",
+      "hook": "scene.handoff",
+      "appliesTo": [
+        "converge",
+        "graph"
+      ],
+      "status": "ported",
+      "upstream": {
+        "file": "CircleMatchIris.tsx",
+        "sha256": "0c2afbb49d65aa15241396fb2343ba3cb046d0958cd80a9eac1925e4f93efd20"
+      },
+      "params": {
+        "iris": "22→2100px 45f inOut cubic",
+        "pulse": "两次呼吸 1.45x"
+      },
+      "defaultRule": "相邻两场景在同一圆心各有一个圆（如订单圆块 → 汇流结果）时 handoff:'circle-iris'"
+    },
+    {
+      "id": "shotcraft/transition-travel",
+      "stageId": "handoff.shared-element",
+      "hook": "scene.handoff",
+      "appliesTo": [
+        "*"
+      ],
+      "status": "ported",
+      "upstream": {
+        "file": "SharedElementMorph.tsx",
+        "sha256": "fe5d3a1071e71cce96470939bb6f4b4e7dc52e61058697ffa010c3e17e3521f3"
+      },
+      "params": {
+        "drive": "25f cubic-bezier(.4,0,.2,1) 到 1.03",
+        "settle": "10f cubic"
+      },
+      "defaultRule": "所有换位 / 缩小的默认曲线"
+    },
+    {
+      "id": "shotcraft/depth-layer-moves",
+      "stageId": "background.multiplane",
+      "hook": "background",
+      "appliesTo": [
+        "stage.background"
+      ],
+      "status": "ported",
+      "upstream": {
+        "file": "MultiplaneReal.tsx",
+        "sha256": "b67c6ab37f02f1df6033b54fdb08d1fa0aa85300404578be50715285d16d2124"
+      },
+      "params": {
+        "layers": "0.35 / 0.7 / 1.4",
+        "easing": "bezier(.35,0,.25,1)"
+      },
+      "defaultRule": "背景三层按系数缓慢视差漂移"
+    },
+    {
+      "id": "shotcraft/diagram-cascade",
+      "stageId": "graph.cascade",
+      "hook": "node.enter",
+      "appliesTo": [
+        "graph.nodes",
+        "graph.edges"
+      ],
+      "status": "ported",
+      "upstream": {
+        "file": "DiagramCascadeBuild.tsx",
+        "sha256": "c22146209dc68542d3ac630c8816d713d92786501c9cc9e592d1637852fbb548"
+      },
+      "params": {
+        "spring": "damping 11 / stiffness 170",
+        "edge": "早 8f 起 16f outCubic 描完"
+      },
+      "defaultRule": "节点默认建立方式"
+    },
+    {
+      "id": "shotcraft/bezier-source-converge-merge",
+      "stageId": "converge.bezier",
+      "hook": "scene",
+      "appliesTo": [
+        "converge"
+      ],
+      "status": "ported",
+      "upstream": {
+        "file": "BezierSourceConvergeMerge.tsx",
+        "sha256": "a58bdab4308a4f6d92282b969c494359547445b4f8ac92d3742798d31a6adf07"
+      },
+      "params": {
+        "draw": "30f outQuad",
+        "converge": "66f inOutCubic"
+      },
+      "defaultRule": "converge 场景本体"
+    },
+    {
+      "id": "shotcraft/morph-from-primitive",
+      "stageId": "node.enter.morph",
+      "hook": "node.enter",
+      "appliesTo": [
+        "graph.nodes"
+      ],
+      "status": "vendored-candidate",
+      "upstream": {
+        "file": "MorphFromPrimitive.tsx",
+        "sha256": "f18d82ce6675be5c0b097969285a973c122633f2844fd1c4a81cc1c6a97a0d5e"
+      },
+      "params": {
+        "path": "圆 → 圆角矩形 24f 同构 path 插值"
+      },
+      "defaultRule": "候选：正圆呼吸后长成卡；需要节点 shape 从 circle 变 card 的语义"
+    },
+    {
+      "id": "shotcraft/before-after-slider-scrub",
+      "stageId": "data.before-after",
+      "hook": "data.compare",
+      "appliesTo": [
+        "[data.compare]"
+      ],
+      "status": "vendored-candidate",
+      "upstream": {
+        "file": "BeforeAfterSliderScrub.tsx",
+        "sha256": "69096e8839be16b7818d3ac375ad170828cb08fa7fcd4fd826d4cc1b4cdf7f69"
+      },
+      "params": {
+        "fling": "8→76% 12f outCubic",
+        "bounce": "→70% 12f",
+        "scrub": "→40% 48f"
+      },
+      "defaultRule": "候选：开启前后两版画面对照时替代区间高亮"
+    },
+    {
+      "id": "shotcraft/hatch-depth",
+      "stageId": "data.hatch-bars",
+      "hook": "data.bars",
+      "appliesTo": [
+        "data.bars"
+      ],
+      "status": "vendored-candidate",
+      "upstream": {
+        "file": "HatchDepth.tsx",
+        "sha256": "a6e3050ac9b86590a6c74fc9aae3f764e5a4664c891957a98a421303bc8e6b49"
+      },
+      "params": {
+        "grow": "逐条 .22 outCubic 错峰 .05",
+        "morph": "斜纹→实心 .14"
+      },
+      "defaultRule": "候选：占位条变真数据柱"
+    },
+    {
+      "id": "shotcraft/integration-hub-map",
+      "stageId": "converge.light-tubes",
+      "hook": "converge.edgeStyle",
+      "appliesTo": [
+        "converge"
+      ],
+      "status": "vendored-candidate",
+      "upstream": {
+        "file": "IntegrationHubMap.tsx",
+        "sha256": "fcd9ed29f4f0ca41a05377f31459c2dba664784ea7f5c900abefabc2dc59f3c9"
+      },
+      "params": {
+        "tubes": "亮脉冲沿管线循环流动"
+      },
+      "defaultRule": "候选：多输入汇入中枢后持续输送感"
+    },
+    {
+      "id": "shotcraft/line-carry-transition",
+      "stageId": "handoff.line-carry",
+      "hook": "scene.handoff",
+      "appliesTo": [
+        "graph→*"
+      ],
+      "status": "vendored-candidate",
+      "upstream": {
+        "file": "LineCarryTransition.tsx",
+        "sha256": "e3cf0eafab68e3fced8705adedadcd685033af84595d3c738e92af782687ac95"
+      },
+      "params": {
+        "carry": "线延伸出画 → 镜头跟线横移 60f inOut → 拐角围出下一卡"
+      },
+      "defaultRule": "候选：关系图连线接力进入下一场景"
+    },
+    {
+      "id": "stage/ladder",
+      "stageId": "scene.ladder",
+      "hook": "scene",
+      "appliesTo": [
+        "scene(type:ladder)"
+      ],
+      "status": "native",
+      "upstream": null,
+      "params": {
+        "tile": "246×216/172",
+        "dx": "≤330",
+        "dy": "≤150",
+        "rail": "台阶式导轨，下一级 at-8f→+14f 描线",
+        "spring": "damping 11 / stiffness 170"
+      },
+      "defaultRule": "递进 / 升级 / 逐级抬升的逻辑；步骤有真实顺序时用它（编号编码顺序），不是流程图的平铺"
+    },
+    {
+      "id": "stage/cycle",
+      "stageId": "scene.cycle",
+      "hook": "scene",
+      "appliesTo": [
+        "scene(type:cycle)"
+      ],
+      "status": "native",
+      "upstream": null,
+      "params": {
+        "node": "168 圆",
+        "radius": 250,
+        "arc": "下一节点 at-8f→+16f 描弧，合环 closeAt 默认末节点 at+18f",
+        "hub": "可选中心枢纽 220×200"
+      },
+      "defaultRule": "A 推动 B、B 回到 A 的闭环（飞轮 / 反馈 / 循环）；不是流程也不是汇流"
+    },
+    {
+      "id": "stage/idle-center",
+      "stageId": "speaker.idle-center",
+      "hook": "scene.handoff",
+      "appliesTo": [
+        "speaker"
+      ],
+      "status": "native",
+      "upstream": null,
+      "params": {
+        "idleMin": "1.8s",
+        "lead": "0.6s",
+        "modes": "hero / dock / focus"
+      },
+      "defaultRule": "编译器自动：内容出现前空闲 ≥1.8s 的段先居中，内容前 0.6s 才切左人右图（Scott 2026-09-02：右边没东西时人不该缩在左边）"
+    },
+    {
+      "id": "stage/plate",
+      "stageId": "background.plate",
+      "hook": "background",
+      "appliesTo": [
+        "plan.background.plate"
+      ],
+      "status": "native",
+      "upstream": null,
+      "params": {
+        "drift": "multiplane back 0.35 视差 + 1.03→1.07 极慢推近",
+        "sweep": "45s 一道斜向 3.5% 光扫",
+        "overlay": ".42（无板 .8）"
+      },
+      "defaultRule": "常驻背景板：visual-assets/plates/studio-topglow.png（gpt-image-2 生成的深色摄影棚顶光板）；原片模糊层降到 7% 只留呼吸"
+    },
+    {
+      "id": "stage/speaker-close",
+      "stageId": "speaker.close",
+      "hook": "scene.handoff",
+      "appliesTo": [
+        "speaker"
+      ],
+      "status": "native",
+      "upstream": null,
+      "params": {
+        "zoom": 1.45,
+        "origin": "50% 34%"
+      },
+      "defaultRule": "关键论断处人物特写推近；一条片 1–2 次"
+    },
+    {
+      "id": "stage/speaker-mirror",
+      "stageId": "speaker.hero-right",
+      "hook": "scene.handoff",
+      "appliesTo": [
+        "speaker"
+      ],
+      "status": "native",
+      "upstream": null,
+      "params": {
+        "box": "1282,58,584,830",
+        "content": "54..1220"
+      },
+      "defaultRule": "镜像布局打破左人右图的网格；一条片至少 1 段"
+    },
+    {
+      "id": "stage/giant-word",
+      "stageId": "label.giant",
+      "hook": "text.emphasis",
+      "appliesTo": [
+        "label.items(size:giant)"
+      ],
+      "status": "native",
+      "upstream": null,
+      "params": {
+        "font": 240
+      },
+      "defaultRule": "整屏巨字：数字或四字以内的判定，人物退到角标"
+    },
+    {
+      "id": "stage/accent",
+      "stageId": "scene.accent",
+      "hook": "scene",
+      "appliesTo": [
+        "scene(type:accent)"
+      ],
+      "status": "native",
+      "upstream": null,
+      "params": {
+        "tile": 104,
+        "life": "1.2s",
+        "spring": "damping 10 / stiffness 210"
+      },
+      "defaultRule": "口播关键词伴奏；每 2–3 秒一个"
+    },
+    {
+      "id": "stage/quote",
+      "stageId": "scene.quote",
+      "hook": "scene",
+      "appliesTo": [
+        "scene(type:quote)"
+      ],
+      "status": "native",
+      "upstream": null,
+      "params": {
+        "mark": "「 150px 强调色",
+        "text": "44–64px 随字数",
+        "width": "≤1080"
+      },
+      "defaultRule": "别人的原话；没有截图时替代证据页"
+    },
+    {
+      "id": "stage/broll-strip",
+      "stageId": "broll.strip",
+      "hook": "scene",
+      "appliesTo": [
+        "broll(layout:strip)"
+      ],
+      "status": "native",
+      "upstream": null,
+      "params": {
+        "box": "0,250,1920,600"
+      },
+      "defaultRule": "电影感通栏，人物退到角标；开场或情绪段"
+    },
+    {
+      "id": "stage/caption-keywords",
+      "stageId": "caption.keywords",
+      "hook": "text.emphasis",
+      "appliesTo": [
+        "plan.keywords"
+      ],
+      "status": "native",
+      "upstream": null,
+      "params": {
+        "color": "#E3C778",
+        "weight": 800
+      },
+      "defaultRule": "字幕关键词金色加重；一条片 8–12 个词"
+    },
+    {
+      "id": "stage/variety-audit",
+      "stageId": "plan.variety",
+      "hook": "scene",
+      "appliesTo": [
+        "plan"
+      ],
+      "status": "native",
+      "upstream": null,
+      "params": {
+        "trigram": ">35% 预警",
+        "opening": "开头四场相同预警"
+      },
+      "defaultRule": "编译时自动与其他 job 比签名，防三条片长一样"
+    },
+    {
+      "id": "stage/timeline",
+      "stageId": "scene.timeline",
+      "hook": "scene",
+      "appliesTo": [
+        "scene(type:timeline)"
+      ],
+      "status": "native",
+      "upstream": null,
+      "params": {
+        "card": "300×150 上下交错",
+        "rail": "填到当前里程碑",
+        "red": "事故点"
+      },
+      "defaultRule": "按时间讲一件事；与关系图轮替"
+    },
+    {
+      "id": "stage/compare",
+      "stageId": "scene.compare",
+      "hook": "scene",
+      "appliesTo": [
+        "scene(type:compare)"
+      ],
+      "status": "native",
+      "upstream": null,
+      "params": {
+        "panels": "两块 480 高",
+        "lines": "blur-slide 逐行"
+      },
+      "defaultRule": "以前 X 以后 Y；替代第二个汇流"
+    },
+    {
+      "id": "stage/evidence-note",
+      "stageId": "evidence.note",
+      "hook": "evidence.focus",
+      "appliesTo": [
+        "evidence.focus[].note"
+      ],
+      "status": "native",
+      "upstream": null,
+      "params": {
+        "pill": "30px 强调色，框下 26px，越界翻到框上"
+      },
+      "defaultRule": "英文页聚焦句必带中文译注"
+    },
+    {
+      "id": "stage/opening-face",
+      "stageId": "speaker.opening",
+      "hook": "scene.handoff",
+      "appliesTo": [
+        "speaker"
+      ],
+      "status": "native",
+      "upstream": null,
+      "params": {
+        "hold": "≥1.5s"
+      },
+      "defaultRule": "开场先正脸，再飞到别处"
+    },
+    {
+      "id": "stage/type-rotation",
+      "stageId": "plan.rotation",
+      "hook": "scene",
+      "appliesTo": [
+        "plan"
+      ],
+      "status": "native",
+      "upstream": null,
+      "params": {
+        "window": "5 场",
+        "consecutive": "强预警"
+      },
+      "defaultRule": "同类模板轮替"
+    },
+    {
+      "id": "stage/chevron",
+      "stageId": "edge.chevron",
+      "hook": "graph.edgeStyle",
+      "appliesTo": [
+        "graph.edges(style:chevron)"
+      ],
+      "status": "ported",
+      "upstream": null,
+      "params": {
+        "glyph": "» ×3",
+        "stagger": "4f"
+      },
+      "defaultRule": "stage3d 皮肤下的连线：小Lin 式双箭头，依次点亮"
+    },
+    {
+      "id": "stage/title",
+      "stageId": "scene.title",
+      "hook": "scene",
+      "appliesTo": [
+        "scene.title"
+      ],
+      "status": "ported",
+      "upstream": null,
+      "params": {
+        "size": "96–150px 随字数",
+        "sub": "延后 10f"
+      },
+      "defaultRule": "YouTube 横屏开场 2 秒标题卡；人物 stage 或 hidden"
+    },
+    {
+      "id": "stage/chat",
+      "stageId": "scene.chat",
+      "hook": "scene",
+      "appliesTo": [
+        "scene.chat"
+      ],
+      "status": "ported",
+      "upstream": null,
+      "params": {
+        "bubbles": "弹簧入场推旧"
+      },
+      "defaultRule": "本来就是对话的段落（客户问 / 客服答 / AI 答）；420×760 手机框"
+    },
+    {
+      "id": "stage/leaderboard",
+      "stageId": "scene.leaderboard",
+      "hook": "scene",
+      "appliesTo": [
+        "scene.leaderboard"
+      ],
+      "status": "ported",
+      "upstream": null,
+      "params": {
+        "highlight": "强调实底"
+      },
+      "defaultRule": "排序 / 对比（平台、价格、份额）；条按最大值归一化"
+    },
+    {
+      "id": "stage/gauge",
+      "stageId": "scene.gauge",
+      "hook": "scene",
+      "appliesTo": [
+        "scene.gauge"
+      ],
+      "status": "ported",
+      "upstream": null,
+      "params": {
+        "arc": "270° 40f 扫入"
+      },
+      "defaultRule": "单一数值的冲击（百分比 / 利用率 / 进度）"
+    },
+    {
+      "id": "stage/flip",
+      "stageId": "scene.flip",
+      "hook": "scene",
+      "appliesTo": [
+        "scene.flip"
+      ],
+      "status": "ported",
+      "upstream": null,
+      "params": {
+        "flip": "22f rotateY"
+      },
+      "defaultRule": "一个悬念一张牌：正面问题 flipAt 翻到背面答案"
+    },
+    {
+      "id": "stage/map",
+      "stageId": "scene.map",
+      "hook": "scene",
+      "appliesTo": [
+        "scene.map"
+      ],
+      "status": "ported",
+      "upstream": null,
+      "params": {
+        "marker": "涟漪",
+        "arc": "抛物航线"
+      },
+      "defaultRule": "跨境 / 发货地 / 市场；有真实地图铺底，无图用抽象经纬（不伪造地理）"
+    },
+    {
+      "id": "stage/clipping",
+      "stageId": "scene.clipping",
+      "hook": "scene",
+      "appliesTo": [
+        "scene.clipping"
+      ],
+      "status": "ported",
+      "upstream": null,
+      "params": {
+        "rotate": "±2°"
+      },
+      "defaultRule": "新闻 / 公告一句话引用；纸质剪片 + 衬线 + 马克笔高亮"
+    },
+    {
+      "id": "stage/speaker-stage",
+      "stageId": "speaker.stage",
+      "hook": "scene",
+      "appliesTo": [
+        "speaker.stage"
+      ],
+      "status": "ported",
+      "upstream": null,
+      "params": {
+        "zones": "3"
+      },
+      "defaultRule": "人物全屏舞台模式：动效只落左右带 / 下三分之一（几何门禁按区查）"
+    },
+    {
+      "id": "stage/dual-camera",
+      "stageId": "speaker.cut",
+      "hook": "scene",
+      "appliesTo": [
+        "speaker.cut"
+      ],
+      "status": "ported",
+      "upstream": null,
+      "params": {
+        "zoom": 1.45
+      },
+      "defaultRule": "双机位：close/close-right + cut:true 硬切，同一 A-roll 数字推近"
+    },
+    {
+      "id": "stage/screen-container",
+      "stageId": "broll.screen",
+      "hook": "scene",
+      "appliesTo": [
+        "broll.screen"
+      ],
+      "status": "ported",
+      "upstream": null,
+      "params": {
+        "bar": "34px"
+      },
+      "defaultRule": "Screen Studio 录屏容器：设备框 + 红绿灯顶栏，contain 不裁切"
+    },
+    {
+      "id": "stage/coverage-audit",
+      "stageId": "plan.coverage",
+      "hook": "scene",
+      "appliesTo": [
+        "plan.coverage"
+      ],
+      "status": "ported",
+      "upstream": null,
+      "params": {
+        "step": "0.5s"
+      },
+      "defaultRule": "覆盖率门禁：半屏连续空白 ≥2.5s 拦，孤立小字警告"
+    }
+  ]
+}

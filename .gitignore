@@ -3,11 +3,7 @@ node_modules/
 __pycache__/
 .codex_tmp/
 
-# Windows/WSL 本机部署配置由 Bootstrap 生成，不进入版本管理。
-deploy/windows/factory.config.psd1
-
 # 每条视频的大文件默认不进版本管理
-jobs/
 jobs/*/assets/*
 !jobs/*/assets/.gitkeep
 # 回归工程的小型真实证明帧是确定性 fixture，不按用户大素材忽略。
@@ -26,64 +22,27 @@ jobs/*/tmp/
 
 # smoke / 临时交付
 out/
-dist/
 reports/**/*.mp4
 
 # 系统日志
 npm-debug.log*
 console/logs/
 
-# Public release exclusions: local reports, frozen client/history evidence,
-# archived one-off skills and machine-specific legacy builders never ship.
+# 2026-09-02 叙事舞台里程碑：渲染工作区、研究原片与大素材不进版本管理
+renders/
+reports/**/source/
+reports/**/motion-studies/
+reports/**/frames/
+jobs/*/shorts/*.mp4
+jobs/*/sources/
+references/
+artifacts/
+outputs/
+delivery/
+
+# 公开版不发布：本机报告、客户与历史证据帧、试点本地状态、专有字体
 reports/
 visual-assets/evidence/
-visual-assets/families/
-skills/video-cover-factory/
-skills/talkinghead-edit/archive/
-PRODUCT.md
-scripts/apply-*-tight-cut.mjs
-scripts/bake-*-broll.mjs
-scripts/build-balanced-face-safe-job.mjs
-scripts/build-claude-glass-job.mjs
-scripts/build-dynamic-tight-job.mjs
-scripts/build-*-commercial.mjs
-scripts/build-youtube-horizontal-job.mjs
-scripts/build-youtube-horizontal-v2.mjs
-scripts/upload-shorts-batch.py
-visual-assets/catalog.test.mjs
-console/color-system.test.mjs
-scripts/build-composition.mjs
-scripts/transcribe-captions.mjs
-
-# Reference frames and previews may contain identifiable people or third-party
-# material. Public code ships theme tokens, never those source images.
-themes/_reference/
-themes/*/reference/
-themes/*/preview.jpg
-docs/assets/design-references/
-template-packs/*-replica/
-themes/*-replica/
-themes/_shared/fonts/*Replica*.woff2
-docs/*replica*design-spec.md
-docs/factory-acquisition-resource-rich-v5.md
-docs/production-polish-audit.md
-docs/visual-library-design-spec.md
-docs/windows-workbench-design-spec.md
-visual-assets/
-scripts/audit-youtube-shorts.py
-scripts/render-shorts-batch.py
-scripts/compose-youtube-horizontal-v2.mjs
-
-# 本地真实素材试点：只用于隔离验收，禁止误提交客户素材、转录与审片数据。
-jobs/windows-pilot-*/
-
-# 客户机本地产物（2026-09-11 审计）：模板导出、选片草稿、研究草稿、下载缓存、任何压缩包。
-exports/
-tmp-selection/
-analysis/
-.cache/
-*.zip
-
-# 第三方音效库（LICENSE-SOURCE.md 明确禁止再分发），只允许留在本机，绝不进公开仓库。
-template-packs/*sfx*pack*/
-deploy/linux-parity/.lock-sha
+dist/
+release/
+themes/_shared/fonts/SampleReplicaBlack-LatinCyrillic.woff2

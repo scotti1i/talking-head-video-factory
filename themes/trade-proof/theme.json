@@ -2,7 +2,7 @@
   "id": "trade-proof",
   "label": "外贸现场证明",
   "description": "真实仓库口播的 proof-first 包装：黑白重字与信号黄字幕，动作蓝、问题紫、CTA 粉只承担固定语义。v2，2026-08-06 新增高冲击语义贴纸，问题、否定、答案、动作、身份和 CTA 不再共用网页式卡片。",
-  "source": "public theme tokens",
+  "source": "reports/foreign-trade-talkinghead-reference-20260806/style-language-board.jpg + keyframes",
   "fonts": [
     { "family": "Inter", "file": "Inter-700-latin.woff2", "weight": 700 },
     { "family": "LXGWWenKaiTC", "file": "LXGWWenKaiTC-400-latin.woff2", "weight": 400 }

@@ -1,0 +1,149 @@
+{
+ "_note": "whisper 转录术语修正表（按序 re.sub）；job 私有补充放 jobs/<slug>/data/caption-terms.json，同格式的 terms 数组，追加在后",
+ "terms": [
+  [
+   "ChatGP[T]?6\\s*Astra",
+   "GPT-6 Astra"
+  ],
+  [
+   "ChatGP[T]?\\s*6",
+   "GPT-6"
+  ],
+  [
+   "GPT6\\s*Astra",
+   "GPT-6 Astra"
+  ],
+  [
+   "Astra\\s*6",
+   "GPT-6 Astra"
+  ],
+  [
+   "GPT6",
+   "GPT-6"
+  ],
+  [
+   "GP6",
+   "GPT-6"
+  ],
+  [
+   "5\\.6\\s*SO\\b",
+   "5.6 Sol"
+  ],
+  [
+   "Cloud\\s*code",
+   "Claude Code"
+  ],
+  [
+   "Cloudcode",
+   "Claude Code"
+  ],
+  [
+   "流头",
+   "流投"
+  ],
+  [
+   "偷管好",
+   "统管好"
+  ],
+  [
+   "TK小店",
+   "TikTok 小店"
+  ],
+  [
+   "Walkabite",
+   "OpenClaw"
+  ],
+  [
+   "多部的",
+   "多步的"
+  ],
+  [
+   "SCT\\s*Scott",
+   "SCT Scott"
+  ],
+  [
+   "Chat[GD]?[BP]?T?\\s*6\\s*Astra",
+   "GPT-6 Astra"
+  ],
+  [
+   "Chat[GD]BT\\s*6",
+   "GPT-6"
+  ],
+  [
+   "客宿",
+   "客诉"
+  ],
+  [
+   "课诉",
+   "客诉"
+  ],
+  [
+   "人行(?!横道)",
+   "人形"
+  ],
+  [
+   "人情其实",
+   "人形其实"
+  ],
+  [
+   "在座出海",
+   "在做出海"
+  ],
+  [
+   "争持",
+   "置身"
+  ],
+  [
+   "Computer\\s*use",
+   "Computer Use"
+  ],
+  [
+   "GPT\\s*6(?!\\s*Astra)",
+   "GPT-6"
+  ],
+  [
+   "open\\s*AI",
+   "OpenAI"
+  ],
+  [
+   "SCT\\s*Scou?t",
+   "SCT Scott"
+  ],
+  [
+   "Hyperframe(?!s)",
+   "Hyperframes"
+  ],
+  [
+   "劣币驱逐良弊",
+   "劣币驱逐良币"
+  ],
+  [
+   "下关定论",
+   "下定论"
+  ],
+  [
+   "检视频",
+   "剪视频"
+  ],
+  [
+   "配上字母",
+   "配上字幕"
+  ],
+  [
+   "System\\s*Prompt",
+   "System Prompt"
+  ],
+  [
+   "Cha[A-Za-z]{1,3}[DB]BT\\s*6",
+   "GPT-6"
+  ],
+  [
+   "(?i)\\bharness\\b",
+   "Harness"
+  ],
+  [
+   "SCT Scout",
+   "SCT Scott"
+  ]
+ ]
+}

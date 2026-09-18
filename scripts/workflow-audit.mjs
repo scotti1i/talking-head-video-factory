@@ -2,11 +2,11 @@ import fs from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
-import { jobsRoot as resolveJobsRoot, parseArgs, projectRoot, writeJson } from "./lib.mjs";
+import { parseArgs, projectRoot, writeJson } from "./lib.mjs";
 import { evaluateWorkflowStatus } from "./workflow-status.mjs";
 
 export function buildWorkflowAudit(root = projectRoot()) {
-  const jobsRoot = root === projectRoot() ? resolveJobsRoot() : path.join(root, "jobs");
+  const jobsRoot = path.join(root, "jobs");
   const jobs = fs.readdirSync(jobsRoot, { withFileTypes: true })
     .filter((entry) => entry.isDirectory() && fs.existsSync(path.join(jobsRoot, entry.name, "project.json")))
     .map((entry) => auditJob(path.join(jobsRoot, entry.name)))

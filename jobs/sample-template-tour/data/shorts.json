@@ -1,0 +1,14 @@
+[
+  {
+    "id": "tour-open",
+    "title": "模板巡礼·前半",
+    "start": 0,
+    "duration": 40.4
+  },
+  {
+    "id": "tour-close",
+    "title": "模板巡礼·后半",
+    "start": 40.4,
+    "duration": 41
+  }
+]

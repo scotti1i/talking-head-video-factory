@@ -1,0 +1,137 @@
+[
+  {
+    "id": "beat-01",
+    "type": "statement",
+    "start": 0,
+    "duration": 4.86,
+    "kicker": "开场判断",
+    "title": "AI 不会平均提效",
+    "placement": "bottom-face-safe"
+  },
+  {
+    "id": "beat-02",
+    "type": "panel",
+    "start": 9.749,
+    "duration": 6,
+    "kicker": "现场案例",
+    "title": "老板装了工作流，员工仍然不用",
+    "placement": "bottom-face-safe"
+  },
+  {
+    "id": "beat-03",
+    "type": "chips",
+    "start": 18.669,
+    "duration": 8.578,
+    "kicker": "我的制作链路",
+    "title": "Claude + Codex 已经能做成片",
+    "placement": "bottom-face-safe"
+  },
+  {
+    "id": "beat-04",
+    "type": "hero",
+    "start": 27.247,
+    "duration": 6.772,
+    "kicker": "不是个例",
+    "title": "这不是个例",
+    "placement": "bottom-face-safe"
+  },
+  {
+    "id": "beat-05",
+    "type": "split",
+    "start": 39.744,
+    "duration": 9.854,
+    "kicker": "核心比喻",
+    "title": "100 分乘 100，1 分也乘 100",
+    "placement": "bottom-face-safe"
+  },
+  {
+    "id": "beat-06",
+    "type": "duel",
+    "start": 49.598,
+    "duration": 9.719,
+    "kicker": "组织后果",
+    "title": "强者不想再跟弱者协作",
+    "placement": "bottom-face-safe"
+  },
+  {
+    "id": "beat-07",
+    "type": "pipeline",
+    "start": 66.946,
+    "duration": 15.129,
+    "kicker": "真正卡点",
+    "title": "效率死在交接里",
+    "placement": "bottom-face-safe"
+  },
+  {
+    "id": "beat-08",
+    "type": "statement",
+    "start": 83.213,
+    "duration": 8.51,
+    "kicker": "判断标准",
+    "title": "无人监督也能跑，才叫工作流",
+    "placement": "bottom-face-safe"
+  },
+  {
+    "id": "beat-09",
+    "type": "split",
+    "start": 97.779,
+    "duration": 18.552,
+    "kicker": "行业边界",
+    "title": "UGC 能跑，不代表商单能直出",
+    "placement": "bottom-face-safe"
+  },
+  {
+    "id": "beat-10",
+    "type": "trio",
+    "start": 116.331,
+    "duration": 8.634,
+    "kicker": "别信神话",
+    "title": "装一个工具，不会自动长出业务结果",
+    "placement": "bottom-face-safe"
+  },
+  {
+    "id": "beat-11",
+    "type": "diagram",
+    "start": 124.965,
+    "duration": 6.154,
+    "kicker": "为什么不能套模板",
+    "title": "每家公司都不一样",
+    "placement": "bottom-face-safe"
+  },
+  {
+    "id": "beat-12",
+    "type": "panel",
+    "start": 131.119,
+    "duration": 9.149,
+    "kicker": "知识资产",
+    "title": "知识在员工脑子里，就很难自动化",
+    "placement": "bottom-face-safe"
+  },
+  {
+    "id": "beat-13",
+    "type": "chips",
+    "start": 140.268,
+    "duration": 15.901,
+    "kicker": "Claude Code 时代",
+    "title": "需求讲清 + Token 给够，Agent 才能跑",
+    "placement": "bottom-face-safe"
+  },
+  {
+    "id": "beat-14",
+    "type": "cta",
+    "start": 156.169,
+    "duration": 16.656,
+    "kicker": "给老板的提醒",
+    "title": "先想清楚：你要提效人，还是重做流程？",
+    "placement": "bottom-face-safe"
+  },
+  {
+    "id": "beat-15",
+    "type": "cta",
+    "start": 172.825,
+    "duration": 16.559,
+    "kicker": "关注 Scott 出海",
+    "title": "我讲商业化 Agent，不讲玄学",
+    "placement": "bottom-face-safe"
+  }
+]

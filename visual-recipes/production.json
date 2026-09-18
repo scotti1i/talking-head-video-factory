@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "policy": {
+    "plannerMayUse": "production-approved-only",
+    "implementation": "copy-upstream-tsx-and-adapt-config",
+    "fallback": "face",
+    "forbid": [
+      "rewrite-from-card-name",
+      "invent-copy",
+      "mock-evidence-without-approval",
+      "per-job-theme-invention"
+    ]
+  },
+  "families": [
+    {
+      "id": "shotcraft/ink-press",
+      "label": "Ink Press",
+      "status": "production-approved",
+      "renderer": "remotion",
+      "formats": ["landscape"],
+      "sourceRoot": "vendor/video-shotcraft/ink-press",
+      "themePolicy": "upstream-original-until-separately-approved",
+      "recipeIds": [
+        "shotcraft/paper-title-card",
+        "shotcraft/row-embed",
+        "shotcraft/list-stack-press"
+      ],
+      "infrastructure": [
+        "src/aifl/live/PageCam.tsx",
+        "src/aifl/FlashCut.tsx",
+        "src/aifl/Caption.tsx",
+        "src/aifl/DigitRoll.tsx"
+      ],
+      "implementation": {
+        "entry": "src/index.ts",
+        "composition": "AiflPromo",
+        "fps": 30,
+        "recipes": {
+          "shotcraft/brand-ink-open": { "availability": "reference-preview", "variant": "brand-ink-open", "frames": [0, 82], "sourceFiles": ["src/aifl/live/SceneOpen.tsx"] },
+          "shotcraft/spotlight-hero-card": { "availability": "reference-preview", "variant": "spotlight-hero-card", "frames": [83, 219], "sourceFiles": ["src/aifl/live/SceneOpen.tsx", "src/aifl/live/PageCam.tsx"] },
+          "shotcraft/paper-title-card": { "availability": "content-adaptable", "adaptationMode": "direct-port", "contentContract": { "required": ["words"], "optional": ["sub", "subDigits", "fontFamily"], "words": "1+ items of {text, accent?}; at most one accent", "fontFamily": "Songti SC, STSong, serif" }, "variant": "paper-title-card", "frames": [220, 274], "sourceFiles": ["src/aifl/PaperTitleCard.tsx"] },
+          "shotcraft/deck-deal-flyin": { "availability": "reference-preview", "variant": "deck-deal-flyin", "frames": [275, 387], "sourceFiles": ["src/aifl/live/SceneFlyIn.tsx", "src/aifl/live/PageCam.tsx"] },
+          "shotcraft/type-and-filter": { "availability": "reference-preview", "variant": "type-and-filter", "frames": [388, 464], "sourceFiles": ["src/aifl/live/SceneFlyIn.tsx", "src/aifl/live/PageCam.tsx"] },
+          "shotcraft/row-embed": { "availability": "content-adaptable", "adaptationMode": "direct-port", "contentContract": { "required": ["title", "rows"], "optional": ["kicker", "fontFamily"], "rows": "2–5 items of {label, value?}", "fontFamily": "Songti SC, STSong, serif" }, "variant": "row-embed", "frames": [465, 564], "sourceFiles": ["src/aifl/live/SceneDetail.tsx", "src/aifl/live/PageCam.tsx"] },
+          "shotcraft/list-stack-press": { "availability": "content-adaptable", "adaptationMode": "direct-port", "contentContract": { "required": ["title", "items"], "optional": ["kicker", "counterLabel", "fontFamily"], "items": "3–5 items of {title, meta?}; fewer than 3 cannot support the upstream five-key camera path", "fontFamily": "Songti SC, STSong, serif" }, "variant": "list-stack-press", "frames": [620, 724], "sourceFiles": ["src/aifl/live/ScenePapers.tsx", "src/aifl/live/PageCam.tsx"] },
+          "shotcraft/document-typewriter-reveal": { "availability": "reference-preview", "variant": "document-typewriter-reveal", "frames": [775, 884], "sourceFiles": ["src/aifl/live/SceneWbr.tsx", "src/aifl/live/PageCam.tsx"] },
+          "shotcraft/outro-group-photo-launch": { "availability": "reference-preview", "variant": "outro-group-photo-launch", "frames": [940, 1084], "sourceFiles": ["src/aifl/live/SceneOutroLive.tsx"] }
+        }
+      }
+    }
+  ]
+}

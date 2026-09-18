@@ -1,45 +1,5 @@
 # 口播视频工程化流程
 
-## 治理层（v2，先看这一段）
-
-| 场景 | 命令 | 说明 |
-|---|---|---|
-| 每次开工 | `npm run update -- --check` | 只比对 tag，不装；退出码 3 = 有新版 |
-| 升级 | `npm run update [-- --tag vX.Y.Z]` | checkout tag → `npm ci` → doctor → smoke，失败回滚上一个 tag；`~/.config/talking-head-factory/update.log` |
-| 旧 job 迁移 | `npm run migrate -- [--from <旧仓库>] [--to <jobs-root>] [--dry-run] [--move]` | 迁到 `FACTORY_JOBS_ROOT`，写 `project.json.legacy`，不动 `data/`，幂等 |
-| 管线做不到 | `npm run request -- --title "..." --detail "..." [--job jobs/<slug>]` | 写 `requests/<日期>-<slug>.md`，commit + push 到 `client/<主机名>` |
-| 回流证据 | `npm run report:push -- --job jobs/<slug> [--no-push]` | 只推 `project.json/md`、`data/ qa/ review/ delivery/ requests/` 文本，进 `ops/<主机名>/<slug>/` |
-| 收尾验收 | `npm run acceptance -- --job jobs/<slug> [--no-push]` | 顺序跑 status / qa:alignment / captions:voice-qa / dialogue:qa / audio:qa / review:independent，写 `qa/acceptance.{json,md}` 后 `report:push` |
-| 装 hook | `npm run hooks:install` | `core.hooksPath=scripts/git-hooks`；`FACTORY_ROLE=operator` 时拒绝改代码目录；修复分支上只拒绝 `scripts/gate-protected.json` 内文件 |
-| 网页审批 | `npm run approve:open -- --job jobs/<slug>` | 起 console（未起时）并开浏览器到 `/approve?job=<slug>`：看切点图 / 播完审片视频 → 填姓名 → 「通过」写 `by: human` 的 approval；「有问题，退回」写 `review/Rn/feedback-inbox.md`。`/approve` 不带 job = 待审列表 |
-| 客户侧修代码 | `npm run propose -- --title "..."` → 改 → `npm run propose -- --submit [--what --why --reproduce]` · `--status` · `--abandon` | 从当前 tag 建 `client/<主机名>-fix-<slug>`；submit 先跑全部测试套件 + `test:timing` + `test:governance`，全绿才 commit / push / REST 开 PR 到 `v2`；状态存 `~/.config/talking-head-factory/propose/<branch>.json` |
-| 出错上报 | 自动：管线命令经 `scripts/run-with-beacon.mjs` | 非零退出写 `~/.config/talking-head-factory/events/<ts>-<script>.json` 并 best-effort `report:push -- --events`；日志 `logs/<script>-<ts>.log`（留 20 个）；运行期持 `running.lock` |
-| 每日心跳 | `npm run heartbeat [-- --no-push] [--no-update]` | doctor 摘要 + tag 比对 + 盘位 + 未上报事件 + 各 job acceptance 结论 → `ops/<主机名>/heartbeat/<日期>.json`；无锁且有新 tag 自动 `update` 并回写结果。Windows 计划任务 `TalkingHeadFactoryHeartbeat` 每日 03:30（`deploy/windows/Install-Scheduled-Task.ps1`） |
-
-- job 根目录：`FACTORY_JOBS_ROOT`（环境变量或 `~/.config/talking-head-factory/env`）；未设置时仍是 `<仓库>/jobs`。`--job jobs/<slug>` 两种情况都能解析。
-- 审批人：`qa:cuts:approve` / `qa:final:approve` 接受 `--by human|agent --name <人名>`（默认 agent），写 `by` / `name` / `reviewedAt`。`deliver`、`deliver:variants`、`review init` 只接受 `by: human`；`FACTORY_ALLOW_AGENT_APPROVAL=1` 仅供 CI / smoke，会大声警告。
-- `npm run status` 新增「批量盖章」gate：job 内任意两份 approval 相隔 ≤ 2 秒即标红（Agent 一把梭的指纹）。
-- `review init` 还要求 `data/editor-signals.json` 里每条 `severity: high` 都已在 `data/resolved-signals.json` 登记（或已被 EDL 剪掉）。
-- 硬拒：`build:beats` 的 `sourceVideo`、`intake --source` 路径含 `review/` 或 `renders/` 直接报错；审片成片不是事实源。
-
-### propose / PR（客户机自己修代码的唯一通道，v2.0.3）
-
-运行系统永远是「tag」或「tag + 一个开着的 PR」：
-
-1. `npm run propose -- --title "<一句话>"`：要求 HEAD 停在 tag 的 detached HEAD 上，`git checkout -b client/<主机名>-fix-<slug> <tag>`，写状态文件。分支名用 `-fix-` 而不是 `/fix-`：git 不允许 `client/<主机名>`（报告分支）与 `client/<主机名>/…` 并存。
-2. 改代码。hook 在修复分支上放行代码目录，但 `scripts/gate-protected.json` 列出的 QA 阈值 / 审批 / 交付 / governance / hook / CI 文件仍拒绝（「门禁与审批相关文件只能走 npm run request」）。
-3. `npm run propose -- --submit`：`node --test scripts/*.test.mjs scripts/timeline/*.test.mjs console/*.test.mjs` + `npm run test:timing` + `npm run test:governance` 全绿 → `git add -A && commit`（标题）→ `git push -u origin` → `POST /repos/{owner}/{repo}/pulls`（base `v2`；token 取 `FACTORY_GITHUB_TOKEN` 或 `git credential fill`，需 Contents RW + Pull requests RW）→ 打印 PR 链接。PR 正文：标题、改了什么 / 为什么、复现命令、测试摘要、主机、tag。再次 submit 只推提交不重开 PR。
-4. `npm run update` 在修复分支上：PR open → 不动，退出 0；merged → checkout 最新 tag 并删本地分支；closed 未合并或没 PR → `git format-patch <tag>..HEAD` 存到 `ops/<主机名>/rejected/<branch>/`（`report:push -- --rejected <dir>`）再 checkout 最新 tag。PR 状态查不到（断网 / 无 token）按 open 处理不动。心跳的自动升级在修复分支上也让位给这个状态机。
-5. `npm run propose -- --abandon`：未提交改动先 WIP commit，补丁存档同上，回到 tag，删分支。
-
-我们这边承诺：PR 一个工作日内审完；打 tag 前先处理完所有客户 PR；冲突由我们 rebase。
-
-### 出错上报与心跳（v2.0.3）
-
-- SKILL 用到的管线命令（inventory / transcribe:editor / … / acceptance / deliver / update / migrate）在 package.json 里统一经 `node scripts/run-with-beacon.mjs <script>` 运行：stdout/stderr 原样透传并 tee 到 `~/.config/talking-head-factory/logs/<script>-<ts>.log`；运行期持 `running.lock`（pid + 命令，pid 已死视为陈旧锁）；非零退出写 `events/<ts>-<script>.json` 后 best-effort `report:push -- --events`（限时 60s，永不改变退出码）。`update --check` 的退出码 3 通过 `--ok-exit 3` 豁免。嵌套调用（acceptance 里再起 qa:*）直接透传不重复记录。
-- `npm run heartbeat`：先补推遗留事件，再写 `heartbeat/<日期>.json` 并 `report:push -- --heartbeat`；无锁且有新 tag → `node scripts/factory-update.mjs`，结果写回同一文件再推一次。`deploy/windows/Run-Heartbeat.sh` 补齐 nvm / PATH / env 后调用，日志 `logs/heartbeat.log`。
-- 我们这边每日读 `client/*` 分支：`ops/<host>/events/` 有新文件、48h 无心跳、有 open PR → 通知（另行配置）。
-
 ## 0. 定义目标
 
 每条视频开工前先写清：
@@ -84,23 +44,15 @@ npm run roughcut:render -- --job jobs/<slug>
 npm run qa:cuts -- --job jobs/<slug>
 ```
 
-每张电影条和波形都看完并修正 EDL 后，才写 `qa/cuts/approval.json`：
+每张电影条和波形都看完并修正 EDL 后，才写 `qa/cuts/approval.json`。
+
+## 3. 从缓存生成字幕
 
 ```bash
-npm run qa:cuts:approve -- --job jobs/<slug> --by human --name <人名> [--acousticReviewed true]
+npm run captions:build -- --job jobs/<slug>
 ```
 
-Agent 可以先用默认 `--by agent` 记录自己的检查，但那不是交付门禁；`deliver` 与 `review init` 只认人签。`editor-signals.json` 里 `severity: high` 的信号，要么改 EDL 剪掉，要么听审后写进 `data/resolved-signals.json`（格式见 [data-contract.md](data-contract.md)）。
-
-## 3. 处理 A-roll 并从成片音轨生成字幕
-
-```bash
-npm run aroll:treat -- --job jobs/<slug>        # 剪辑母版 aroll-cut.mp4 → 工作母版 aroll.mp4（倍速 / 对白链按 aroll-treat/registry.json 预设），写 project.json.aroll
-npm run captions:build -- --job jobs/<slug>     # 对工作母版只转录一次 → captions / caption-voice / words-timeline（细节见 docs/timing-chain.md）
-npm run qa:alignment -- --job jobs/<slug>       # 每个 EDL 段原片↔母版互相关，≤1 帧
-```
-
-字幕词面以 `editorial.writtenScript` 为准（拉丁语系自动对齐替换）；要改词面就改文稿再重跑 `captions:build`，不要手改 `data/captions.json` 的时间。`qa:alignment` 不过说明 EDL 或母版有问题，回到 EDL 重做，不许整体平移字幕。
+生成后通篇校准人名、产品名、英文术语与断句。
 
 目标格式：
 
@@ -217,19 +169,10 @@ jobs/<slug>/variants/<id>/qa/report.md
 ## 10. 交付
 
 ```bash
-npm run qa:final:approve -- --job jobs/<slug>/variants/<id> --by human --name <人名> --fullPlayback true
 npm run deliver:variants -- --job jobs/<slug>
 ```
 
-`deliver:variants` 先要求 `qa/cuts/approval.json` 与每个 variant 的 `qa/approval.json` 都是 `by: human`，再按 target 分别复制到 `Downloads`。它不会删除目标文件夹里的用户文件。
-
-## 10.5 验收与回流
-
-```bash
-npm run acceptance -- --job jobs/<slug>
-```
-
-每步是独立子进程，退出码与末 40 行写进 `qa/acceptance.json` / `qa/acceptance.md`；任一步失败整体 FAIL，命令缺失提示 `npm run update`。结束后自动 `report:push` 到 `client/<主机名>`。转述时逐步引用结论，不要概括成「通过」。
+`deliver:variants` 会按 target 分别复制到 `Downloads`。它不会删除目标文件夹里的用户文件。
 
 ## 11. Vault 记录
 

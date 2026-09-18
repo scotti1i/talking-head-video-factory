@@ -1,9 +1,36 @@
 {
   "default": "warm-glass",
-  "themes": ["warm-glass", "warm-minimal", "pastel-ledger", "field-notes", "signal-yellow", "steel-blueprint", "neon-forest", "editorial-stage", "trade-proof", "commerce-pop", "rapid-proof"],
+  "themes": ["warm-glass", "warm-minimal", "pastel-ledger", "field-notes", "signal-yellow", "steel-blueprint", "neon-forest", "editorial-stage", "trade-proof", "sample-replica", "market-proof"],
+  "captionPresets": {
+    "static": {
+      "label": "静态主字幕"
+    },
+    "phrase-highlight": {
+      "label": "逐词高亮",
+      "textColor": "#FFFFFF",
+      "activeColor": "#21F35B",
+      "outlineColor": "#050505",
+      "shadowColor": "rgba(0, 0, 0, 0.78)",
+      "fontSizePortrait": 68,
+      "fontSizeLandscape": 48,
+      "maxWidthRatioPortrait": 0.88,
+      "maxWidthRatioLandscape": 0.38
+    },
+    "single-word-pop": {
+      "label": "单词冲击",
+      "textColor": "#FFFFFF",
+      "activeColor": "#12DDEB",
+      "outlineColor": "#050505",
+      "shadowColor": "rgba(0, 0, 0, 0.78)",
+      "fontSizePortrait": 104,
+      "fontSizeLandscape": 72,
+      "maxWidthRatioPortrait": 0.76,
+      "maxWidthRatioLandscape": 0.34
+    }
+  },
   "rules": [
     "风格只能从这里选,不许逐 job 手搓新配色/新模板。",
-    "要新增风格 = 新建 themes/<id>/theme.json,走 docs/theme-replication.md 的授权参考素材分析流程。",
+    "要新增风格 = 新建 themes/<id>/theme.json,走 docs/theme-replication.md 的截图复刻流程。",
     "要演进现有风格 = 改该主题 tokens 并在 description 里记录版本,不逐条视频漂移。"
   ]
 }

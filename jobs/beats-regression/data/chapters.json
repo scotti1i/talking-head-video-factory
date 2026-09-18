@@ -1,0 +1,92 @@
+[
+  {
+    "start": 0,
+    "duration": 4.86,
+    "num": "01",
+    "title": "AI 不会平均提效"
+  },
+  {
+    "start": 9.749,
+    "duration": 6,
+    "num": "02",
+    "title": "老板装了工作流，员工仍然不用"
+  },
+  {
+    "start": 18.669,
+    "duration": 8.578,
+    "num": "03",
+    "title": "Claude + Codex 已经能做成片"
+  },
+  {
+    "start": 27.247,
+    "duration": 6.772,
+    "num": "04",
+    "title": "这不是个例"
+  },
+  {
+    "start": 39.744,
+    "duration": 9.854,
+    "num": "05",
+    "title": "100 分乘 100，1 分也乘 100"
+  },
+  {
+    "start": 49.598,
+    "duration": 9.719,
+    "num": "06",
+    "title": "强者不想再跟弱者协作"
+  },
+  {
+    "start": 66.946,
+    "duration": 15.129,
+    "num": "07",
+    "title": "效率死在交接里"
+  },
+  {
+    "start": 83.213,
+    "duration": 8.51,
+    "num": "08",
+    "title": "无人监督也能跑，才叫工作流"
+  },
+  {
+    "start": 97.779,
+    "duration": 18.552,
+    "num": "09",
+    "title": "UGC 能跑，不代表商单能直出"
+  },
+  {
+    "start": 116.331,
+    "duration": 8.634,
+    "num": "10",
+    "title": "装一个工具，不会自动长出业务结果"
+  },
+  {
+    "start": 124.965,
+    "duration": 6.154,
+    "num": "11",
+    "title": "每家公司都不一样"
+  },
+  {
+    "start": 131.119,
+    "duration": 9.149,
+    "num": "12",
+    "title": "知识在员工脑子里，就很难自动化"
+  },
+  {
+    "start": 140.268,
+    "duration": 15.901,
+    "num": "13",
+    "title": "需求讲清 + Token 给够，Agent 才能跑"
+  },
+  {
+    "start": 156.169,
+    "duration": 16.656,
+    "num": "14",
+    "title": "先想清楚：你要提效人，还是重做流程？"
+  },
+  {
+    "start": 172.825,
+    "duration": 16.559,
+    "num": "15",
+    "title": "我讲商业化 Agent，不讲玄学"
+  }
+]

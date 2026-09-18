@@ -17,6 +17,7 @@ export function buildPrompt(slug, kind) {
     aroll: path.join(dir, config.sourceVideo || "assets/aroll.mp4"),
     theme: config.theme || "warm-glass",
     profile: config.profile || "clean-talkinghead",
+    visualOperatingSystemVersion: Number(config.visual?.operatingSystemVersion || 0),
     scriptPath: config.editorial?.writtenScript?.path || null,
     scriptPolicy: config.editorial?.writtenScript?.policy || null
   };
@@ -62,7 +63,10 @@ Job:${dir}
 产出:data/captions.json + 一份"待确认术语清单"。`;
 }
 
-function beats({ dir, root, slug, title, theme, profile }) {
+function beats({ dir, root, slug, title, theme, profile, visualOperatingSystemVersion }) {
+  if (visualOperatingSystemVersion >= 1) {
+    return visualPlan({ dir, root, slug, title, profile });
+  }
   const captionsFile = path.join(dir, "data", "captions.json");
   const captionCount = (readJsonSafe(captionsFile, []) || []).length;
   const components = loadComponentPromptCatalog({ root });
@@ -89,6 +93,40 @@ ${catalog}
 7. 写完执行:cd ${root} && npm run build:beats -- --job jobs/${slug},然后 cd jobs/${slug} && npm run check,用 npx hyperframes@0.5.6 snapshot . --at <几个拍子中点> 抽帧确认排版。
 
 产出:data/beats.json + snapshot 抽帧确认。`;
+}
+
+export function visualPlan({ dir, root, slug, title, profile }) {
+  return `请调用 talkinghead-edit Skill，为这条口播制作视觉上下文与视觉计划；禁止直接凭字幕手写 beats.json。
+
+工程目录:${root}
+Job:${dir}
+主题:《${title}》 内容 profile:${profile}
+
+先读:
+- ${root}/docs/visual-operating-system.md
+- ${root}/visual-recipes/QUICKSTART.md
+- ${root}/docs/planner-contract.md
+- ${dir}/data/editorial-plan.json
+
+流程:
+1. 运行 cd ${root} && npm run visual:context -- --job jobs/${slug}；若文件已存在就读取并增量补充，禁止 --force 覆盖研究/用户输入。
+2. 通读完整内容计划、字幕、A-roll 与本地素材。逐个解决 visual-context.json.gaps：工具分析自己做；公开事实与素材自己研究并存档；私有资料、战略解释、版权和用户审美才询问用户。
+3. 每个视觉先定义 visualJob，再用 npm run visual:recipes -- search --query "<job> <内容关键词>" 查询生产武器；需要研究候选才加 --scope all，未移植候选不得生产使用。
+4. 写 data/visual-plan.json。每镜必须有 storyBeatId/start/end/mode/visualJob/intent/reason/placement/speaker/contextEvidence/assetRefs；recipe 模式还要 recipe.id、variant、requirementCoverage 与 confidence。
+5. 人物已经足够或上下文不足时写 mode=face；不得发明英文、金句、数据、截图或关系。
+6. 依次运行:
+   npm run visual:plan:check -- --job jobs/${slug}
+   npm run visual:prepare -- --job jobs/${slug}
+   npm run visual:render -- --job jobs/${slug}
+   npm run visual:qa -- --job jobs/${slug}
+   # 打开 qa/visual-recipes/review.md，逐镜检查后才允许执行：
+   npm run visual:qa:approve -- --job jobs/${slug} --reviewer <name> --method four-phase-filmstrip --notes "<实际检查结果>"
+   npm run visual:compile -- --job jobs/${slug}
+   npm run visual:check -- --job jobs/${slug}
+   npm run build:beats -- --job jobs/${slug}
+7. visual:qa 已固定抽取入场、动作、稳定、退场四阶段电影条；必须实际打开审查页，确认内容、构图、人物碰撞和边界帧后再批准。最终仍要完整播放真实 MP4，不以电影条、JSON 或测试通过代替。
+
+产出:visual-context.json + visual-plan.json + recipe-renders.json + qa/visual-recipes/report.json + approval.json + 编译后的 primary-clips.json + 最终 MP4 QA。`;
 }
 
 function shorts({ dir, root, slug, title }) {

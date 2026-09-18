@@ -2,13 +2,9 @@
 // job 状态推导与数据文件读写(全部从磁盘事实推导,不存冗余状态)
 // ============================================================
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 
-import { jobsRoot } from "../scripts/lib.mjs";
-
-export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+export const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
 
 const DATA_FILES = ["captions.json", "beats.json", "shorts.json", "chapters.json", "overlays.json", "rough-cut-cuts.json"];
 
@@ -36,7 +32,7 @@ export function listThemes() {
 }
 
 export function listJobs() {
-  const jobsDir = jobsRoot();
+  const jobsDir = path.join(ROOT, "jobs");
   if (!fs.existsSync(jobsDir)) return [];
   return fs
     .readdirSync(jobsDir)
@@ -53,8 +49,8 @@ function jobKind(slug) {
 }
 
 export function jobDir(slug) {
-  const dir = path.resolve(jobsRoot(), slug);
-  if (!dir.startsWith(jobsRoot() + path.sep)) throw new Error("非法 job 路径");
+  const dir = path.resolve(ROOT, "jobs", slug);
+  if (!dir.startsWith(path.join(ROOT, "jobs") + path.sep)) throw new Error("非法 job 路径");
   return dir;
 }
 
@@ -156,7 +152,7 @@ function listVariants(dir) {
 }
 
 function deliveredPath(config) {
-  const root = config.delivery?.downloadsRoot || path.join(os.homedir(), "Downloads");
+  const root = config.delivery?.downloadsRoot || path.join(process.env.HOME || "", "Downloads");
   const folder = config.downloadFolderName;
   if (!folder) return null;
   const dir = path.join(root, folder);

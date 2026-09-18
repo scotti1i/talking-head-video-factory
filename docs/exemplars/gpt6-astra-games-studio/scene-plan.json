@@ -1,0 +1,647 @@
+{
+  "schemaVersion": 1,
+  "fps": 30,
+  "duration": 172.8,
+  "skin": "studio",
+  "source": {
+    "media": "factory/aroll.mp4",
+    "start": 0
+  },
+  "keywords": [
+    "GPT-6",
+    "Astra",
+    "API",
+    "SOP",
+    "Blender",
+    "独立站",
+    "TikTok Shop",
+    "3D"
+  ],
+  "speaker": [
+    {
+      "at": 0,
+      "mode": "pip"
+    },
+    {
+      "at": 9.65,
+      "mode": "full"
+    },
+    {
+      "at": 16.72,
+      "mode": "pip"
+    },
+    {
+      "at": 26.47,
+      "mode": "full"
+    },
+    {
+      "at": 33.12,
+      "mode": "pip"
+    },
+    {
+      "at": 46.51,
+      "mode": "full"
+    },
+    {
+      "at": 57.35,
+      "mode": "pip"
+    },
+    {
+      "at": 75.6,
+      "mode": "full"
+    },
+    {
+      "at": 81.65,
+      "mode": "pip"
+    },
+    {
+      "at": 97.16,
+      "mode": "full"
+    },
+    {
+      "at": 100.51,
+      "mode": "pip"
+    },
+    {
+      "at": 107.56,
+      "mode": "full"
+    },
+    {
+      "at": 113.65,
+      "mode": "pip"
+    },
+    {
+      "at": 135.89,
+      "mode": "full"
+    },
+    {
+      "at": 138.33,
+      "mode": "pip"
+    },
+    {
+      "at": 153.13,
+      "mode": "full"
+    },
+    {
+      "at": 158.15,
+      "mode": "pip"
+    },
+    {
+      "at": 165.3,
+      "mode": "full"
+    }
+  ],
+  "scenes": [
+    {
+      "id": "hook-g1",
+      "type": "broll",
+      "start": 0.0,
+      "end": 3.09,
+      "intent": "「三个游戏画面」1：Newhaven 城市（Scott 自录，人物在左）",
+      "media": "factory/gpt6-astra-games-20260907/broll/g01-newhaven.mp4",
+      "origin": "own",
+      "layout": "panel"
+    },
+    {
+      "id": "hook-g2",
+      "type": "broll",
+      "start": 3.09,
+      "end": 6.45,
+      "intent": "2：Little Planet 小星球（全屏）",
+      "media": "factory/gpt6-astra-games-20260907/broll/g02-little-planet.mp4",
+      "origin": "own",
+      "layout": "panel"
+    },
+    {
+      "id": "hook-g3",
+      "type": "broll",
+      "start": 6.45,
+      "end": 9.05,
+      "intent": "3：AFTERHOURS 字符城市（人物回来）",
+      "media": "factory/gpt6-astra-games-20260907/broll/g03-afterhours.mp4",
+      "origin": "own",
+      "layout": "panel"
+    },
+    {
+      "id": "strong-accent",
+      "type": "accent",
+      "start": 9.55,
+      "end": 17.36,
+      "intent": "「真正能帮我们干活的模型」贴脸",
+      "items": [
+        {
+          "at": 14.18,
+          "until": 16.12,
+          "anchor": "speaker-right",
+          "text": "真正能干活的模型",
+          "tone": "accent"
+        }
+      ]
+    },
+    {
+      "id": "osworld",
+      "type": "leaderboard",
+      "start": 17.82,
+      "end": 25.87,
+      "intent": "「提升在使用电脑」：官方 OSWorld 2.0 真数替代被剪掉的错误数字",
+      "title": "OSWorld 2.0 · 电脑操作成功率（OpenAI 发布页）",
+      "rows": [
+        {
+          "label": "GPT-6 Astra",
+          "value": 72.6,
+          "display": "72.6%",
+          "at": 19.36,
+          "image": "factory/gpt6-astra-games-20260907/logos/openai.svg",
+          "tone": "accent"
+        },
+        {
+          "label": "Claude Opus 5",
+          "value": 70.2,
+          "display": "70.2%",
+          "at": 21.36,
+          "image": "factory/gpt6-astra-games-20260907/logos/claude.svg"
+        },
+        {
+          "label": "上一代 GPT-5.6",
+          "value": 65.7,
+          "display": "65.7%",
+          "at": 23.27
+        }
+      ],
+      "highlight": 0
+    },
+    {
+      "id": "shop-accent",
+      "type": "accent",
+      "start": 30.67,
+      "end": 33.22,
+      "intent": "「假设我在做店铺运营」贴脸",
+      "items": [
+        {
+          "at": 31.4,
+          "until": 32.52,
+          "anchor": "speaker-right",
+          "text": "假设：店铺运营"
+        }
+      ]
+    },
+    {
+      "id": "shop-graph",
+      "type": "graph",
+      "start": 34.22,
+      "end": 45.91,
+      "intent": "店铺运营要 API 才稳；但不是所有流程有 API",
+      "nodes": [
+        {
+          "id": "shop",
+          "label": "店铺后台",
+          "kind": "content",
+          "at": 34.3,
+          "x": 1000,
+          "y": 470,
+          "image": "factory/objects/storefront.png",
+          "tone": "ink"
+        },
+        {
+          "id": "api",
+          "label": "API 权限",
+          "kind": "content",
+          "at": 35.57,
+          "x": 1360,
+          "y": 470,
+          "image": "factory/objects/logistics-api.png",
+          "tone": "purple",
+          "badge": {
+            "at": 37.94,
+            "text": "稳定 · 精准",
+            "tone": "accent"
+          }
+        },
+        {
+          "id": "ai",
+          "label": "AI 去运营",
+          "kind": "agent",
+          "at": 36.66,
+          "x": 1700,
+          "y": 470,
+          "image": "factory/objects/ai-agent.png",
+          "tone": "lime"
+        },
+        {
+          "id": "noapi",
+          "label": "没有 API 的流程",
+          "kind": "content",
+          "at": 40.45,
+          "x": 1360,
+          "y": 720,
+          "image": "factory/objects/document.png",
+          "tone": "red",
+          "badge": {
+            "at": 43.64,
+            "text": "介入不了",
+            "tone": "red"
+          }
+        }
+      ],
+      "edges": [
+        {
+          "from": "shop",
+          "to": "api",
+          "at": 35.75,
+          "style": "chevron"
+        },
+        {
+          "from": "api",
+          "to": "ai",
+          "at": 36.85,
+          "style": "chevron"
+        },
+        {
+          "from": "noapi",
+          "to": "api",
+          "at": 41.82,
+          "style": "chevron",
+          "dashed": true
+        }
+      ]
+    },
+    {
+      "id": "need-accents",
+      "type": "accent",
+      "start": 46.09,
+      "end": 58.09,
+      "intent": "需要一个模型：看得准 / 聪明 / 长任务少错 / 快省 token（全画幅贴脸）",
+      "items": [
+        {
+          "at": 48.0,
+          "until": 50.45,
+          "anchor": "speaker-right",
+          "text": "看得准"
+        },
+        {
+          "at": 49.82,
+          "until": 52.73,
+          "anchor": "speaker-left",
+          "text": "很聪明"
+        },
+        {
+          "at": 51.82,
+          "until": 55.55,
+          "anchor": "speaker-right",
+          "text": "长任务少出错",
+          "tone": "accent"
+        },
+        {
+          "at": 56.0,
+          "until": 56.8,
+          "anchor": "speaker-left",
+          "text": "跑得快 · 省 token",
+          "tone": "accent"
+        }
+      ]
+    },
+    {
+      "id": "learn-demo",
+      "type": "broll",
+      "start": 58.45,
+      "end": 63.0,
+      "intent": "「看一遍你的任务流程」：第三方实测 Astra 操作浏览器 / 真机",
+      "media": "factory/gpt6-astra-games-20260907/broll/w01-browser-ops-viewport-crop.mp4",
+      "origin": "third-party",
+      "layout": "panel"
+    },
+    {
+      "id": "sop-ladder",
+      "type": "ladder",
+      "start": 63.73,
+      "end": 75.0,
+      "intent": "看一遍 → 学过去 → 不搭项目 → SOP 交给 AI 执行",
+      "steps": [
+        {
+          "id": "s35",
+          "label": "看一遍你的流程",
+          "at": 64.82,
+          "image": "factory/objects/search-magnifier.png"
+        },
+        {
+          "id": "s418",
+          "label": "学过去",
+          "at": 66.09,
+          "image": "factory/objects/judgment.png"
+        },
+        {
+          "id": "s275",
+          "label": "不搭复杂项目",
+          "at": 68.18,
+          "image": "factory/objects/toolkit.png"
+        },
+        {
+          "id": "s598",
+          "label": "SOP 交给 AI 执行",
+          "at": 73.36,
+          "image": "factory/objects/rulebook.png",
+          "tone": "accent"
+        }
+      ]
+    },
+    {
+      "id": "biggest-accent",
+      "type": "accent",
+      "start": 75.64,
+      "end": 78.0,
+      "intent": "「最大的一点改变」贴脸",
+      "items": [
+        {
+          "at": 76.27,
+          "until": 77.91,
+          "anchor": "speaker-right",
+          "text": "最大的改变",
+          "tone": "accent"
+        }
+      ]
+    },
+    {
+      "id": "speed-compare",
+      "type": "compare",
+      "start": 82.75,
+      "end": 89.38,
+      "intent": "上一代 75 分钟 → 现在 40 分钟（官方 OSWorld 延迟模拟）",
+      "left": {
+        "title": "上一代 GPT-5.6",
+        "at": 83.29,
+        "lines": [
+          {
+            "text": "一个任务 75 分钟",
+            "at": 84.93
+          }
+        ]
+      },
+      "right": {
+        "title": "GPT-6 Astra",
+        "at": 87.02,
+        "lines": [
+          {
+            "text": "一个任务 40 分钟",
+            "at": 88.38
+          }
+        ]
+      },
+      "verdict": {
+        "text": "快一倍",
+        "at": 88.84
+      }
+    },
+    {
+      "id": "played-catalog",
+      "type": "broll",
+      "start": 90.26,
+      "end": 93.08,
+      "intent": "「大家已经把 GPT-6 玩出花了」：Matthew Berman 的 34 个 Astra 项目目录页滚动",
+      "media": "factory/gpt6-astra-games-20260907/broll/w01-berman-catalog-grid.mp4",
+      "origin": "third-party",
+      "layout": "panel"
+    },
+    {
+      "id": "v8",
+      "type": "broll",
+      "start": 93.9,
+      "end": 96.56,
+      "intent": "「3D 的 V8 发动机」",
+      "media": "factory/gpt6-astra-games-20260907/broll/a01-v8.mp4",
+      "origin": "third-party",
+      "layout": "panel"
+    },
+    {
+      "id": "v8-accent",
+      "type": "accent",
+      "start": 96.56,
+      "end": 100.15,
+      "intent": "「只打磨了 5 到 10 轮」",
+      "items": [
+        {
+          "at": 98.05,
+          "until": 99.91,
+          "anchor": "speaker-right",
+          "text": "5–10 轮打磨",
+          "tone": "accent"
+        }
+      ]
+    },
+    {
+      "id": "house",
+      "type": "broll",
+      "start": 101.61,
+      "end": 106.96,
+      "intent": "「看房软件只有照片 → 三维导览」",
+      "media": "factory/gpt6-astra-games-20260907/broll/a02-house.mp4",
+      "origin": "third-party",
+      "layout": "panel"
+    },
+    {
+      "id": "rent-accent",
+      "type": "accent",
+      "start": 107.2,
+      "end": 111.37,
+      "intent": "「放到网站上做出租」",
+      "items": [
+        {
+          "at": 108.19,
+          "until": 111.19,
+          "anchor": "speaker-right",
+          "text": "放到网站直接出租"
+        }
+      ]
+    },
+    {
+      "id": "product-3d",
+      "type": "broll",
+      "start": 114.75,
+      "end": 121.47,
+      "intent": "「几张三视图 → Blender 里生成 3D 渲染」：第三方旧火车图 → 3D 火车",
+      "media": "factory/gpt6-astra-games-20260907/broll/a03-train.mp4",
+      "origin": "third-party",
+      "layout": "panel"
+    },
+    {
+      "id": "ecom-graph",
+      "type": "graph",
+      "start": 122.56,
+      "end": 130.84,
+      "intent": "3D 渲染 → 独立站 / TikTok Shop → 流量 · 视觉冲击",
+      "nodes": [
+        {
+          "id": "render",
+          "label": "3D 渲染",
+          "kind": "content",
+          "at": 122.75,
+          "x": 1000,
+          "y": 470,
+          "image": "factory/objects/template.png",
+          "tone": "lime"
+        },
+        {
+          "id": "site",
+          "label": "独立站",
+          "kind": "content",
+          "at": 123.29,
+          "x": 1400,
+          "y": 330,
+          "image": "factory/objects/platform-site.png",
+          "tone": "ink"
+        },
+        {
+          "id": "tk",
+          "label": "TikTok Shop",
+          "kind": "content",
+          "at": 124.84,
+          "x": 1400,
+          "y": 610,
+          "image": "factory/objects/platform-tiktok.png",
+          "tone": "ink"
+        },
+        {
+          "id": "traffic",
+          "label": "流量 · 视觉冲击",
+          "kind": "content",
+          "at": 126.93,
+          "x": 1760,
+          "y": 470,
+          "image": "factory/objects/traffic.png",
+          "tone": "accent",
+          "badge": {
+            "at": 128.93,
+            "text": "会有多大？",
+            "tone": "accent"
+          }
+        }
+      ],
+      "edges": [
+        {
+          "from": "render",
+          "to": "site",
+          "at": 123.29,
+          "style": "chevron"
+        },
+        {
+          "from": "render",
+          "to": "tk",
+          "at": 124.84,
+          "style": "chevron"
+        },
+        {
+          "from": "site",
+          "to": "traffic",
+          "at": 126.93,
+          "style": "chevron"
+        },
+        {
+          "from": "tk",
+          "to": "traffic",
+          "at": 127.11,
+          "style": "chevron"
+        }
+      ]
+    },
+    {
+      "id": "mini-game",
+      "type": "broll",
+      "start": 132.2,
+      "end": 135.29,
+      "intent": "「3D 的小游戏」：第三方 Astra 做的游戏实机",
+      "media": "factory/gpt6-astra-games-20260907/broll/w01-cloudtop-chaos.mp4",
+      "origin": "third-party",
+      "layout": "panel"
+    },
+    {
+      "id": "taste-reminders",
+      "type": "reminders",
+      "start": 139.43,
+      "end": 145.53,
+      "intent": "漂亮网站吃 taste；没有设计师做不出无 AI 味",
+      "items": [
+        {
+          "text": "漂亮网站 = 非常吃 Taste",
+          "at": 139.43
+        },
+        {
+          "text": "没有设计师介入",
+          "at": 140.53
+        },
+        {
+          "text": "很难没有 AI 味",
+          "at": 143.71,
+          "tone": "accent"
+        }
+      ]
+    },
+    {
+      "id": "site-now",
+      "type": "broll",
+      "start": 146.07,
+      "end": 152.53,
+      "intent": "「不装任何 skills 就能生成漂亮网站」：官方 showcase / 第二个真页",
+      "media": "factory/gpt6-astra-games-20260907/broll/w01-little-planet.mp4",
+      "origin": "third-party",
+      "layout": "panel"
+    },
+    {
+      "id": "have-accent",
+      "type": "accent",
+      "start": 153.45,
+      "end": 156.9,
+      "intent": "「我的 Astra 已经可以用了」",
+      "items": [
+        {
+          "at": 154.17,
+          "until": 156.72,
+          "anchor": "speaker-right",
+          "text": "已经能用了",
+          "tone": "accent"
+        }
+      ]
+    },
+    {
+      "id": "test-converge",
+      "type": "converge",
+      "start": 159.25,
+      "end": 164.7,
+      "intent": "实测四项 → 到底能做到多少分",
+      "sources": [
+        {
+          "label": "视频剪辑",
+          "at": 159.79
+        },
+        {
+          "label": "独立站制作",
+          "at": 161.34
+        },
+        {
+          "label": "投流",
+          "at": 162.34
+        },
+        {
+          "label": "店铺运营",
+          "at": 163.52
+        }
+      ],
+      "sink": {
+        "label": "能做到多少分？",
+        "kind": "agent",
+        "at": 164.06,
+        "image": "factory/objects/ai-agent.png"
+      },
+      "convergeAt": 164.34
+    },
+    {
+      "id": "cta-title",
+      "type": "title",
+      "start": 165.34,
+      "end": 172.8,
+      "at": 165.61,
+      "title": "关注 SCT Scott 出海生活",
+      "sub": "实测结果下期 · 只说真话",
+      "layout": "side",
+      "intent": "收口"
+    }
+  ]
+}

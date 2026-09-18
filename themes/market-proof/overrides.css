@@ -1,0 +1,138 @@
+/* market-proof：真实人物和现场证据是主画面，所有包装只服务语义。 */
+#main {
+  --impact-ink: #000000;
+  --impact-paper: #FFFFFF;
+  --impact-signal: #FFF000;
+  --impact-action: #F20D46;
+  --impact-question: #F20D46;
+  --impact-cta: #F20D46;
+}
+
+#talking-video { filter: none; }
+.vignette,
+#scrim { display: none; }
+
+#card-host { z-index: 12; }
+
+.caption,
+.caption-over-card,
+.caption-primary,
+.caption-primary-pip {
+  top: 64.5%;
+  bottom: auto;
+  left: 5%;
+  right: 5%;
+  width: 90%;
+  max-width: 90%;
+  transform: none;
+  color: #FFFFFF;
+  font-family: MarketProofBlack, FactoryCJK, sans-serif;
+  font-size: 58px;
+  line-height: 1.04;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: normal;
+  text-wrap: balance;
+  -webkit-text-stroke: 5.5px #000000;
+  paint-order: stroke fill;
+  text-shadow: none;
+}
+
+.caption-emphasis {
+  color: #FFF000;
+  -webkit-text-fill-color: #FFF000;
+}
+
+/* 回归组件的安全兜底；实际模板仍由 singleLine 数据把字幕拆成单行短语。 */
+#main .hero-number { bottom: 32px; line-height: 0.82; }
+#main .cta-badge-copy strong { min-height: 64px; }
+
+#main .beat-impact-sticker .impact-sticker-kicker { display: none; }
+#main .beat-impact-sticker .impact-sticker-title {
+  font-family: MarketProofBlack, FactoryCJK, sans-serif;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+/* 地点证明：参考片顶部的小型红色定位胶囊。 */
+.beat-impact-sticker .impact-sticker--identity {
+  top: 7.5%;
+  left: 26%;
+  width: 48%;
+  transform: none;
+}
+
+.beat-impact-sticker .impact-sticker--identity .impact-sticker-surface {
+  min-height: 78px;
+  overflow: hidden;
+  color: #FFFFFF;
+  border: 4px solid #000000;
+  border-radius: 999px;
+  background: #F20D46;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
+}
+
+.beat-impact-sticker .impact-sticker--identity .impact-sticker-mark {
+  flex-basis: 78px;
+  color: #FFFFFF;
+  background: #F20D46;
+}
+
+.beat-impact-sticker .impact-sticker--identity .impact-sticker-mark svg {
+  width: 42px;
+  height: 42px;
+}
+
+.beat-impact-sticker .impact-sticker--identity .impact-sticker-copy {
+  padding: 10px 22px 12px 4px;
+}
+
+.beat-impact-sticker .impact-sticker--identity .impact-sticker-title {
+  color: #FFFFFF;
+  font-size: 34px;
+  line-height: 1;
+  text-align: center;
+}
+
+/* CTA：参考片顶部 COMMENT 胶囊，内容按本片口播改为 DM ME。 */
+.beat-impact-sticker .impact-sticker--cta {
+  top: 7.5%;
+  left: 31%;
+  width: 38%;
+  transform: none;
+}
+
+.beat-impact-sticker .impact-sticker--cta .impact-sticker-surface {
+  min-height: 72px;
+  overflow: hidden;
+  color: #FFFFFF;
+  border: 4px solid #000000;
+  border-radius: 999px;
+  background: #F20D46;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
+}
+
+.beat-impact-sticker .impact-sticker--cta .impact-sticker-mark {
+  flex-basis: 72px;
+  color: #FFFFFF;
+  background: #F20D46;
+}
+
+.beat-impact-sticker .impact-sticker--cta .impact-sticker-mark svg {
+  width: 38px;
+  height: 38px;
+}
+
+.beat-impact-sticker .impact-sticker--cta .impact-sticker-copy {
+  padding: 9px 20px 11px 2px;
+}
+
+.beat-impact-sticker .impact-sticker--cta .impact-sticker-title {
+  color: #FFFFFF;
+  font-size: 32px;
+  line-height: 1;
+  text-align: center;
+}

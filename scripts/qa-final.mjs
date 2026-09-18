@@ -1,5 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
+import { sha256File } from "./color-management.mjs";
+import { collectEditorialHashes } from "./editorial-contract.mjs";
 import { displayVideoGeometry, ffprobeJson, frameRateValue, parseArgs, projectRoot, readJson, resolveJob, run, writeJson } from "./lib.mjs";
 
 const args = parseArgs();
@@ -79,13 +81,20 @@ for (const time of sampleTimes) {
 }
 
 const report = {
+  schemaVersion: 2,
   status: "review_required",
   videoPath,
+  videoHash: sha256File(videoPath),
   checkedAt: new Date().toISOString(),
   streams: probe.streams,
   format: probe.format,
   sampleTimes,
   framesDir: qaDir,
+  frameHashes: fs.readdirSync(qaDir)
+    .filter((name) => /^frame-\d+ms\.jpg$/.test(name))
+    .sort()
+    .map((name) => ({ path: path.join(qaDir, name), sha256: sha256File(path.join(qaDir, name)) })),
+  editorialHashes: collectEditorialHashes(jobDir, "visual"),
   failures
 };
 
@@ -129,7 +138,7 @@ function renderMarkdown(report) {
 - FPS: ${videoStream.avg_frame_rate}
 - Color: ${videoStream.pix_fmt || "_"} / ${videoStream.color_range || "_"} / ${videoStream.color_space || "_"} / ${videoStream.color_transfer || "_"} / ${videoStream.color_primaries || "_"}
 - Duration: ${report.format.duration}s
-- Video bitrate: ${videoStream.bit_rate || "_"}
+- Video bitrate: ${videoStream.bit_rate || "_"} 
 - Audio: ${audioStream ? `${audioStream.codec_name} / ${audioStream.bit_rate || "_"} bps` : "missing"}
 - Frames: \`${report.framesDir}\`
 - Failures: ${report.failures.length ? report.failures.join("; ") : "none"}

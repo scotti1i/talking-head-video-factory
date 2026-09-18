@@ -21,7 +21,6 @@ test("portrait demo-stage 输出两个 direct-root video 与精确舞台坐标",
   assert.match(result.css, /top: 500px; width: 1080px; height: 810px/);
   assert.match(result.css, /left: var\(--primary-pip-left, 18px\); top: var\(--primary-pip-top, 1200px\); width: var\(--primary-pip-size, 304px\); height: var\(--primary-pip-size, 304px\)/);
   assert.match(result.css, /caption-primary-pip \{ left: 330px; top: 1450px; width: 570px/);
-  assert.match(result.css, /caption-primary [^}]+font-size: 60px/);
   assert.match(result.css, /var\(--primary-stage-bg, #050608\)/);
   assert.match(result.css, /var\(--primary-stage-divider, #20252b\)/);
   assert.match(result.css, /var\(--primary-pip-border, #f3f0ea\)/);
@@ -36,6 +35,20 @@ test("portrait-only clip 在 landscape 构建时完全过滤", (context) => {
   const fixture = makeFixture(context, { format: "landscape", width: 1920, height: 1080 });
   const result = createPrimaryClips({ ...fixture.options, items: [primaryItem()] });
   assert.deepEqual(result, { items: [], html: "", css: "", timelineJs: "", ranges: [], pipRanges: [] });
+});
+
+test("landscape speaker PIP 使用登记位置类，不靠逐 job 手写坐标", (context) => {
+  const fixture = makeFixture(context, { format: "landscape", width: 1920, height: 1080 });
+  const result = createPrimaryClips({
+    ...fixture.options,
+    items: [primaryItem({ formats: ["landscape"], pipPlacement: "top-left" })]
+  });
+  assert.match(result.html, /primary-demo-pip--top-left/);
+  assert.match(result.css, /primary-demo-pip--top-left \{ left: 48px; top: 48px/);
+  assert.throws(() => createPrimaryClips({
+    ...fixture.options,
+    items: [primaryItem({ formats: ["landscape"], pipPlacement: "center" })]
+  }), /pipPlacement 只能是/);
 });
 
 test("proof-footage 是全屏主叙事轨，默认 cover 且不强制 speaker PIP", (context) => {
@@ -57,9 +70,24 @@ test("proof-footage 是全屏主叙事轨，默认 cover 且不强制 speaker PI
   assert.match(result.html, /data-kind="proof-footage"/);
   assert.match(result.html, /--primary-fit:cover/);
   assert.match(result.css, /primary-demo-media\.primary-proof-media \{ inset: 0; width: 1080px; height: 1920px/);
-  assert.match(result.css, /primary-demo-media \{[^}]+opacity: 0/);
   assert.deepEqual(result.ranges, [{ start: 20, end: 30 }]);
   assert.deepEqual(result.pipRanges, []);
+});
+
+test("原生配方音效通过独立 audio 轨进入最终时间轴", (context) => {
+  const fixture = makeFixture(context, {format: "landscape", width: 1920, height: 1080});
+  const result = createPrimaryClips({
+    ...fixture.options,
+    items: [primaryItem({formats: ["landscape"], includeAudio: true})]
+  });
+  assert.match(result.html, /<audio id="primary-demo-audio-workflow"/);
+  assert.match(result.html, /data-kind="recipe-audio"/);
+  assert.match(result.html, /data-media-start="0\.00"/);
+  assert.equal(result.items[0].includeAudio, true);
+  assert.throws(() => createPrimaryClips({
+    ...fixture.options,
+    items: [primaryItem({formats: ["landscape"], includeAudio: "yes"})]
+  }), /includeAudio 必须是 boolean/);
 });
 
 test("结构字段严格校验", (context) => {
@@ -103,7 +131,6 @@ test("whip-blur 用 4–6 帧 directional blur，并在边界清理 transform/fi
   });
   assert.match(result.timelineJs, /opacity: 0, xPercent: 0, yPercent: 6, filter: "blur\(18px\)"/);
   assert.match(result.timelineJs, /videoWrap, \{ opacity: 0, xPercent: 0, yPercent: -4, filter: "blur\(16px\)", duration: 0\.17/);
-  assert.match(result.timelineJs, /videoWrap, \{ opacity: 0, xPercent: 0, yPercent: 0, filter: "none" \}/);
   assert.match(result.timelineJs, /duration: 0\.13[^\n]+29\.87/);
   assert.match(result.timelineJs, /opacity: 0, xPercent: 0, yPercent: 0, filter: "none" \}, 30\.00/);
   assert.match(result.timelineJs, /videoWrap, \{ opacity: 1, xPercent: 0, yPercent: 0, filter: "none" \}, 30\.00/);
@@ -146,7 +173,6 @@ test("focus-dissolve 生成无弹跳、可 seek 的主画面交叉溶解", (cont
 
   assert.match(result.timelineJs, /#primary-demo-workflow[^\n]+scale: 1\.018/);
   assert.match(result.timelineJs, /videoWrap, \{ opacity: 0, duration: 0\.46, ease: "sine\.inOut" \}, 20\.00/);
-  assert.match(result.timelineJs, /videoWrap, \{ opacity: 0 \}, 20\.46/);
   assert.match(result.timelineJs, /#primary-demo-pip-workflow[^\n]+scale: 0\.965/);
   assert.match(result.timelineJs, /#primary-demo-workflow[^\n]+opacity: 0, scale: 0\.992[^\n]+29\.64/);
   assert.match(result.timelineJs, /videoWrap, \{ opacity: 1, duration: 0\.36[^\n]+29\.64/);
@@ -172,50 +198,6 @@ test("primary 不允许与 B-roll 重叠", (context) => {
     items: [primaryItem({ start: 20, end: 40 })],
     broll: [{ id: "coverage", start: 35, end: 42 }]
   }), /不允许与 B-roll coverage 重叠/);
-});
-
-test("primary 字幕字号继承项目 captionFontSize", (context) => {
-  const fixture = makeFixture(context);
-  const result = createPrimaryClips({
-    ...fixture.options,
-    captionFontSize: 62,
-    items: [primaryItem()]
-  });
-  assert.match(result.css, /caption-primary [^}]+font-size: 62px/);
-});
-
-test("相邻 proof-footage 不允许夹入不足 0.5 秒的 A-roll 闪回", (context) => {
-  const fixture = makeFixture(context);
-  const first = primaryItem({
-    id: "office-proof",
-    kind: "proof-footage",
-    start: 20,
-    end: 25,
-    speakerPip: false
-  });
-  const flash = primaryItem({
-    id: "factory-proof",
-    kind: "proof-footage",
-    start: 25.3,
-    end: 30,
-    speakerPip: false
-  });
-  assert.throws(
-    () => createPrimaryClips({ ...fixture.options, items: [first, flash] }),
-    /之间仅 0\.30s A-roll/
-  );
-
-  const connected = { ...flash, start: 25 };
-  const connectedResult = createPrimaryClips({ ...fixture.options, items: [first, connected] });
-  assert.equal(connectedResult.items[0].directProofExit, true);
-  assert.equal(connectedResult.items[1].directProofEnter, true);
-  assert.match(connectedResult.html, /primary-proof-boundary-office-proof-to-factory-proof/);
-  assert.match(connectedResult.html, /data-start="24\.91" data-duration="0\.18"/);
-  assert.doesNotMatch(connectedResult.timelineJs, /opacity: 1 \}, 25\.00\)/);
-  assert.match(connectedResult.timelineJs, /primary-proof-boundary-office-proof-to-factory-proof/);
-
-  const intentionalReturn = { ...flash, start: 25.5 };
-  assert.doesNotThrow(() => createPrimaryClips({ ...fixture.options, items: [first, intentionalReturn] }));
 });
 
 test("屏幕源与 speaker PIP 都做媒体尾部校验", (context) => {

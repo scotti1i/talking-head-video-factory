@@ -50,4 +50,4 @@ node scripts/visual-preview-generate.mjs \
   --format portrait,landscape --html-only
 ```
 
-需要真实 poster 时，先 `df -h .` 确认可用空间至少 50G，再去掉 `--html-only`。改 builder 或主题后仍须用本地 `jobs/beats-regression` 构建并执行该 job 的 `npm run check`；公开仓库不包含客户素材基准，初始化方式见 `docs/theme-replication.md`。
+需要真实 poster 时，先 `df -h .` 确认可用空间至少 50G，再去掉 `--html-only`。改 builder 或主题后仍须用 `jobs/beats-regression` 构建并执行该 job 的 `npm run check`。

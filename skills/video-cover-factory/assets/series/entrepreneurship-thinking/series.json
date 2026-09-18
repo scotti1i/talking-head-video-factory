@@ -1,0 +1,13 @@
+{
+  "id": "entrepreneurship-thinking",
+  "name": "创业思考",
+  "status": "approved",
+  "approved_at": "2026-07-22",
+  "master_3x4": "series-master-3x4.png",
+  "master_sha256": "11d5fddb4bdc3256be4aa49a459efcf36bd312057da97eec91b8ff522bac5a75",
+  "skin_color_preset": "neutral-daylight",
+  "generation_mode": "built-in-gpt-image-2",
+  "identity_source": "current-episode-original-video-frames",
+  "numbering": "forbidden",
+  "series_label": "创业思考"
+}

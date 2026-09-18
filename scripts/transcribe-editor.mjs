@@ -1,21 +1,22 @@
-// ============================================================
-// 编辑转录：对 assets/originals 下每条原片按内容哈希做一次词级转录缓存（剪辑决策用；字幕不再从这里出，见 captions-from-aroll.mjs）
-// 用法：node scripts/transcribe-editor.mjs --job jobs/<slug> [--language es] [--model <path>] [--force]
-// ============================================================
 import crypto from "node:crypto";
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
-import { parseArgs, readJson, resolveJob, writeJson } from "./lib.mjs";
-import { DEFAULT_MODEL, transcribeMedia } from "./whisper-lib.mjs";
+import { parseArgs, resolveJob, run, writeJson } from "./lib.mjs";
 
 const args = parseArgs();
 const jobDir = resolveJob(args.job);
 const sourceDir = path.resolve(jobDir, args.sourceDir || "assets/originals");
 const transcriptDir = path.resolve(jobDir, args.outputDir || "data/transcripts");
-const model = path.resolve(args.model || process.env.FACTORY_WHISPER_MODEL || DEFAULT_MODEL);
-const project = fs.existsSync(path.join(jobDir, "project.json")) ? readJson(path.join(jobDir, "project.json")) : {};
-const language = String(args.language || project.editorial?.language || "auto");
+const model = path.resolve(args.model || path.join(os.homedir(), ".cache", "whisper-cpp", "ggml-large-v3-turbo.bin"));
+const language = String(args.language || "zh");
 const force = Boolean(args.force);
+const noGpu = Boolean(args["no-gpu"]);
+const threads = Number(args.threads || 0);
+
+if (threads && (!Number.isInteger(threads) || threads < 1)) {
+  throw new Error(`--threads 必须是正整数，收到: ${args.threads}`);
+}
 
 if (!fs.existsSync(model)) throw new Error(`Whisper 模型不存在: ${model}`);
 if (!fs.existsSync(sourceDir)) throw new Error(`素材目录不存在: ${sourceDir}`);
@@ -36,10 +37,7 @@ for (const source of sources) {
   const stem = safeStem(path.basename(source, path.extname(source)));
   const transcriptPath = path.join(transcriptDir, `${stem}-${hash.slice(0, 12)}.json`);
   const cached = !force && fs.existsSync(transcriptPath);
-  if (!cached) {
-    const transcript = transcribeMedia({ source, model, language, tmpDir: path.join(jobDir, "tmp", "editor-transcribe") });
-    writeJson(transcriptPath, { ...transcript, source: path.relative(jobDir, source).split(path.sep).join("/") });
-  }
+  if (!cached) transcribe(source, transcriptPath, stem);
   const transcript = JSON.parse(fs.readFileSync(transcriptPath, "utf8"));
   index.push({
     source: path.relative(jobDir, source).split(path.sep).join("/"),
@@ -49,20 +47,91 @@ for (const source of sources) {
     segments: transcript.segments.length,
     words: transcript.words.length
   });
-  console.log(`${cached ? "缓存" : "转录"}: ${path.basename(source)} · ${transcript.words.length} 词`);
+  console.log(`${cached ? "缓存" : "转录"}: ${path.basename(source)} · ${transcript.words.length} token`);
 }
 
 writeJson(path.join(transcriptDir, "index.json"), { generatedAt: new Date().toISOString(), model, language, sources: index });
 writePacked(index, path.join(jobDir, "data", "takes-packed.md"));
 console.log(`编辑转录完成 → ${path.join(jobDir, "data", "takes-packed.md")}`);
 
-function writePacked(entries, output) {
-  const sections = entries.map((item) => {
+function transcribe(source, transcriptPath, stem) {
+  const tmpDir = path.join(jobDir, "tmp", "editor-transcribe");
+  fs.mkdirSync(tmpDir, { recursive: true });
+  const wav = path.join(tmpDir, `${stem}.wav`);
+  const outBase = path.join(tmpDir, `${stem}-full`);
+  run("ffmpeg", ["-y", "-loglevel", "error", "-i", source, "-vn", "-ac", "1", "-ar", "16000", wav]);
+  run("whisper-cli", [
+    ...(noGpu ? ["-ng"] : []),
+    ...(threads ? ["-t", String(threads)] : []),
+    "-m", model, "-l", language, "-ojf", "-of", outBase, "-np", wav
+  ]);
+  const raw = JSON.parse(fs.readFileSync(`${outBase}.json`, "latin1"));
+  const segments = (raw.transcription || []).map(normalizeSegment).filter((item) => item.end > item.start && item.text);
+  const words = segments.flatMap((segment) => segment.words);
+  writeJson(transcriptPath, {
+    version: 1,
+    source: path.relative(jobDir, source).split(path.sep).join("/"),
+    model: path.basename(model),
+    language,
+    createdAt: new Date().toISOString(),
+    segments: segments.map(({ words: _words, ...segment }) => segment),
+    words
+  });
+  fs.rmSync(wav, { force: true });
+  fs.rmSync(`${outBase}.json`, { force: true });
+}
+
+function normalizeSegment(segment, segmentIndex) {
+  const start = Number(segment.offsets?.from || 0) / 1000;
+  const end = Number(segment.offsets?.to || 0) / 1000;
+  return {
+    id: `seg-${String(segmentIndex + 1).padStart(4, "0")}`,
+    start: round(start),
+    end: round(end),
+    text: decodeBytes(segment.text),
+    words: normalizeTokens(segment.tokens || [], segmentIndex)
+  };
+}
+
+function normalizeTokens(tokens, segmentIndex) {
+  const result = [];
+  let pending = [];
+  for (const token of tokens) {
+    const raw = String(token.text || "");
+    if (/^\[.*\]$/.test(raw)) continue;
+    pending.push(token);
+    const text = decodeBytes(pending.map((item) => item.text).join(""));
+    if (text.includes("�")) continue;
+    const clean = text.trim();
+    if (clean) {
+      const first = pending[0];
+      const last = pending.at(-1);
+      result.push({
+        id: `w-${String(segmentIndex + 1).padStart(4, "0")}-${String(result.length + 1).padStart(3, "0")}`,
+        start: round(Number(first.offsets?.from || 0) / 1000),
+        end: round(Number(last.offsets?.to || 0) / 1000),
+        text: clean,
+        confidence: round(Math.min(...pending.map((item) => Number(item.p ?? 1))))
+      });
+    }
+    pending = [];
+  }
+  return result;
+}
+
+function writePacked(index, output) {
+  const sections = index.map((item) => {
     const transcript = JSON.parse(fs.readFileSync(path.join(jobDir, item.transcript), "utf8"));
-    const lines = transcript.segments.map((segment) => `- [${clock(segment.start)}–${clock(segment.end)}] ${segment.text}`);
+    const lines = transcript.segments.map((segment) =>
+      `- [${clock(segment.start)}–${clock(segment.end)}] ${segment.text}`
+    );
     return `## ${path.basename(item.source)}\n\n${lines.join("\n")}`;
   });
   fs.writeFileSync(output, `# 编辑转录\n\n${sections.join("\n\n")}\n`);
+}
+
+function decodeBytes(value) {
+  return Buffer.from(String(value || ""), "latin1").toString("utf8").replace(/\s+/g, " ").trim();
 }
 
 function sha256(file) {
@@ -76,10 +145,14 @@ function sha256(file) {
 }
 
 function safeStem(value) {
-  return value.normalize("NFKC").replace(/[^a-zA-Z0-9一-鿿._-]+/g, "-").replace(/^-+|-+$/g, "") || "source";
+  return value.normalize("NFKC").replace(/[^a-zA-Z0-9\u4e00-\u9fff._-]+/g, "-").replace(/^-+|-+$/g, "") || "source";
 }
 
 function clock(seconds) {
   const minutes = Math.floor(seconds / 60);
   return `${String(minutes).padStart(2, "0")}:${(seconds % 60).toFixed(2).padStart(5, "0")}`;
+}
+
+function round(value) {
+  return Math.round(Number(value) * 1000) / 1000;
 }

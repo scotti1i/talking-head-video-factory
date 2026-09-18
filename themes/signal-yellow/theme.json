@@ -1,8 +1,8 @@
 {
   "id": "signal-yellow",
   "label": "信号黄",
-  "description": "黑幕与荧光黄的扁平硬边海报语言；荧光黄只用于强调，大面积保持黑白灰。",
-  "source": "public theme tokens",
+  "description": "对标 Vox:黑幕上一抹荧光黄,扁平硬边零投影,海报式冲击。荧光黄只给强调,大面积保持黑白灰。",
+  "source": "Vox(PremiumBeat/Kapwing 拆解,品牌黄 #FFEB00 有据)",
   "fonts": [
     { "family": "Inter", "file": "Inter-700-latin.woff2", "weight": 700 },
     { "family": "LXGWWenKaiTC", "file": "LXGWWenKaiTC-400-latin.woff2", "weight": 400 }

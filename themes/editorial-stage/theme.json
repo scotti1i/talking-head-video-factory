@@ -1,8 +1,8 @@
 {
   "id": "editorial-stage",
   "label": "深色编辑舞台",
-  "description": "深色编辑舞台：4:3 主舞台、左上圆形讲解人像、居中粗白单行字幕、冷灰分割线与悬浮证据画框。",
-  "source": "public theme tokens",
+  "description": "小Lin竖屏信息区逻辑的深色演绎：4:3 主舞台、左上圆形讲解人像、居中粗白单行字幕、冷灰分割线与悬浮证据画框。v2，2026-08-01 根据首版审片升级。",
+  "source": "jobs/meitu-design-studio-commercial-20260801/references/xiaolin-reference-01..03.png",
   "fonts": [
     { "family": "Inter", "file": "Inter-700-latin.woff2", "weight": 700 }
   ],

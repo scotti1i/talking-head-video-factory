@@ -1,0 +1,392 @@
+{
+  "jobs": {
+    "employee-distillation-20260831": {
+      "signature": [
+        "graph:web:tile",
+        "split:obj",
+        "broll:panel",
+        "graph:flow:tile",
+        "evidence",
+        "broll:panel",
+        "label:giant",
+        "ladder:5",
+        "quote",
+        "label:xl",
+        "evidence",
+        "timeline:4",
+        "evidence",
+        "label:xl",
+        "concept"
+      ],
+      "at": "2026-09-03"
+    },
+    "ai-shopping-independent-site-20260831": {
+      "signature": [
+        "evidence",
+        "ladder:3",
+        "evidence",
+        "split:obj",
+        "label:xl",
+        "accent",
+        "graph:tree:tile",
+        "converge",
+        "split:obj",
+        "graph:flow:tile",
+        "timeline:4",
+        "compare",
+        "cycle:6",
+        "label:xl",
+        "accent",
+        "graph:flow:tile",
+        "reminders",
+        "evidence",
+        "label:l",
+        "ladder:3",
+        "evidence",
+        "label:giant",
+        "split:obj",
+        "concept"
+      ],
+      "at": "2026-09-03"
+    },
+    "ai-editing-xiaolin-stage-20260903": {
+      "signature": [
+        "evidence",
+        "split:obj",
+        "label:l",
+        "broll:panel",
+        "graph:web:tile",
+        "label:l",
+        "split:obj",
+        "evidence",
+        "evidence",
+        "ladder:3",
+        "label:l",
+        "converge",
+        "label:xl",
+        "broll:panel",
+        "broll:panel",
+        "label:xl",
+        "graph:web:tile",
+        "converge",
+        "broll:panel",
+        "ladder:3",
+        "evidence",
+        "concept",
+        "label:xl"
+      ],
+      "at": "2026-09-03"
+    },
+    "stage-catalog-20260903": {
+      "signature": [
+        "label:xl",
+        "label:giant",
+        "accent",
+        "quote",
+        "equation",
+        "graph:flow:tile",
+        "graph:tree:tile",
+        "converge",
+        "split:obj",
+        "concept",
+        "reminders",
+        "evidence",
+        "data",
+        "broll:panel",
+        "broll:strip",
+        "broll:full",
+        "ladder:3",
+        "cycle:5",
+        "timeline:4",
+        "compare",
+        "title",
+        "chat:4",
+        "leaderboard:4",
+        "gauge",
+        "flip",
+        "map:3",
+        "clipping"
+      ],
+      "at": "2026-09-03"
+    },
+    "gpt6-astra-future-20260905": {
+      "signature": [
+        "title",
+        "broll:strip",
+        "leaderboard:3",
+        "reminders",
+        "label:l",
+        "equation",
+        "accent",
+        "label:m",
+        "broll:panel",
+        "graph:flow:tile",
+        "ladder:3",
+        "converge",
+        "accent",
+        "graph:web:tile",
+        "broll:panel",
+        "title"
+      ],
+      "at": "2026-09-06"
+    },
+    "harness-test-astra-long-20260907": {
+      "signature": [
+        "title",
+        "broll:strip",
+        "evidence",
+        "concept",
+        "leaderboard:3",
+        "broll:full",
+        "label:xl",
+        "reminders",
+        "title",
+        "label:giant",
+        "equation",
+        "title",
+        "split:obj",
+        "title",
+        "compare",
+        "broll:panel",
+        "graph:flow:tile",
+        "title",
+        "ladder:3",
+        "title",
+        "converge",
+        "broll:strip",
+        "label:xl",
+        "timeline:4",
+        "graph:web:tile",
+        "concept",
+        "title",
+        "broll:full",
+        "accent"
+      ],
+      "at": "2026-09-06"
+    },
+    "gpt6-astra-games-20260907": {
+      "signature": [
+        "broll:panel",
+        "broll:panel",
+        "broll:panel",
+        "accent",
+        "leaderboard:3",
+        "accent",
+        "graph:web:tile",
+        "accent",
+        "broll:panel",
+        "ladder:4",
+        "accent",
+        "compare",
+        "broll:panel",
+        "broll:panel",
+        "accent",
+        "broll:panel",
+        "accent",
+        "broll:panel",
+        "graph:web:tile",
+        "broll:panel",
+        "reminders",
+        "broll:panel",
+        "accent",
+        "converge",
+        "title"
+      ],
+      "at": "2026-09-07"
+    },
+    "studio-styleframes-20260907": {
+      "signature": [
+        "accent",
+        "reminders",
+        "leaderboard:3",
+        "accent",
+        "broll:panel"
+      ],
+      "at": "2026-09-07"
+    },
+    "studio-portrait-styleframes-20260907": {
+      "signature": [
+        "title",
+        "reminders",
+        "accent",
+        "ladder:4",
+        "broll:panel"
+      ],
+      "at": "2026-09-07"
+    },
+    "astra-computer-use-humanoid-20260907": {
+      "signature": [
+        "accent",
+        "reminders",
+        "accent",
+        "accent",
+        "accent",
+        "quote",
+        "ladder:4",
+        "accent",
+        "accent",
+        "reminders",
+        "accent",
+        "accent",
+        "ladder:3",
+        "compare",
+        "accent",
+        "accent",
+        "reminders",
+        "ladder:4",
+        "accent",
+        "title"
+      ],
+      "at": "2026-09-07"
+    },
+    "openai-demo-strategy-20260908": {
+      "signature": [
+        "title",
+        "broll:panel",
+        "reminders",
+        "accent",
+        "broll:panel",
+        "accent",
+        "broll:panel",
+        "accent",
+        "accent",
+        "compare",
+        "broll:panel",
+        "accent",
+        "accent",
+        "accent",
+        "reminders",
+        "accent",
+        "compare",
+        "reminders",
+        "accent",
+        "quote",
+        "ladder:4",
+        "accent",
+        "broll:panel",
+        "accent",
+        "accent",
+        "title"
+      ],
+      "at": "2026-09-11"
+    },
+    "short-02-openai-yangmou": {
+      "signature": [
+        "title",
+        "reminders",
+        "accent",
+        "broll:panel",
+        "accent"
+      ],
+      "at": "2026-09-08"
+    },
+    "short-03-button-not-work": {
+      "signature": [
+        "title",
+        "reminders",
+        "ladder:4",
+        "accent"
+      ],
+      "at": "2026-09-08"
+    },
+    "short-06-comfort-zone": {
+      "signature": [
+        "title",
+        "accent",
+        "broll:panel",
+        "accent",
+        "accent"
+      ],
+      "at": "2026-09-08"
+    },
+    "short-01-robot-human": {
+      "signature": [
+        "title",
+        "reminders",
+        "accent",
+        "ladder:3"
+      ],
+      "at": "2026-09-08"
+    },
+    "short-04-show-vs-understand": {
+      "signature": [
+        "title",
+        "accent",
+        "ladder:3",
+        "accent",
+        "reminders"
+      ],
+      "at": "2026-09-08"
+    },
+    "short-05-ai-release-you": {
+      "signature": [
+        "title",
+        "accent",
+        "reminders",
+        "accent",
+        "accent"
+      ],
+      "at": "2026-09-08"
+    },
+    "w6s-02-your-ability": {
+      "signature": [
+        "title"
+      ],
+      "at": "2026-09-14"
+    },
+    "w6s-01-adjectives": {
+      "signature": [
+        "title"
+      ],
+      "at": "2026-09-14"
+    },
+    "w6s-03-white-bg": {
+      "signature": [
+        "title"
+      ],
+      "at": "2026-09-14"
+    },
+    "w6s-04-last-year": {
+      "signature": [
+        "title"
+      ],
+      "at": "2026-09-14"
+    },
+    "w6s-05-slop-look": {
+      "signature": [
+        "title"
+      ],
+      "at": "2026-09-14"
+    },
+    "w6s-07-deliver-not-pretty": {
+      "signature": [
+        "title"
+      ],
+      "at": "2026-09-14"
+    },
+    "w6s-06-model-tier": {
+      "signature": [
+        "title"
+      ],
+      "at": "2026-09-14"
+    },
+    "ai-video-monetization-20260918": {
+      "signature": [
+        "label:xl",
+        "label:xl",
+        "graph:flow:tile",
+        "label:xl",
+        "label:xl",
+        "label:xl",
+        "label:xl",
+        "label:xl",
+        "label:xl",
+        "label:xl",
+        "label:xl",
+        "label:xl",
+        "label:xl"
+      ],
+      "at": "2026-09-18"
+    }
+  }
+}

@@ -5,6 +5,7 @@ import path from "node:path";
 import test from "node:test";
 
 import {
+  COLOR_POLICY_VERSION,
   assertRec709Conversion,
   classifyVideoColor,
   isHdrVideoStream,
@@ -12,7 +13,6 @@ import {
   isRec709VideoStream,
   normalizeColorMode,
   prepareSdrRec709Source,
-  resolveToneMapBackend,
   sdrCachePath
 } from "./color-management.mjs";
 
@@ -42,10 +42,8 @@ test("color mode 和内容哈希缓存路径保持确定性", () => {
   assert.throws(() => normalizeColorMode("hdr-ish"), /只能是 auto-sdr\/legacy/);
   assert.equal(
     sdrCachePath({ jobDir: "/job", sourcePath: "/job/assets/originals/手机 HDR.MOV", sourceHash: "abcdef1234567890" }),
-    "/job/assets/derived/sdr-rec709/-HDR-abcdef123456-rec709-v2.mov"
+    `/job/assets/derived/sdr-rec709/-HDR-abcdef123456-${COLOR_POLICY_VERSION}.mov`
   );
-  assert.equal(resolveToneMapBackend({ backend: "ffmpeg", platform: "linux" }), "ffmpeg");
-  assert.throws(() => resolveToneMapBackend({ backend: "cuda" }), /只能是 auto\/avfoundation\/ffmpeg/);
 });
 
 test("Apple tone-map 结果必须保留画幅、时长、音轨并标记 BT.709", () => {
@@ -100,42 +98,32 @@ test("HDR 源首次转换、再次命中缓存；SDR 源直接复用", (context)
   assert.equal(conversions, 2);
 });
 
-test("Linux/WSL HDR 使用 FFmpeg zscale tone-map 并复用内容哈希缓存", (context) => {
-  const jobDir = fs.mkdtempSync(path.join(os.tmpdir(), "factory-color-ffmpeg-"));
+test("存在 ffmpeg-full 时使用 zscale 真正 tone-map，而不是只改色彩标签", (context) => {
+  const jobDir = fs.mkdtempSync(path.join(os.tmpdir(), "factory-color-zscale-"));
   context.after(() => fs.rmSync(jobDir, { recursive: true, force: true }));
   const sourcePath = path.join(jobDir, "assets", "originals", "take.mov");
+  const ffmpegFullPath = path.join(jobDir, "ffmpeg-full");
   fs.mkdirSync(path.dirname(sourcePath), { recursive: true });
   fs.writeFileSync(sourcePath, "hdr-source");
+  fs.writeFileSync(ffmpegFullPath, "tool");
   const sourceProbe = probe(video({ width: 1920, height: 1080, rotation: -90, duration: "7.298333" }), true, "7.298333");
   const outputProbe = probe(video({ width: 1080, height: 1920, rotation: 0, duration: "7.300000", color_space: "bt709", color_transfer: "bt709", color_primaries: "bt709", pix_fmt: "yuv420p" }), true, "7.300000");
-  const commands = [];
-  const fakeRun = (command, args) => {
-    commands.push([command, args]);
-    fs.writeFileSync(args.at(-1), "sdr-output");
-  };
-  const fakeProbe = (file) => file === sourcePath ? sourceProbe : outputProbe;
-  const first = prepareSdrRec709Source({
+  let captured = null;
+  const result = prepareSdrRec709Source({
     jobDir,
     sourcePath,
-    probe: fakeProbe,
-    runCommand: fakeRun,
-    platform: "linux",
-    backend: "auto",
-    ffmpegPath: "ffmpeg"
+    probe: (file) => file === sourcePath ? sourceProbe : outputProbe,
+    runCommand: (command, args) => {
+      captured = { command, args };
+      fs.writeFileSync(args.at(-1), "sdr-output");
+    },
+    platform: "darwin",
+    ffmpegFullPath
   });
-  const second = prepareSdrRec709Source({
-    jobDir,
-    sourcePath,
-    probe: fakeProbe,
-    runCommand: fakeRun,
-    platform: "linux",
-    backend: "auto",
-    ffmpegPath: "ffmpeg"
-  });
-  assert.equal(first.backend, "ffmpeg");
-  assert.equal(second.cached, true);
-  assert.equal(commands.length, 1);
-  assert.match(commands[0][1][commands[0][1].indexOf("-vf") + 1], /zscale=.*tonemap=mobius/);
+  assert.equal(captured.command, ffmpegFullPath);
+  assert.match(captured.args[captured.args.indexOf("-vf") + 1], /zscale=.*tonemap=hable.*zscale=/);
+  assert.equal(result.outputProfile.transfer, "bt709");
+  assert.equal(result.tool, ffmpegFullPath);
 });
 
 test("auto-sdr 对缺失色彩标记 fail closed", (context) => {

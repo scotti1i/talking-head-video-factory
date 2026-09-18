@@ -1,0 +1,323 @@
+[
+  {
+    "type": "statement",
+    "start": 0,
+    "end": 4.86,
+    "kicker": "开场判断",
+    "title": "AI 不会平均提效",
+    "body": "它放大的不是努力，是人的底层能力差。",
+    "accent": "绝对不可能"
+  },
+  {
+    "type": "micro-overlay",
+    "start": 5.1,
+    "end": 7.6,
+    "kicker": "RISK CHECK",
+    "title": "Who is tracking production?",
+    "variant": "question",
+    "icon": "question",
+    "items": [
+      "Lead time?",
+      "Quality?",
+      "Dispatch?"
+    ]
+  },
+  {
+    "type": "impact-sticker",
+    "start": 7.72,
+    "end": 9.48,
+    "kicker": "QUICK QUESTION",
+    "title": "WHAT SHOULD HIT HARDER?",
+    "variant": "question",
+    "icon": "none",
+    "hitOffset": 0.13
+  },
+  {
+    "type": "panel",
+    "start": 9.749,
+    "end": 15.749,
+    "kicker": "现场案例",
+    "title": "老板装了工作流，员工仍然不用",
+    "items": [
+      "Codex",
+      "AI 视频剪辑",
+      "skills 一装即用"
+    ],
+    "body": "工具已经在桌上，问题不在工具。",
+    "video": "soft"
+  },
+  {
+    "type": "impact-sticker",
+    "start": 15.92,
+    "end": 18.45,
+    "kicker": "NOT THE ANSWER",
+    "title": "TOP CARD",
+    "variant": "reject",
+    "icon": "package",
+    "strike": true,
+    "hitOffset": 0.13
+  },
+  {
+    "type": "chips",
+    "start": 18.669,
+    "end": 27.247,
+    "kicker": "我的制作链路",
+    "title": "Claude + Codex 已经能做成片",
+    "chips": [
+      "没开剪映",
+      "特效自动生成",
+      "口播包装",
+      "字幕节奏"
+    ],
+    "body": "所以我说它能用，但不是谁都能用好。"
+  },
+  {
+    "type": "hero",
+    "start": 27.247,
+    "end": 34.019,
+    "kicker": "不是个例",
+    "title": "这不是个例",
+    "number": "01",
+    "body": "从公司 AI 转型开始，苗头就已经出现。"
+  },
+  {
+    "type": "proof-collage",
+    "start": 34.3,
+    "end": 39,
+    "kicker": "REAL WORK, ON THE GROUND",
+    "title": "Proof before promises",
+    "body": "Four real frames from this regression source, frozen locally.",
+    "photos": [
+      {
+        "src": "assets/proof-regression/source-01.jpg",
+        "alt": "回归源视频的现场画面一",
+        "label": "SOURCE",
+        "focus": "center"
+      },
+      {
+        "src": "assets/proof-regression/source-02.jpg",
+        "alt": "回归源视频的现场画面二",
+        "label": "CHECK",
+        "focus": "top"
+      },
+      {
+        "src": "assets/proof-regression/source-03.jpg",
+        "alt": "回归源视频的现场画面三",
+        "label": "PROOF",
+        "focus": "center"
+      },
+      {
+        "src": "assets/proof-regression/source-04.jpg",
+        "alt": "回归源视频的现场画面四",
+        "label": "RESULT",
+        "focus": "center"
+      }
+    ]
+  },
+  {
+    "type": "split",
+    "start": 39.744,
+    "end": 49.598,
+    "kicker": "核心比喻",
+    "title": "100 分乘 100，1 分也乘 100",
+    "left": {
+      "label": "强员工",
+      "title": "100 × 100",
+      "lines": [
+        "速度变快",
+        "边界变大",
+        "更愿意独立完成"
+      ]
+    },
+    "right": {
+      "label": "弱员工",
+      "title": "1 × 100",
+      "lines": [
+        "仍然要解释",
+        "仍然要返工",
+        "差距被放大"
+      ]
+    }
+  },
+  {
+    "type": "duel",
+    "start": 49.598,
+    "end": 59.317,
+    "kicker": "组织后果",
+    "title": "强者不想再跟弱者协作",
+    "bad": "沟通成本",
+    "good": "一把梭哈做完",
+    "body": "不是态度问题，是时间账算不过来。"
+  },
+  {
+    "type": "cta-badge",
+    "start": 60,
+    "end": 61.8,
+    "kicker": "READY TO IMPORT?",
+    "title": "Tell us what you need",
+    "action": "SEND US A DM",
+    "handle": "@YOURHANDLE"
+  },
+  {
+    "type": "impact-sticker",
+    "start": 61.95,
+    "end": 63.2,
+    "kicker": "THE REAL COST IS",
+    "title": "TIME",
+    "variant": "pivot",
+    "icon": "clock",
+    "hitOffset": 0.17
+  },
+  {
+    "type": "impact-sticker",
+    "start": 63.34,
+    "end": 64.74,
+    "kicker": "ACTION",
+    "title": "TRACK SOURCE",
+    "variant": "action",
+    "icon": "track",
+    "hitOffset": 0.13
+  },
+  {
+    "type": "impact-sticker",
+    "start": 64.88,
+    "end": 66.68,
+    "kicker": "SOURCE",
+    "title": "LOCAL SOURCE",
+    "variant": "identity",
+    "icon": "source",
+    "hitOffset": 0.1
+  },
+  {
+    "type": "pipeline",
+    "start": 66.946,
+    "end": 82.075,
+    "kicker": "真正卡点",
+    "title": "效率死在交接里",
+    "steps": [
+      "个人提效",
+      "解释需求",
+      "返工确认",
+      "整体变慢"
+    ],
+    "body": "把每个人都提效，不等于组织提效。"
+  },
+  {
+    "type": "statement",
+    "start": 83.213,
+    "end": 91.723,
+    "kicker": "判断标准",
+    "title": "无人监督也能跑，才叫工作流",
+    "body": "否则 AI 只是把手工活换了一个界面。",
+    "accent": "自己运行"
+  },
+  {
+    "type": "impact-sticker",
+    "start": 92,
+    "end": 94,
+    "kicker": "NEXT STEP",
+    "title": "OPEN THE QA REPORT",
+    "variant": "cta",
+    "icon": "message",
+    "hitOffset": 0.13
+  },
+  {
+    "type": "split",
+    "start": 97.779,
+    "end": 116.331,
+    "kicker": "行业边界",
+    "title": "UGC 能跑，不代表商单能直出",
+    "left": {
+      "label": "可标准化",
+      "title": "UGC / 口播",
+      "lines": [
+        "节奏",
+        "字幕",
+        "轻包装"
+      ]
+    },
+    "right": {
+      "label": "仍需判断",
+      "title": "DTC / TVC",
+      "lines": [
+        "策略",
+        "品牌",
+        "商单目标"
+      ]
+    }
+  },
+  {
+    "type": "trio",
+    "start": 116.331,
+    "end": 124.965,
+    "kicker": "别信神话",
+    "title": "装一个工具，不会自动长出业务结果",
+    "columns": [
+      "工具",
+      "流程",
+      "业务判断"
+    ],
+    "body": "AI 不是开关，它要接进公司的真实流程。"
+  },
+  {
+    "type": "diagram",
+    "start": 124.965,
+    "end": 131.119,
+    "kicker": "为什么不能套模板",
+    "title": "每家公司都不一样",
+    "nodes": [
+      "业务流程",
+      "人员组成",
+      "历史包袱",
+      "目标约束"
+    ],
+    "body": "同一个 Agent，到不同公司就是不同系统。"
+  },
+  {
+    "type": "panel",
+    "start": 131.119,
+    "end": 140.268,
+    "kicker": "知识资产",
+    "title": "知识在员工脑子里，就很难自动化",
+    "items": [
+      "经验不可见",
+      "判断不可复用",
+      "交付不可稳定"
+    ],
+    "body": "老板要先把知识从人脑里抽出来。"
+  },
+  {
+    "type": "chips",
+    "start": 140.268,
+    "end": 156.169,
+    "kicker": "Claude Code 时代",
+    "title": "需求讲清 + Token 给够，Agent 才能跑",
+    "chips": [
+      "Fable 5",
+      "上下文",
+      "执行预算",
+      "需求描述"
+    ],
+    "body": "真正的门槛，是你能不能把需求说清楚。"
+  },
+  {
+    "type": "cta",
+    "start": 156.169,
+    "end": 172.825,
+    "kicker": "给老板的提醒",
+    "title": "先想清楚：你要提效人，还是重做流程？",
+    "body": "工具不是答案，工作流才是答案。",
+    "primary": "重做流程",
+    "secondary": "不要只装工具"
+  },
+  {
+    "type": "cta",
+    "start": 172.825,
+    "end": 189.384,
+    "kicker": "关注 Scott 出海",
+    "title": "我讲商业化 Agent，不讲玄学",
+    "body": "懂业务、懂产品、懂技术，想听真实落地就关注。",
+    "primary": "关注",
+    "secondary": "评论区留言"
+  }
+]

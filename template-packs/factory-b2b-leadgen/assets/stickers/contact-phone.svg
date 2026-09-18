@@ -1,4 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Contact by phone">
-  <circle cx="256" cy="256" r="226" fill="#FFE600" stroke="#101114" stroke-width="24"/>
-  <path d="M174 120l58 93-43 42c30 64 64 98 128 128l42-43 93 58-18 65c-8 28-35 46-64 42-177-23-317-163-340-340-4-29 14-56 42-64l65-18z" transform="translate(16 -38) scale(.9)" fill="#101114"/>
-</svg>

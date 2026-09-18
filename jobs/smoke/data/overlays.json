@@ -1,0 +1,15 @@
+[
+  {
+    "id": "qa",
+    "start": 3.3,
+    "duration": 1.2,
+    "kicker": "QA",
+    "title": "解释层测试",
+    "body": "这里会隐藏重叠字幕。",
+    "bullets": [
+      "静态时间轴",
+      "最终抽帧"
+    ],
+    "hideCaptions": true
+  }
+]

@@ -1,8 +1,8 @@
 {
   "id": "steel-blueprint",
   "label": "钢蓝制图",
-  "description": "冷灰蓝工程制图、hairline 细线与等宽大写标注；工程橙红是唯一强调色。",
-  "source": "public theme tokens",
+  "description": "对标回形针×影视飓风:冷灰蓝工程制图,hairline 细线 + 等宽大写标注,全片唯一彩色是工程橙红。",
+  "source": "回形针PaperClip / 影视飓风(数说·流媒体网拆解)",
   "fonts": [
     { "family": "Inter", "file": "Inter-700-latin.woff2", "weight": 700 },
     { "family": "LXGWWenKaiTC", "file": "LXGWWenKaiTC-400-latin.woff2", "weight": 400 }

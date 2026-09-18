@@ -1,0 +1,1400 @@
+{
+  "schemaVersion": 1,
+  "fps": 30,
+  "durationInFrames": 5580,
+  "source": {
+    "media": "factory/stage-catalog-20260903/aroll.mp4",
+    "startFrame": 0
+  },
+  "background": {
+    "plate": "factory/plates/studio-topglow.png"
+  },
+  "keywords": [
+    "独立站",
+    "AI"
+  ],
+  "skin": "stage3d",
+  "speaker": [
+    {
+      "at": 0,
+      "mode": "hero"
+    },
+    {
+      "at": 180,
+      "mode": "orb-right"
+    },
+    {
+      "at": 360,
+      "mode": "hero-center"
+    },
+    {
+      "at": 510,
+      "mode": "hero-right"
+    },
+    {
+      "at": 690,
+      "mode": "dock"
+    },
+    {
+      "at": 1350,
+      "mode": "orb-right"
+    },
+    {
+      "at": 1560,
+      "mode": "hero"
+    },
+    {
+      "at": 1656,
+      "mode": "dock"
+    },
+    {
+      "at": 1770,
+      "mode": "hero-right"
+    },
+    {
+      "at": 1980,
+      "mode": "hero"
+    },
+    {
+      "at": 2220,
+      "mode": "orb-left"
+    },
+    {
+      "at": 2400,
+      "mode": "dock"
+    },
+    {
+      "at": 2640,
+      "mode": "hero"
+    },
+    {
+      "at": 2790,
+      "mode": "orb-right"
+    },
+    {
+      "at": 2940,
+      "mode": "hidden"
+    },
+    {
+      "at": 3060,
+      "mode": "dock"
+    },
+    {
+      "at": 3900,
+      "mode": "stage"
+    },
+    {
+      "at": 4011,
+      "mode": "hero"
+    },
+    {
+      "at": 4251,
+      "mode": "dock"
+    },
+    {
+      "at": 4491,
+      "mode": "dock"
+    },
+    {
+      "at": 4701,
+      "mode": "dock"
+    },
+    {
+      "at": 4941,
+      "mode": "dock"
+    },
+    {
+      "at": 5211,
+      "mode": "hero-right"
+    },
+    {
+      "at": 5463,
+      "mode": "hero-center"
+    }
+  ],
+  "captions": [
+    {
+      "s": 0,
+      "e": 90,
+      "t": "示例字幕第 1 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 90,
+      "e": 180,
+      "t": "示例字幕第 2 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 180,
+      "e": 270,
+      "t": "示例字幕第 3 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 270,
+      "e": 360,
+      "t": "示例字幕第 4 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 360,
+      "e": 450,
+      "t": "示例字幕第 5 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 450,
+      "e": 540,
+      "t": "示例字幕第 6 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 540,
+      "e": 630,
+      "t": "示例字幕第 7 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 630,
+      "e": 720,
+      "t": "示例字幕第 8 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 720,
+      "e": 810,
+      "t": "示例字幕第 9 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 810,
+      "e": 900,
+      "t": "示例字幕第 10 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 900,
+      "e": 990,
+      "t": "示例字幕第 11 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 990,
+      "e": 1080,
+      "t": "示例字幕第 12 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 1080,
+      "e": 1170,
+      "t": "示例字幕第 13 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 1170,
+      "e": 1260,
+      "t": "示例字幕第 14 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 1260,
+      "e": 1350,
+      "t": "示例字幕第 15 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 1350,
+      "e": 1440,
+      "t": "示例字幕第 16 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 1440,
+      "e": 1530,
+      "t": "示例字幕第 17 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 1530,
+      "e": 1620,
+      "t": "示例字幕第 18 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 1620,
+      "e": 1710,
+      "t": "示例字幕第 19 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 1710,
+      "e": 1800,
+      "t": "示例字幕第 20 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 1800,
+      "e": 1890,
+      "t": "示例字幕第 21 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 1890,
+      "e": 1980,
+      "t": "示例字幕第 22 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 1980,
+      "e": 2070,
+      "t": "示例字幕第 23 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 2070,
+      "e": 2160,
+      "t": "示例字幕第 24 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 2160,
+      "e": 2250,
+      "t": "示例字幕第 25 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 2250,
+      "e": 2340,
+      "t": "示例字幕第 26 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 2340,
+      "e": 2430,
+      "t": "示例字幕第 27 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 2430,
+      "e": 2520,
+      "t": "示例字幕第 28 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 2520,
+      "e": 2610,
+      "t": "示例字幕第 29 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 2610,
+      "e": 2700,
+      "t": "示例字幕第 30 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 2700,
+      "e": 2790,
+      "t": "示例字幕第 31 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 2790,
+      "e": 2880,
+      "t": "示例字幕第 32 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 2880,
+      "e": 2970,
+      "t": "示例字幕第 33 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 2970,
+      "e": 3060,
+      "t": "示例字幕第 34 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 3060,
+      "e": 3150,
+      "t": "示例字幕第 35 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 3150,
+      "e": 3240,
+      "t": "示例字幕第 36 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 3240,
+      "e": 3330,
+      "t": "示例字幕第 37 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 3330,
+      "e": 3420,
+      "t": "示例字幕第 38 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 3420,
+      "e": 3510,
+      "t": "示例字幕第 39 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 3510,
+      "e": 3600,
+      "t": "示例字幕第 40 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 3600,
+      "e": 3690,
+      "t": "示例字幕第 41 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 3690,
+      "e": 3780,
+      "t": "示例字幕第 42 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 3780,
+      "e": 3870,
+      "t": "示例字幕第 43 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 3870,
+      "e": 3960,
+      "t": "示例字幕第 44 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 3960,
+      "e": 4050,
+      "t": "示例字幕第 45 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 4050,
+      "e": 4140,
+      "t": "示例字幕第 46 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 4140,
+      "e": 4230,
+      "t": "示例字幕第 47 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 4230,
+      "e": 4320,
+      "t": "示例字幕第 48 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 4320,
+      "e": 4410,
+      "t": "示例字幕第 49 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 4410,
+      "e": 4500,
+      "t": "示例字幕第 50 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 4500,
+      "e": 4590,
+      "t": "示例字幕第 51 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 4590,
+      "e": 4680,
+      "t": "示例字幕第 52 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 4680,
+      "e": 4770,
+      "t": "示例字幕第 53 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 4770,
+      "e": 4860,
+      "t": "示例字幕第 54 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 4860,
+      "e": 4950,
+      "t": "示例字幕第 55 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 4950,
+      "e": 5040,
+      "t": "示例字幕第 56 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 5040,
+      "e": 5130,
+      "t": "示例字幕第 57 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 5130,
+      "e": 5220,
+      "t": "示例字幕第 58 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 5220,
+      "e": 5310,
+      "t": "示例字幕第 59 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 5310,
+      "e": 5400,
+      "t": "示例字幕第 60 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 5400,
+      "e": 5490,
+      "t": "示例字幕第 61 句，关键词 独立站 与 AI 会加重"
+    },
+    {
+      "s": 5490,
+      "e": 5580,
+      "t": "示例字幕第 62 句，关键词 独立站 与 AI 会加重"
+    }
+  ],
+  "scenes": [
+    {
+      "id": "label-sizes",
+      "type": "label",
+      "start": 9,
+      "end": 180,
+      "intent": "标签三种尺寸 + 三种面",
+      "items": [
+        {
+          "text": "m 号 · 玻璃面",
+          "at": 18,
+          "x": 1283,
+          "y": 280,
+          "form": "glass",
+          "size": "m",
+          "anchor": "center"
+        },
+        {
+          "text": "l 号 · 实心强调",
+          "at": 42,
+          "x": 1283,
+          "y": 420,
+          "form": "fill",
+          "tone": "accent",
+          "size": "l",
+          "anchor": "center"
+        },
+        {
+          "text": "l 号 · 描边",
+          "at": 66,
+          "x": 1283,
+          "y": 560,
+          "form": "outline",
+          "size": "l",
+          "anchor": "center"
+        },
+        {
+          "text": "xl 大字",
+          "at": 90,
+          "x": 1283,
+          "y": 720,
+          "size": "xl",
+          "anchor": "center"
+        }
+      ]
+    },
+    {
+      "id": "label-giant",
+      "type": "label",
+      "start": 180,
+      "end": 360,
+      "intent": "giant 巨字整屏（人物退角标）",
+      "items": [
+        {
+          "text": "200 美金",
+          "at": 192,
+          "x": 960,
+          "y": 430,
+          "size": "giant",
+          "odometer": true,
+          "anchor": "center"
+        },
+        {
+          "text": "停？还是不停？",
+          "at": 246,
+          "x": 960,
+          "y": 660,
+          "size": "l",
+          "anchor": "center"
+        }
+      ]
+    },
+    {
+      "id": "accent-demo",
+      "type": "accent",
+      "start": 360,
+      "end": 510,
+      "intent": "点缀：关键词旁弹小物件 / 小标签 1.2s",
+      "items": [
+        {
+          "at": 372,
+          "anchor": "speaker-left",
+          "image": "factory/objects/waveform.png"
+        },
+        {
+          "at": 414,
+          "anchor": "speaker-right",
+          "text": "没砍即时结账"
+        },
+        {
+          "at": 456,
+          "anchor": "speaker-right",
+          "image": "factory/objects/roi.png"
+        }
+      ]
+    },
+    {
+      "id": "quote-demo",
+      "type": "quote",
+      "start": 510,
+      "end": 690,
+      "at": 522,
+      "text": "告诉它这种情况怎么干，它一定能做得很好",
+      "by": "很多人这么想",
+      "intent": "引用体（人物镜像在右）"
+    },
+    {
+      "id": "equation-demo",
+      "type": "equation",
+      "start": 690,
+      "end": 900,
+      "intent": "公式按口播顺序建立",
+      "rows": [
+        {
+          "terms": [
+            {
+              "text": "广告点击量",
+              "at": 702
+            },
+            {
+              "text": "×",
+              "at": 717,
+              "kind": "op"
+            },
+            {
+              "text": "转化率",
+              "at": 729
+            },
+            {
+              "text": "=",
+              "at": 741,
+              "kind": "op"
+            },
+            {
+              "text": "广告单",
+              "at": 753,
+              "kind": "result"
+            }
+          ]
+        },
+        {
+          "terms": [
+            {
+              "text": "总订单",
+              "at": 774
+            },
+            {
+              "text": "−",
+              "at": 786,
+              "kind": "op"
+            },
+            {
+              "text": "广告单",
+              "at": 798
+            },
+            {
+              "text": "=",
+              "at": 810,
+              "kind": "op"
+            },
+            {
+              "text": "自然单",
+              "at": 822,
+              "kind": "result"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "graph-flow",
+      "type": "graph",
+      "start": 900,
+      "end": 1110,
+      "intent": "关系图 · 流程排布（真实 logo + 物件）",
+      "nodes": [
+        {
+          "id": "yt",
+          "label": "YouTube 视频",
+          "kind": "none",
+          "at": 909,
+          "x": 720,
+          "y": 470,
+          "image": "factory/stage-catalog-20260903/logos/youtube.svg",
+          "tone": "red",
+          "en": "YouTube",
+          "enter": "pop"
+        },
+        {
+          "id": "ed",
+          "label": "剪辑",
+          "kind": "content",
+          "at": 936,
+          "x": 1190,
+          "y": 470,
+          "image": "factory/objects/editing.png",
+          "highlight": [
+            [
+              936,
+              990
+            ]
+          ],
+          "tone": "purple",
+          "en": "Editing",
+          "enter": "pop"
+        },
+        {
+          "id": "pub",
+          "label": "一键发布",
+          "kind": "click",
+          "at": 972,
+          "x": 1640,
+          "y": 470,
+          "image": "factory/objects/publish.png",
+          "enter": "slam",
+          "badge": {
+            "at": 1008,
+            "text": "全都用 AI",
+            "tone": "accent",
+            "fx": "impact"
+          },
+          "tone": "lime",
+          "en": "Publish"
+        }
+      ],
+      "edges": [
+        {
+          "from": "yt",
+          "to": "ed",
+          "at": 936,
+          "style": "chevron"
+        },
+        {
+          "from": "ed",
+          "to": "pub",
+          "at": 972,
+          "style": "chevron"
+        }
+      ]
+    },
+    {
+      "id": "graph-tree",
+      "type": "graph",
+      "start": 1110,
+      "end": 1350,
+      "intent": "关系图 · 树状排布（三列，pill 节点）",
+      "nodes": [
+        {
+          "id": "a",
+          "label": "衣服",
+          "kind": "content",
+          "at": 1119,
+          "x": 760,
+          "y": 250,
+          "image": "factory/objects/product-skincare.png",
+          "small": true,
+          "enter": "pop"
+        },
+        {
+          "id": "a1",
+          "label": "尺码",
+          "kind": "none",
+          "at": 1137,
+          "x": 760,
+          "y": 470,
+          "shape": "pill",
+          "enter": "pop"
+        },
+        {
+          "id": "a2",
+          "label": "颜色",
+          "kind": "none",
+          "at": 1152,
+          "x": 760,
+          "y": 620,
+          "shape": "pill",
+          "enter": "pop"
+        },
+        {
+          "id": "b",
+          "label": "设备",
+          "kind": "content",
+          "at": 1134,
+          "x": 1190,
+          "y": 250,
+          "image": "factory/objects/toolkit.png",
+          "small": true,
+          "enter": "pop"
+        },
+        {
+          "id": "b1",
+          "label": "配件",
+          "kind": "none",
+          "at": 1158,
+          "x": 1190,
+          "y": 470,
+          "shape": "pill",
+          "enter": "pop"
+        },
+        {
+          "id": "b2",
+          "label": "维修",
+          "kind": "none",
+          "at": 1176,
+          "x": 1190,
+          "y": 620,
+          "shape": "pill",
+          "enter": "pop"
+        },
+        {
+          "id": "c",
+          "label": "品牌",
+          "kind": "content",
+          "at": 1149,
+          "x": 1620,
+          "y": 250,
+          "image": "factory/objects/business.png",
+          "small": true,
+          "enter": "pop"
+        },
+        {
+          "id": "c1",
+          "label": "会员",
+          "kind": "none",
+          "at": 1188,
+          "x": 1620,
+          "y": 470,
+          "shape": "pill",
+          "enter": "pop"
+        },
+        {
+          "id": "c2",
+          "label": "复购",
+          "kind": "organic",
+          "at": 1212,
+          "x": 1620,
+          "y": 620,
+          "shape": "circle",
+          "small": true,
+          "enter": "slam"
+        }
+      ],
+      "edges": [
+        {
+          "from": "a",
+          "to": "a1",
+          "at": 1137,
+          "style": "line"
+        },
+        {
+          "from": "a1",
+          "to": "a2",
+          "at": 1152,
+          "style": "line"
+        },
+        {
+          "from": "b",
+          "to": "b1",
+          "at": 1158,
+          "style": "line"
+        },
+        {
+          "from": "b1",
+          "to": "b2",
+          "at": 1176,
+          "style": "line"
+        },
+        {
+          "from": "c",
+          "to": "c1",
+          "at": 1188,
+          "style": "line"
+        },
+        {
+          "from": "c1",
+          "to": "c2",
+          "at": 1212,
+          "style": "line"
+        }
+      ]
+    },
+    {
+      "id": "converge-demo",
+      "type": "converge",
+      "start": 1350,
+      "end": 1560,
+      "intent": "汇流（多对一）",
+      "sources": [
+        {
+          "label": "找商品",
+          "at": 1362
+        },
+        {
+          "label": "比价格",
+          "at": 1377
+        },
+        {
+          "label": "看评论",
+          "at": 1392
+        }
+      ],
+      "sink": {
+        "label": "ChatGPT",
+        "kind": "agent",
+        "at": 1416,
+        "image": "factory/objects/ai-god.png"
+      },
+      "convergeAt": 1440,
+      "caption": {
+        "text": "这些都在 ChatGPT 里做完了",
+        "at": 1476
+      }
+    },
+    {
+      "id": "split-demo",
+      "type": "split",
+      "start": 1560,
+      "end": 1770,
+      "intent": "二分（术语随口播命名，人物右移）",
+      "header": {
+        "glyph": "content"
+      },
+      "cards": [
+        {
+          "text": "找商品 · 比较 · 缩小",
+          "glyph": "content",
+          "tag": {
+            "text": "前半段",
+            "at": 1578
+          },
+          "image": "factory/objects/scroll-phone.png"
+        },
+        {
+          "text": "进商家自己的店结账",
+          "glyph": "content",
+          "tag": {
+            "text": "付钱",
+            "at": 1662
+          },
+          "accent": true,
+          "image": "factory/objects/product-skincare.png"
+        }
+      ],
+      "shiftAt": 1656
+    },
+    {
+      "id": "concept-demo",
+      "type": "concept",
+      "start": 1770,
+      "end": 1980,
+      "intent": "概念大卡（逐字卡拉 OK / 下划线）",
+      "term": "不是 AI 剪不好",
+      "underline": true,
+      "phrases": [
+        {
+          "text": "没有业务在驱动",
+          "at": 1806,
+          "reveal": "blur-slide"
+        },
+        {
+          "text": "不知道标准是什么",
+          "at": 1860,
+          "reveal": "blur-slide"
+        },
+        {
+          "text": "不知道 ROI 怎么衡量",
+          "at": 1914,
+          "reveal": "blur-slide"
+        }
+      ],
+      "glyph": "agent",
+      "image": "factory/objects/boundary.png"
+    },
+    {
+      "id": "reminders-demo",
+      "type": "reminders",
+      "start": 1980,
+      "end": 2160,
+      "intent": "堆叠提醒",
+      "items": [
+        {
+          "text": "商品信息准不准",
+          "at": 1992
+        },
+        {
+          "text": "价格 · 库存准不准",
+          "at": 2040
+        },
+        {
+          "text": "商家质量怎么样",
+          "at": 2088,
+          "tone": "accent"
+        }
+      ]
+    },
+    {
+      "id": "evidence-demo",
+      "type": "evidence",
+      "start": 2160,
+      "end": 2400,
+      "intent": "证据页：引用卡 → 撞推聚焦 → 中文译注",
+      "image": "factory/stage-catalog-20260903/evidence/shopify-agentic-commerce.png",
+      "imageSize": {
+        "w": 1440,
+        "h": 1600
+      },
+      "thumbCrop": {
+        "x": 0,
+        "y": 400,
+        "w": 1440,
+        "h": 810
+      },
+      "expandAt": 2220,
+      "focus": [
+        {
+          "at": 2223,
+          "box": {
+            "x": 360,
+            "y": 470,
+            "w": 720,
+            "h": 130
+          },
+          "scale": 1.6,
+          "zoom": "crash",
+          "note": "代理式商务：好处与怎么起步",
+          "style": "box"
+        },
+        {
+          "at": 2310,
+          "box": {
+            "x": 340,
+            "y": 600,
+            "w": 760,
+            "h": 60
+          },
+          "style": "brackets",
+          "note": "AI 代理替消费者选品、比价、下单",
+          "zoom": "shared"
+        }
+      ],
+      "source": "来源：Shopify Blog · Agentic Commerce（2026-04）"
+    },
+    {
+      "id": "data-demo",
+      "type": "data",
+      "start": 2400,
+      "end": 2640,
+      "intent": "数据聚焦（区间 / 标记 / 差值 / 尖峰 / 判定）",
+      "title": "开启 GMV Max 前后 · 整盘销售",
+      "series": [
+        0.4,
+        0.43,
+        0.41,
+        0.44,
+        0.42,
+        0.45,
+        0.43,
+        0.41,
+        0.44,
+        0.42,
+        0.43,
+        0.44,
+        0.5,
+        0.56,
+        0.58,
+        0.57,
+        0.6,
+        0.59,
+        0.61,
+        0.58,
+        0.6,
+        0.62,
+        0.59,
+        0.61
+      ],
+      "highlights": [
+        {
+          "at": 2418,
+          "range": [
+            0.02,
+            0.46
+          ],
+          "label": "稳定期"
+        },
+        {
+          "at": 2490,
+          "range": [
+            0.52,
+            0.98
+          ],
+          "label": "开启之后"
+        }
+      ],
+      "marker": {
+        "at": 2472,
+        "xFrac": 0.49,
+        "label": "开启 GMV Max"
+      },
+      "delta": {
+        "at": 2520,
+        "until": 2580,
+        "text": "多了多少"
+      },
+      "spikes": [
+        {
+          "at": 2568,
+          "index": 21,
+          "value": 0.97,
+          "label": "爆了一条视频"
+        }
+      ],
+      "verdict": {
+        "at": 2604,
+        "text": "没什么参考性了",
+        "tone": "red"
+      }
+    },
+    {
+      "id": "broll-panel",
+      "type": "broll",
+      "start": 2640,
+      "end": 2790,
+      "intent": "B-roll 面板",
+      "media": "factory/stage-catalog-20260903/broll/employee-desk.mp4",
+      "origin": "generated",
+      "layout": "panel"
+    },
+    {
+      "id": "broll-strip",
+      "type": "broll",
+      "start": 2790,
+      "end": 2940,
+      "intent": "B-roll 通栏（人物角标）",
+      "media": "factory/stage-catalog-20260903/broll/employee-desk.mp4",
+      "origin": "generated",
+      "layout": "strip"
+    },
+    {
+      "id": "broll-full",
+      "type": "broll",
+      "start": 2940,
+      "end": 3060,
+      "intent": "B-roll 整屏（人物隐去）",
+      "media": "factory/stage-catalog-20260903/broll/employee-desk.mp4",
+      "origin": "generated",
+      "layout": "full"
+    },
+    {
+      "id": "ladder-demo",
+      "type": "ladder",
+      "start": 3060,
+      "end": 3270,
+      "intent": "递进阶梯",
+      "steps": [
+        {
+          "id": "s1",
+          "label": "波形图",
+          "at": 3072,
+          "image": "factory/objects/waveform.png"
+        },
+        {
+          "id": "s2",
+          "label": "粗剪",
+          "at": 3108,
+          "image": "factory/objects/rough-cut.png"
+        },
+        {
+          "id": "s3",
+          "label": "精剪",
+          "at": 3144,
+          "image": "factory/objects/fine-cut.png"
+        }
+      ],
+      "verdict": {
+        "at": 3180,
+        "text": "差不多",
+        "tone": "accent"
+      },
+      "note": {
+        "text": "剪不到特别好",
+        "at": 3216,
+        "tone": "red"
+      }
+    },
+    {
+      "id": "cycle-demo",
+      "type": "cycle",
+      "start": 3270,
+      "end": 3480,
+      "intent": "循环 + 中心枢纽",
+      "nodes": [
+        {
+          "id": "c1",
+          "label": "看懂你卖啥",
+          "at": 3282,
+          "image": "factory/objects/judgment.png"
+        },
+        {
+          "id": "c2",
+          "label": "为什么买你",
+          "at": 3306,
+          "image": "factory/objects/business.png"
+        },
+        {
+          "id": "c3",
+          "label": "结账顺",
+          "at": 3330,
+          "image": "factory/objects/product-skincare.png"
+        },
+        {
+          "id": "c4",
+          "label": "售后靠谱",
+          "at": 3354,
+          "image": "factory/objects/expert.png"
+        },
+        {
+          "id": "c5",
+          "label": "复购",
+          "at": 3378,
+          "image": "factory/objects/traffic.png"
+        }
+      ],
+      "hub": {
+        "label": "独立站",
+        "at": 3408,
+        "image": "factory/objects/publish.png"
+      }
+    },
+    {
+      "id": "timeline-demo",
+      "type": "timeline",
+      "start": 3480,
+      "end": 3690,
+      "intent": "时间线（上下交错，红色 = 事故点）",
+      "milestones": [
+        {
+          "id": "m1",
+          "label": "诊断得好好的",
+          "at": 3492,
+          "image": "factory/objects/judgment.png"
+        },
+        {
+          "id": "m2",
+          "label": "全托管给 AI",
+          "at": 3528,
+          "image": "factory/objects/ai-god.png"
+        },
+        {
+          "id": "m3",
+          "label": "官方改了规则",
+          "at": 3564,
+          "image": "factory/objects/template.png"
+        },
+        {
+          "id": "m4",
+          "label": "ROI 大跌",
+          "at": 3600,
+          "tone": "red",
+          "image": "factory/objects/roi.png"
+        }
+      ],
+      "note": {
+        "text": "就是这么复杂",
+        "at": 3630,
+        "tone": "accent"
+      }
+    },
+    {
+      "id": "compare-demo",
+      "type": "compare",
+      "start": 3690,
+      "end": 3900,
+      "intent": "前后对比",
+      "left": {
+        "title": "以前",
+        "at": 3699,
+        "lines": [
+          {
+            "text": "找商品",
+            "at": 3708
+          },
+          {
+            "text": "比价格",
+            "at": 3723
+          },
+          {
+            "text": "看评论",
+            "at": 3738
+          }
+        ],
+        "image": "factory/objects/scroll-phone.png"
+      },
+      "right": {
+        "title": "以后",
+        "at": 3780,
+        "lines": [
+          {
+            "text": "在 ChatGPT 里做完",
+            "at": 3792
+          },
+          {
+            "text": "进来的人，购买意向非常强",
+            "at": 3828
+          }
+        ],
+        "image": "factory/objects/product-skincare.png"
+      },
+      "verdict": {
+        "at": 3858,
+        "text": "网站不能只负责收钱",
+        "tone": "accent"
+      }
+    },
+    {
+      "id": "title-demo",
+      "type": "title",
+      "start": 3900,
+      "end": 4008,
+      "at": 3909,
+      "title": "AI 购物来了",
+      "sub": "独立站反而更重要了",
+      "intent": "标题卡（人物全屏舞台模式）"
+    },
+    {
+      "id": "chat-demo",
+      "type": "chat",
+      "start": 4011,
+      "end": 4248,
+      "title": "店铺客服",
+      "intent": "手机模拟器：对话段落",
+      "messages": [
+        {
+          "from": "customer",
+          "text": "我的货到哪了？下单一周了",
+          "at": 4026
+        },
+        {
+          "from": "ai",
+          "text": "帮您查到包裹在洛杉矶转运中心，预计周四送达",
+          "at": 4086
+        },
+        {
+          "from": "customer",
+          "text": "要是丢了怎么办？",
+          "at": 4146
+        },
+        {
+          "from": "ai",
+          "text": "丢件会全额补发，运单号 9405… 已同步给您",
+          "at": 4194
+        }
+      ]
+    },
+    {
+      "id": "leaderboard-demo",
+      "type": "leaderboard",
+      "start": 4251,
+      "end": 4488,
+      "title": "各渠道月 GMV（示意）",
+      "highlight": 0,
+      "intent": "排行榜 / 柱状对比",
+      "rows": [
+        {
+          "label": "TikTok Shop",
+          "value": 86,
+          "display": "8.6 万",
+          "at": 4266,
+          "image": "factory/stage-catalog-20260903/logos/tiktok.svg"
+        },
+        {
+          "label": "独立站",
+          "value": 52,
+          "display": "5.2 万",
+          "at": 4302
+        },
+        {
+          "label": "Amazon",
+          "value": 34,
+          "display": "3.4 万",
+          "at": 4338
+        },
+        {
+          "label": "其他",
+          "value": 12,
+          "display": "1.2 万",
+          "at": 4374,
+          "tone": "red"
+        }
+      ]
+    },
+    {
+      "id": "gauge-demo",
+      "type": "gauge",
+      "start": 4491,
+      "end": 4698,
+      "at": 4506,
+      "value": 92,
+      "label": "粗剪一次通过率",
+      "intent": "计数表盘"
+    },
+    {
+      "id": "flip-demo",
+      "type": "flip",
+      "start": 4701,
+      "end": 4938,
+      "flipAt": 4806,
+      "front": {
+        "text": "AI 剪 100 条要几个人？",
+        "image": "factory/objects/hundred-videos.png"
+      },
+      "back": {
+        "text": "0 个",
+        "sub": "流程配好之后"
+      },
+      "intent": "翻牌卡"
+    },
+    {
+      "id": "map-demo",
+      "type": "map",
+      "start": 4941,
+      "end": 5208,
+      "intent": "地图定位（抽象经纬网格，无真实地图时不伪造地理）",
+      "markers": [
+        {
+          "id": "cn",
+          "label": "深圳发货",
+          "at": 4956,
+          "x": 1380,
+          "y": 430
+        },
+        {
+          "id": "us",
+          "label": "美西仓",
+          "at": 4998,
+          "x": 760,
+          "y": 400
+        },
+        {
+          "id": "ny",
+          "label": "买家",
+          "at": 5040,
+          "x": 1050,
+          "y": 560,
+          "tone": "red"
+        }
+      ],
+      "arcs": [
+        {
+          "from": "cn",
+          "to": "us",
+          "at": 4998
+        },
+        {
+          "from": "us",
+          "to": "ny",
+          "at": 5040
+        }
+      ]
+    },
+    {
+      "id": "clipping-demo",
+      "type": "clipping",
+      "start": 5211,
+      "end": 5460,
+      "at": 5226,
+      "kicker": "OpenAI · 开发者文档",
+      "headline": "ChatGPT 将直接读取商家商品目录",
+      "body": "Agentic Commerce Protocol 是商家与 ChatGPT 买家之间的基础设施。",
+      "source": "developers.openai.com · 2026-09",
+      "highlight": "直接读取",
+      "intent": "剪报"
+    }
+  ]
+}

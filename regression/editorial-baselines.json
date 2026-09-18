@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "classification": "usable-legacy-not-approved",
+  "selectionPolicy": "只作为真实素材、剪辑长度和包装复杂度的回归覆盖；没有一条被称为满意样片或风格金标。",
+  "baselines": [
+    {
+      "id": "ai-label-rules",
+      "job": "jobs/amazon-tiktok-ai-label-rules-20260831",
+      "artifact": "variants/douyin-vertical/renders/douyin-vertical-60fps.mp4",
+      "coverage": "近期三段式规则解释，纯人物与字幕",
+      "minimums": { "edl": 3, "captions": 60, "visuals": 0 },
+      "knownGaps": ["没有内容结构计划", "旧切点批准未绑定带声音审听", "没有最终完整播放", "没有解释性视觉"]
+    },
+    {
+      "id": "gmv-attribution",
+      "job": "jobs/gmv-max-attribution-20260831",
+      "artifact": "variants/douyin-vertical/renders/douyin-vertical-60fps.mp4",
+      "coverage": "近期四段式商业概念解释，纯人物与字幕",
+      "minimums": { "edl": 4, "captions": 70, "visuals": 0 },
+      "knownGaps": ["没有内容结构计划", "旧切点批准未绑定带声音审听", "没有最终完整播放", "归因概念缺少证据图解"]
+    },
+    {
+      "id": "ai-video-editing",
+      "job": "jobs/talkinghead-20260831-200957",
+      "artifact": "variants/douyin-vertical/renders/ai-video-editing-douyin-vertical-60fps.mp4",
+      "coverage": "本轮问题直接相关的近期长口播",
+      "minimums": { "edl": 3, "captions": 90, "visuals": 0 },
+      "knownGaps": ["没有内容结构计划", "旧切点批准未绑定带声音审听", "没有最终完整播放", "逻辑、气口和视觉均只能算可用"]
+    },
+    {
+      "id": "ai-software-money-machine",
+      "job": "jobs/latest-talkinghead-20260718",
+      "artifact": "variants/douyin-vertical/renders/AI软件不是印钞机-竖屏60fps.mp4",
+      "coverage": "多段 EDL 与少量解释卡片",
+      "minimums": { "edl": 10, "captions": 80, "visuals": 6 },
+      "knownGaps": ["没有内容结构计划", "卡片未绑定叙事段落", "旧切点批准失效", "没有满意风格结论"]
+    },
+    {
+      "id": "meitu-commercial",
+      "job": "jobs/meitu-design-studio-commercial-20260801",
+      "artifact": "renders/meitu-design-studio-commercial-final-feedback-v3-60fps.mp4",
+      "coverage": "商单人物、产品结果素材与长 EDL",
+      "minimums": { "edl": 14, "captions": 70, "visuals": 1 },
+      "knownGaps": ["没有内容结构计划", "视觉组件未绑定统一段落编号", "旧切点批准失效", "只覆盖可用商业包装"]
+    },
+    {
+      "id": "video-ops-compliance",
+      "job": "jobs/video-ops-pipeline-douyin-compliance-20260717",
+      "artifact": "renders/final-60fps.mp4",
+      "coverage": "横屏录屏口播与平台合规覆盖",
+      "minimums": { "edl": 2, "captions": 80, "visuals": 1 },
+      "knownGaps": ["没有内容结构计划", "旧版门禁不能证明实际听审", "没有最终完整播放", "录屏与普通口播职责边界仍需复核"]
+    },
+    {
+      "id": "foreign-trade-spanish",
+      "job": "jobs/foreign-trade-time-cost-spanish-20260810",
+      "artifact": "variants/douyin-vertical/renders/trade-proof-spanish-30fps.mp4",
+      "coverage": "多语言字幕、解释卡片与真实商品 B-roll",
+      "minimums": { "edl": 10, "captions": 30, "visuals": 6 },
+      "knownGaps": ["没有内容结构计划", "B-roll 未绑定叙事段落", "旧切点批准失效", "不是已确认的统一视觉风格"]
+    }
+  ]
+}

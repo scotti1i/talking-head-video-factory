@@ -1,8 +1,8 @@
-/* 胶带贴片 + 打字机大写标签 + 手账做旧 */
+/* Johnny Harris 签名:胶带贴片 + 打字机大写标签 + 手账做旧 */
       .beat::after { content: ""; position: absolute; top: -9px; left: 50%; width: 118px; height: 24px;
         transform: translateX(-50%) rotate(-2deg); background: rgba(222, 209, 178, 0.75);
         border: 1px solid rgba(27, 21, 16, 0.12); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18); }
-      .kicker { font-family: ui-monospace, monospace; text-transform: uppercase;
+      .kicker { font-family: "Courier New", monospace; text-transform: uppercase;
         letter-spacing: 0.14em; text-shadow: none; }
-      .pipeline b, .split-side small { font-family: ui-monospace, monospace; letter-spacing: 0.08em; }
+      .pipeline b, .split-side small { font-family: "Courier New", monospace; letter-spacing: 0.08em; }
       .beat strong { box-shadow: 2px 2px 0 rgba(27, 21, 16, 0.35); }

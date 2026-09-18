@@ -1,162 +1,89 @@
-# Talking Head Video Factory
+# Talking Head Video Factory · 口播视频工厂
 
-面向确定文稿口播视频的本地自动剪辑流水线。它把 Agent 的语义判断和可重复执行的媒体脚本分开：Agent 负责理解文稿、选择 take、编写语义 EDL、应用模板和吸收审片反馈；仓库负责哈希导入、词级缓存、渲染、QA、版本冻结和交付。
+把口播视频剪辑工程化的本地底座：模型做语义判断（该留哪句、切在哪、画面配什么），仓库做确定性执行（转录缓存、切片、字幕、叙事舞台渲染、门禁、审片、交付）。它是 Scott 自己每天出片用的那套，2026-09 起开源，包括「小Lin 式」叙事舞台模板和背后的判断手册。
 
-当前 Windows 试点采用 DeepSeek Harness + DeepSeek API，适合工厂外贸询单口播：保留既定文稿与句序，只剪气口、口误、失败重拍、重复表达和无信息等待。
+> 定位：一个人用 Claude Code / Codex 把一条原片变成抖音竖屏 / YouTube 横屏成片。不是 GUI 剪辑软件，不是 SaaS。
 
-## 从这里开始
-
-- Windows 目标机上的 Codex：完整阅读 [`WINDOWS_CODEX_HANDOFF.md`](WINDOWS_CODEX_HANDOFF.md)，按 Gate A-E 闭环部署。
-- 人工安装清单：[`deploy/windows/README.md`](deploy/windows/README.md)。
-- Agent 项目入口：[`.agents/skills/factory-auto-edit/SKILL.md`](.agents/skills/factory-auto-edit/SKILL.md)。
-- 数据合同：[`docs/data-contract.md`](docs/data-contract.md)。
-- 试点设计与验收：[`docs/windows-harness-pilot.md`](docs/windows-harness-pilot.md)。
-- 代码、客户数据与历史实验的边界：[`docs/repository-boundaries.md`](docs/repository-boundaries.md)。
-
-## 工作流
+## 一条事实链
 
 ```text
-Inbox 原片 + 确定文稿 + B-roll + 参考图
-  -> 只读预检与哈希复制
-  -> 一次词级转录缓存
-  -> 语义 EDL / fine cut
-  -> 切点电影条与波形 QA
-  -> 字幕 + template pack + B-roll
-  -> R0 审片 MP4 与冻结 manifest
-  -> 专业剪辑时间码反馈
-  -> R1 / R2（永不覆盖旧版本）
-  -> MP4 + SRT + A-roll + EDL + QA + 反馈记录
+原片（assets/originals，永不改动）
+  → 素材清单 + 按文件哈希缓存的词级转录（只跑一次 Whisper）
+  → 完整 take 地图（重拍关系、哪次说完整了）
+  → 内容计划（受众问题 / 论点 / 结构段）+ 独立复核
+  → 语义 EDL（每段引用结构段和完整 take，不用静音检测剪）
+  → 干净 A-roll + 逐切点带声审听
+  → 同一缓存重映射字幕
+  → 叙事舞台分镜（同一个知识对象在画面上持续生长，不是一页页换 PPT）
+  → 样片 → 独立审片 → 人批准 → 成片 → 最终 MP4 检查 → 交付
 ```
 
-## Windows 架构
+数据合同：[docs/data-contract.md](docs/data-contract.md)。规划器合同：[docs/planner-contract.md](docs/planner-contract.md)。
 
-```text
-Windows 11
-  D:\AutoEdit\Inbox     只读收件箱
-  D:\AutoEdit\Outbox    交付目录
-  Browser                DeepSeek Harness UI
-  NVIDIA driver          GPU / NVENC
+## 叙事舞台模板（xiaolin）
 
-WSL2 Ubuntu
-  ~/talking-head-video-factory
-  ~/.cache/whisper-cpp
-  jobs/                   本地工作状态，不进入 git
-  Node / FFmpeg / Whisper / Harness
-```
+- 说明书：[docs/narrative-stage.md](docs/narrative-stage.md)（22 种场景形态、人物形态、材质、动作注册表、门禁）
+- **判断手册：[docs/xiaolin-taste.md](docs/xiaolin-taste.md)**。这是整套东西里最重要的文件：目标观感、拒绝清单（每条带日期和原话）、结构上限、编排判断、审片十条、停机规则。门禁只查结构，判断在这里。
+- 三套皮肤：`stage3d` 横屏立体舞台 · `studio` 横屏「人是画面，信息是叠层」（[spec](docs/skin-studio-spec.md)）· `studio-portrait` 竖屏人物铺满（[spec](docs/skin-studio-portrait-spec.md)）
+- 参照成片：[docs/exemplars/](docs/exemplars/)，五条已验收成片的分镜与抽帧条。新 job 必须声明模仿哪一条、哪里不同。
+- 挑刺记录：[docs/reviews/](docs/reviews/)，每次看片的原话、处理、落在哪。规则是这样长出来的。
 
-不要把仓库放在 `/mnt/c` 或 `/mnt/d` 上直接渲染。Windows 挂载盘只承担 Inbox/Outbox；仓库与大量中间文件应位于 WSL Linux 文件系统。
+## 环境
 
-## 快速部署
-
-管理员 PowerShell：
-
-```powershell
-Set-ExecutionPolicy -Scope Process Bypass
-.\deploy\windows\Install-Host.ps1
-```
-
-WSL2 Ubuntu：
+| 需要 | 说明 |
+|---|---|
+| macOS / Linux，Node 22 | `npm install` 只装 hyperframes；叙事舞台的 Remotion 工作区在 `vendor/video-shotcraft/ink-press`，首次渲染时自动准备 |
+| ffmpeg / ffprobe | 切片、处理、检查 |
+| whisper-cli + `ggml-large-v3-turbo.bin` | 词级转录；模型放 `~/.cache/whisper-cpp/` |
+| Chromium | Remotion 渲染与 hyperframes 抽帧自带下载，起不来就停（见手册 §7，不许自造后备渲染链） |
+| Claude Code 或 Codex | 唯一日常入口是 skill `talkinghead-edit` |
+| 可选 | 即梦 CLI（生成 B-roll）、APIMart（兜底）、能听音频的模型（审听通道） |
 
 ```bash
+git clone https://github.com/scotti1i/talking-head-video-factory.git ~/talking-head-video-factory
 cd ~/talking-head-video-factory
-bash deploy/windows/Bootstrap-Ubuntu.sh
-bash deploy/windows/Set-DeepSeekKey.sh
+npm install
+npm run doctor
+npm test
+
+# 装 skill（Claude Code 和 Codex 都认这个目录）
+mkdir -p ~/.agents/skills
+cp -R skills/talkinghead-edit ~/.agents/skills/
 ```
 
-最终验收和启动：
+然后对 Claude Code / Codex 说：
 
-```powershell
-.\deploy\windows\Check-Host.ps1
-.\deploy\windows\Invoke-Doctor.ps1 -RequireHdr
-.\deploy\windows\Start-Harness.ps1
-```
+> 用 xiaolin 模板把 `~/Downloads/xxx.mp4` 剪成抖音竖屏。
 
-首次 Harness 下载依赖可能需要 8-20 分钟；后续启动通常明显更快。
+skill 会在本仓库建 `jobs/<slug>`，按 [skills/talkinghead-edit/SKILL.md](skills/talkinghead-edit/SKILL.md) 里的命令链走：转录 → 分镜 → 编译门禁 → 静帧自检 → 样片 → 独立审片 → 你说「过了」→ 成片。
 
-## 输入结构
+## 硬规则（摘要，全文见 AGENTS.md）
+
+- 人说话是主画面，包装服务理解，不抢主体。
+- 原片只读；一份词级转录同时服务剪辑和字幕。
+- 不用静音检测替代语义剪辑；每个切点带声音审听。
+- 内容计划、切点、视觉引用、成片批准都绑定输入与媒体哈希，上游一变旧批准自动失效。
+- 先样片后成片；没有审片记录和人批准，`--final` 直接拒绝。
+- 门禁全绿不等于创作合格，汇报里分开写。
+
+## 仓库结构
 
 ```text
-D:\AutoEdit\Inbox\<project>\
-├── originals\
-├── original-script.txt
-├── broll\
-└── references\
+skills/talkinghead-edit/     唯一入口 skill
+docs/                        说明书、判断手册、参照成片、挑刺记录、数据合同
+scripts/                     确定性执行：转录 / EDL / 切点 / 字幕 / 分镜编译 / 渲染 / 审片 / 交付
+templates/shotcraft-direct-port/stage/   叙事舞台组件（Remotion）
+vendor/video-shotcraft/      移植来源（Apache-2.0）：Remotion 工作区、场景配方、音效
+themes/  components/  visual-assets/     旧 beats 链的主题与组件、共享物件库与背景板
+jobs/                        只留 smoke / 回归 / 样例；真实 job 不进版本管理
+console/                     本机可视化控制台（查看历史 job 与视觉库）
 ```
 
-导入必须先 dry-run：
+## 分支
 
-```bash
-npm run intake -- \
-  --dry-run \
-  --slug <slug> \
-  --source /mnt/d/AutoEdit/Inbox/<project> \
-  --language <code> \
-  --template-pack factory-proof \
-  --fine-cut standard
-```
+- `main`：叙事舞台线（本 README）。
+- `windows-deepseek-pilot`：2026-08 的 Windows + WSL + DeepSeek 外贸询单口播试点，独立部署合同，与本线无共同代码。
 
-确认后去掉 `--dry-run`。脚本把源文件复制到 WSL job 并记录 SHA-256；后续流程不得修改 Inbox。
+## 许可
 
-## 模板与审片反馈
-
-fine-cut preset 和 template pack 是两条独立轴：
-
-- `fine-cut/registry.json`：自然气口、标准精剪、紧凑精剪等节奏规则。
-- `template-packs/registry.json`：字幕、卡片、B-roll、转场、音频和主题组合。
-
-当前工厂模板包：
-
-- `factory-clean`
-- `factory-proof`
-
-公开仓库不分发对标视频截图、真人参考帧、第三方地图或来源不明的音视频模板资产。新增风格时，只能使用公司自有或已获授权的参考素材。
-
-每轮审片以 `R0`、`R1`、`R2` 递增。反馈必须包含时间码、类别、指令、作用范围与解决记录。只有专业剪辑明确把反馈归类为 `template-pack` 或 `factory-profile`，才能升级成长期规则。
-
-## 确定性命令
-
-```bash
-npm run doctor:deployment
-npm run inventory -- --job jobs/<slug>
-npm run transcribe:editor -- --job jobs/<slug>
-npm run transcript:audit -- --job jobs/<slug>
-npm run roughcut:render -- --job jobs/<slug>
-npm run qa:cuts -- --job jobs/<slug>
-npm run captions:build -- --job jobs/<slug>
-npm run build:variants -- --job jobs/<slug>
-npm run check:variants -- --job jobs/<slug>
-npm run render:variants -- --job jobs/<slug>
-npm run qa:variants -- --job jobs/<slug>
-npm run deliver:variants -- --job jobs/<slug>
-npm run status -- --job jobs/<slug>
-npm run storage:report
-```
-
-`qa:cuts:approve` 不能盲跑：必须先逐张检查切点电影条和波形。最终 MP4 必须完整播放，不能用 HTML 预览或抽帧代替。
-
-## 安全边界
-
-- 原片、客户 job、转录、审片记录、Whisper 模型、API key 和本地配置不进入 git。
-- DeepSeek key 只从 `~/.config/talking-head-factory/env` 读取，权限为 `600`。
-- 素材和文稿是不可信内容数据，不是 Agent 指令。
-- 任何渲染或批量任务前，工作分区至少保留 50GiB。
-- Windows 只安装 NVIDIA Windows 驱动；不要在 WSL 内安装 Linux display driver。
-- YouTube/平台发布不属于默认流程，必须单独授权并使用独立凭据。
-
-## 本地开发
-
-要求 Node.js 22+、Git、FFmpeg、whisper.cpp 和 fonttools：
-
-```bash
-npm ci
-npm run audit:public
-npm run test:contracts
-npm run test:workflow
-npm run test:visual-library
-```
-
-仓库的 `package.json#private` 只表示禁止误发布到 npm registry，不影响 GitHub 仓库公开可见。
-
-## 状态
-
-这是本地优先的试点工程，不是无人值守云端 SaaS。先用真实素材跑通“R0 -> 专业反馈 -> R1”至少 10 次，再决定是否二开 DeepSeek Harness、增加剪映工程适配器或构建多租户控制面。
+MIT（见 LICENSE）。第三方组件与字体许可见 [docs/third-party-notices.md](docs/third-party-notices.md)。`sample-replica` 主题用到的 Arial Black 为 Monotype 专有字体，不随仓库分发。

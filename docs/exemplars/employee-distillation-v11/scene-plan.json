@@ -1,0 +1,653 @@
+{
+  "schemaVersion": 1,
+  "fps": 30,
+  "duration": 102.5,
+  "source": {
+    "media": "factory/employee-distillation-20260831/aroll.mp4",
+    "start": 0
+  },
+  "anchors": "data/words-timeline.json（成片 A-roll 的 turbo 转录，单源）",
+  "background": {
+    "plate": "factory/plates/graphite-curtain.png"
+  },
+  "sfx": true,
+  "speaker": [
+    {
+      "at": 0,
+      "mode": "hero"
+    },
+    {
+      "at": 1.9,
+      "mode": "dock"
+    },
+    {
+      "at": 12,
+      "mode": "hero"
+    },
+    {
+      "at": 14.5,
+      "mode": "dock"
+    },
+    {
+      "at": 17.9,
+      "mode": "hero"
+    },
+    {
+      "at": 22.7,
+      "mode": "dock"
+    },
+    {
+      "at": 29.4,
+      "mode": "orb-left"
+    },
+    {
+      "at": 33.4,
+      "mode": "hero"
+    },
+    {
+      "at": 35.6,
+      "mode": "orb-right"
+    },
+    {
+      "at": 42,
+      "mode": "dock"
+    },
+    {
+      "at": 59.1,
+      "mode": "hero-right"
+    },
+    {
+      "at": 66.4,
+      "mode": "close"
+    },
+    {
+      "at": 69.7,
+      "mode": "hero"
+    },
+    {
+      "at": 74,
+      "mode": "dock"
+    },
+    {
+      "at": 86.2,
+      "mode": "hero"
+    },
+    {
+      "at": 90.3,
+      "mode": "hero-right"
+    }
+  ],
+  "scenes": [
+    {
+      "id": "feed-to-ai",
+      "type": "graph",
+      "start": 0.2,
+      "end": 11.6,
+      "intent": "开场动画：离职员工带着聊天记录 / 文档 / 操作录像走出画面，材料留下汇入 AI（贴「智能体」标签），再让 AI 去接客户——「不敢」砸在客户上",
+      "nodes": [
+        {
+          "id": "employee",
+          "label": "离职员工",
+          "kind": "agent",
+          "at": 0.2,
+          "x": 1000,
+          "y": 470,
+          "image": "factory/objects/expert.png",
+          "states": [
+            {
+              "at": 1.35,
+              "x": 1720,
+              "y": 470
+            }
+          ],
+          "remove": {
+            "at": 1.55,
+            "mode": "fade"
+          },
+          "tone": "ink"
+        },
+        {
+          "id": "chat",
+          "label": "聊天记录",
+          "kind": "content",
+          "at": 0.5,
+          "x": 820,
+          "y": 300,
+          "image": "factory/objects/chat-log.png",
+          "small": true,
+          "states": [
+            {
+              "at": 2.45,
+              "x": 700,
+              "y": 240
+            }
+          ],
+          "tone": "ink"
+        },
+        {
+          "id": "doc",
+          "label": "文档",
+          "kind": "content",
+          "at": 0.7,
+          "x": 1180,
+          "y": 300,
+          "image": "factory/objects/document.png",
+          "small": true,
+          "states": [
+            {
+              "at": 3.2,
+              "x": 700,
+              "y": 470
+            }
+          ],
+          "tone": "ink"
+        },
+        {
+          "id": "rec",
+          "label": "操作录像",
+          "kind": "content",
+          "at": 0.9,
+          "x": 1000,
+          "y": 690,
+          "image": "factory/objects/screen-recording.png",
+          "small": true,
+          "states": [
+            {
+              "at": 4.26,
+              "x": 700,
+              "y": 700
+            }
+          ],
+          "tone": "ink"
+        },
+        {
+          "id": "ai",
+          "label": "AI",
+          "kind": "agent",
+          "at": 5.05,
+          "x": 1160,
+          "y": 470,
+          "image": "factory/objects/ai-agent.png",
+          "enter": "slam",
+          "highlight": [
+            [
+              5.05,
+              8.5
+            ]
+          ],
+          "badge": {
+            "at": 6.3,
+            "text": "智能体",
+            "tone": "accent",
+            "fx": "impact"
+          },
+          "tone": "red"
+        },
+        {
+          "id": "customer",
+          "label": "客户",
+          "kind": "none",
+          "at": 9.51,
+          "x": 1640,
+          "y": 470,
+          "image": "factory/objects/customer.png",
+          "badge": {
+            "at": 10.59,
+            "text": "不敢",
+            "tone": "red",
+            "fx": "burst"
+          },
+          "tone": "purple"
+        }
+      ],
+      "edges": [
+        {
+          "from": "chat",
+          "to": "ai",
+          "at": 5.2,
+          "style": "chevron"
+        },
+        {
+          "from": "doc",
+          "to": "ai",
+          "at": 5.2,
+          "style": "chevron"
+        },
+        {
+          "from": "rec",
+          "to": "ai",
+          "at": 5.2,
+          "style": "chevron"
+        },
+        {
+          "from": "ai",
+          "to": "customer",
+          "at": 9.51,
+          "dashed": true,
+          "highlight": [
+            [
+              9.51,
+              10.5
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "recorded-vs-unseen",
+      "type": "split",
+      "start": 12,
+      "end": 17.8,
+      "intent": "录下来的是做过什么 vs 没做过、没记录的怎么办",
+      "header": {
+        "glyph": "content"
+      },
+      "cards": [
+        {
+          "text": "他做过什么",
+          "glyph": "content",
+          "tag": {
+            "text": "录下来的",
+            "at": 12.24
+          },
+          "image": "factory/objects/screen-recording.png"
+        },
+        {
+          "text": "他该怎么办",
+          "glyph": "content",
+          "tag": {
+            "text": "没做过的",
+            "at": 14.64
+          },
+          "accent": true,
+          "pulseAt": 16.65,
+          "image": "factory/objects/boundary-line.png"
+        }
+      ],
+      "shiftAt": 14.5
+    },
+    {
+      "id": "cs-broll",
+      "type": "broll",
+      "start": 19.8,
+      "end": 22.6,
+      "intent": "「离职的员工是一个客服」：夜里戴耳麦的客服工位（Seedance）",
+      "media": "factory/employee-distillation-20260831/broll/customer-service.mp4",
+      "origin": "generated",
+      "layout": "panel"
+    },
+    {
+      "id": "logistics-case",
+      "type": "graph",
+      "start": 22.7,
+      "end": 29.3,
+      "intent": "客户问物流 → 客服 → 接物流 API → 直接返回：这种情况 AI 特别好答",
+      "nodes": [
+        {
+          "id": "cs",
+          "label": "客服",
+          "kind": "agent",
+          "at": 22.72,
+          "x": 1160,
+          "y": 470,
+          "image": "factory/objects/customer-service.png",
+          "tone": "ink"
+        },
+        {
+          "id": "cust",
+          "label": "客户",
+          "kind": "none",
+          "at": 23.29,
+          "x": 700,
+          "y": 470,
+          "image": "factory/objects/customer.png",
+          "highlight": [
+            [
+              24.02,
+              26.8
+            ]
+          ],
+          "tone": "purple"
+        }
+      ],
+      "edges": [
+        {
+          "from": "cust",
+          "to": "cs",
+          "at": 24.02,
+          "style": "chevron",
+          "highlight": [
+            [
+              24.02,
+              26.8
+            ]
+          ]
+        }
+      ],
+      "notes": [
+        {
+          "text": "我的货到哪了？",
+          "at": 24.86,
+          "until": 28.3,
+          "x": 720,
+          "y": 250,
+          "w": 300,
+          "pill": true
+        },
+        {
+          "text": "AI 特别好答",
+          "at": 27.44,
+          "until": 29.3,
+          "x": 1030,
+          "y": 740,
+          "w": 320,
+          "tone": "accent",
+          "pill": true
+        }
+      ]
+    },
+    {
+      "id": "track-evidence",
+      "type": "evidence",
+      "start": 29.4,
+      "end": 33.3,
+      "intent": "「后台接一个物流 API 直接返回」：17TRACK 真实页面，聚焦查询框与 TRACK 按钮",
+      "image": "factory/employee-distillation-20260831/evidence/17track.png",
+      "imageSize": {
+        "w": 1440,
+        "h": 1600
+      },
+      "thumbCrop": {
+        "x": 0,
+        "y": 140,
+        "w": 1440,
+        "h": 810
+      },
+      "expandAt": 30.5,
+      "focus": [
+        {
+          "at": 30.55,
+          "box": {
+            "x": 355,
+            "y": 325,
+            "w": 730,
+            "h": 235
+          },
+          "note": "输入单号，一次查 40 个包裹"
+        },
+        {
+          "at": 31.5,
+          "box": {
+            "x": 975,
+            "y": 445,
+            "w": 110,
+            "h": 110
+          },
+          "style": "brackets",
+          "scale": 1.8,
+          "note": "点一下，结果直接返回"
+        }
+      ],
+      "source": "来源：17TRACK 官网 · 全球包裹查询"
+    },
+    {
+      "id": "lost-broll",
+      "type": "broll",
+      "start": 33.4,
+      "end": 35.3,
+      "intent": "「货丢了」：门口空荡的快递位与手机上的丢件提醒（Seedance）",
+      "media": "factory/employee-distillation-20260831/broll/lost-parcel.mp4",
+      "origin": "generated",
+      "layout": "panel"
+    },
+    {
+      "id": "two-hundred",
+      "type": "label",
+      "start": 35.4,
+      "end": 41.6,
+      "intent": "货丢了赔 200 美金：整屏巨字（反八股：一条片要有一次尺度跳跃）",
+      "items": [
+        {
+          "text": "200 美金",
+          "at": 36.87,
+          "x": 960,
+          "y": 420,
+          "until": 41.5,
+          "size": "giant",
+          "odometer": true,
+          "anchor": "center"
+        },
+        {
+          "text": "停？还是不停？",
+          "at": 39.14,
+          "x": 960,
+          "y": 660,
+          "until": 41.5,
+          "form": "glass",
+          "size": "l",
+          "anchor": "center"
+        }
+      ]
+    },
+    {
+      "id": "human-question-accent",
+      "type": "accent",
+      "start": 42,
+      "end": 43.6,
+      "intent": "「如果是真人，他会怎么处理？」贴在正脸旁，阶梯随第一步 44.18 才上板（原来这句是孤零零一枚小胶囊在空板上）",
+      "items": [
+        {
+          "at": 42.3,
+          "until": 43.5,
+          "anchor": "speaker-right",
+          "text": "如果是真人，他会怎么处理？"
+        }
+      ]
+    },
+    {
+      "id": "human-ladder",
+      "type": "ladder",
+      "start": 42,
+      "end": 58.9,
+      "intent": "真人会怎么干：五级递进判断，最后一级请示领导",
+      "steps": [
+        {
+          "id": "vip",
+          "label": "长期客户？",
+          "at": 44.18,
+          "image": "factory/objects/vip-customer.png"
+        },
+        {
+          "id": "track",
+          "label": "查轨迹",
+          "at": 47.36,
+          "image": "factory/objects/tracking-map.png"
+        },
+        {
+          "id": "verify",
+          "label": "多方验证",
+          "at": 49.27,
+          "image": "factory/objects/verify.png"
+        },
+        {
+          "id": "profit",
+          "label": "还赚不赚",
+          "at": 53.7,
+          "image": "factory/objects/profit-calc.png"
+        },
+        {
+          "id": "boss",
+          "label": "请示领导",
+          "at": 57.11,
+          "image": "factory/objects/boss.png"
+        }
+      ],
+      "note": {
+        "text": "如果是真人，他会怎么处理？",
+        "at": 44,
+        "until": 47.5
+      }
+    },
+    {
+      "id": "told-it-quote",
+      "type": "quote",
+      "start": 59.1,
+      "end": 66.2,
+      "at": 59.5,
+      "text": "告诉它这种情况怎么干，它一定能做得很好",
+      "by": "很多人这么想",
+      "intent": "别人的原话用引用形态，人物镜像在右"
+    },
+    {
+      "id": "unseen-label",
+      "type": "label",
+      "start": 66.4,
+      "end": 69.6,
+      "items": [
+        {
+          "text": "没遇到过呢？",
+          "at": 67,
+          "x": 1283,
+          "y": 470,
+          "until": 69.5,
+          "size": "xl",
+          "tone": "red",
+          "anchor": "center"
+        }
+      ]
+    },
+    {
+      "id": "gmvmax-record",
+      "type": "broll",
+      "start": 69.7,
+      "end": 73.9,
+      "intent": "「我做过一套 GMV Max 诊断系统」：Scott 自己录的 GitHub 仓库页（Screen Studio，2026-09-03 给的）",
+      "media": "factory/employee-distillation-20260831/broll/gmvmax-github-record.mp4",
+      "origin": "own",
+      "layout": "panel"
+    },
+    {
+      "id": "gmvmax-timeline",
+      "type": "timeline",
+      "start": 74,
+      "end": 86,
+      "intent": "GMV Max 诊断：好好的 → 托管给 AI → 官方改规则 → ROI 大跌（时间线，与前面的关系图换形态）",
+      "milestones": [
+        {
+          "id": "ok",
+          "label": "诊断得好好的",
+          "at": 74.3,
+          "image": "factory/objects/gmvmax-dashboard.png"
+        },
+        {
+          "id": "ai",
+          "label": "全托管给 AI",
+          "at": 75.43,
+          "image": "factory/objects/ai-agent.png"
+        },
+        {
+          "id": "order",
+          "label": "一个操作顺序",
+          "at": 77.3,
+          "image": "factory/objects/checklist.png"
+        },
+        {
+          "id": "rule",
+          "label": "官方改了规则",
+          "at": 80.86,
+          "image": "factory/objects/rulebook.png"
+        },
+        {
+          "id": "roi",
+          "label": "ROI 大跌",
+          "at": 84.85,
+          "tone": "red",
+          "image": "factory/objects/roi.png"
+        }
+      ],
+      "note": {
+        "text": "就是这么复杂",
+        "at": 84.9,
+        "tone": "accent"
+      }
+    },
+    {
+      "id": "video-stack-broll",
+      "type": "broll",
+      "start": 86.2,
+      "end": 90.2,
+      "intent": "「不管你们看再多操作视频」：一屏屏录屏教程缩略图无尽滚动（即梦 seedance2.5，2026-09-04）",
+      "media": "factory/employee-distillation-20260831/broll/video-stack.mp4",
+      "origin": "generated",
+      "layout": "panel"
+    },
+    {
+      "id": "cannot-replace",
+      "type": "label",
+      "start": 90.3,
+      "end": 97.4,
+      "intent": "替代一个员工？不太可能——镜像布局（人物在右、字在左），只留判定不留复述",
+      "items": [
+        {
+          "text": "不太可能",
+          "at": 90.86,
+          "x": 637,
+          "y": 500,
+          "until": 97.3,
+          "tone": "red",
+          "size": "xl",
+          "anchor": "center"
+        },
+        {
+          "text": "除非边界条件说清楚",
+          "at": 92.31,
+          "x": 637,
+          "y": 690,
+          "until": 97.3,
+          "form": "fill",
+          "tone": "accent",
+          "size": "m",
+          "anchor": "center"
+        }
+      ]
+    },
+    {
+      "id": "what-can-be-handed",
+      "type": "concept",
+      "start": 97.5,
+      "end": 102.4,
+      "intent": "结论卡：能交给 AI 的工作——流程说清楚、边界说清楚（逐字）",
+      "term": "能交给 AI 的工作",
+      "underline": true,
+      "phrases": [
+        {
+          "text": "流程一二三四全都说清楚",
+          "at": 98.66
+        },
+        {
+          "text": "边界条件全都说清楚",
+          "at": 100.91
+        }
+      ],
+      "glyph": "content",
+      "image": "factory/objects/checklist.png",
+      "slot": 0
+    }
+  ],
+  "keywords": [
+    "不敢",
+    "录下来的",
+    "没做过",
+    "物流 API",
+    "200 美金",
+    "请示领导",
+    "多方验证",
+    "GMV Max",
+    "操作视频",
+    "边界条件",
+    "流程",
+    "智能体",
+    "离职"
+  ],
+  "skin": "stage3d"
+}

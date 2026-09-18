@@ -4,10 +4,10 @@
 // ============================================================
 import fs from "node:fs";
 import path from "node:path";
-import { jobsRoot, projectRoot, run, writeJson } from "./lib.mjs";
+import { projectRoot, run, writeJson } from "./lib.mjs";
 
 const root = projectRoot();
-const jobDir = path.join(jobsRoot(), "sample-template-tour");
+const jobDir = path.join(root, "jobs", "sample-template-tour");
 const DURATION = 82;
 
 fs.rmSync(jobDir, { recursive: true, force: true });

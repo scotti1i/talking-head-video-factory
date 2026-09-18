@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "id": "shorts-info-overlay-v1",
+  "label": "Shorts Info Overlay · v1",
+  "kind": "preset",
+  "description": "2026-07-02 Shorts 批处理中使用过的标题信息层。仅保留成品、PNG overlay 和计划数据，生成源码未进入仓库，因此明确标记为待修复。",
+  "lifecycle": "archived",
+  "compatibility": "preview-only",
+  "formats": ["vertical"],
+  "sources": [
+    { "path": "reports/youtube-shorts-2026-07-02/shorts-plan.json", "role": "content-plan" },
+    { "path": "reports/youtube-shorts-2026-07-02/shorts-overlays/ai-agent-basics-001.png", "role": "recovered-overlay" },
+    { "path": "reports/youtube-shorts-2026-07-02/shorts-renders/ai-agent-basics-001.mp4", "role": "recovered-render" },
+    { "path": "visual-assets/missing/shorts-info-overlay-generator", "role": "missing-renderer", "note": "未找到生成器源码", "required": true }
+  ],
+  "items": [
+    {
+      "id": "ai-video-factory-001",
+      "label": "一天 1000 条 AI 视频",
+      "kind": "legacy-composition",
+      "description": "一天 1000 条 AI 视频，靠的不是手工剪。",
+      "status": "ready",
+      "preview": { "state": "ready", "poster": "reports/youtube-shorts-2026-07-02/shorts-overlays/ai-video-factory-001.png", "loop": "reports/youtube-shorts-2026-07-02/shorts-renders/ai-video-factory-001.mp4", "format": "vertical" }
+    },
+    {
+      "id": "ai-video-factory-002",
+      "label": "第一步不是写 Prompt",
+      "kind": "legacy-composition",
+      "description": "AI 视频生产线，第一步不是写 Prompt。",
+      "status": "ready",
+      "preview": { "state": "ready", "poster": "reports/youtube-shorts-2026-07-02/shorts-overlays/ai-video-factory-002.png", "loop": "reports/youtube-shorts-2026-07-02/shorts-renders/ai-video-factory-002.mp4", "format": "vertical" }
+    },
+    {
+      "id": "ai-video-factory-003",
+      "label": "Codex 是视频工厂大脑",
+      "kind": "legacy-composition",
+      "description": "Codex 怎么变成 AI 视频工厂的大脑。",
+      "status": "ready",
+      "preview": { "state": "ready", "poster": "reports/youtube-shorts-2026-07-02/shorts-overlays/ai-video-factory-003.png", "loop": "reports/youtube-shorts-2026-07-02/shorts-renders/ai-video-factory-003.mp4", "format": "vertical" }
+    },
+    {
+      "id": "ai-agent-basics-001",
+      "label": "ChatGPT 与 Agent 的区别",
+      "kind": "legacy-composition",
+      "description": "ChatGPT 和 AI Agent 最大区别。",
+      "status": "ready",
+      "preview": { "state": "ready", "poster": "reports/youtube-shorts-2026-07-02/shorts-overlays/ai-agent-basics-001.png", "loop": "reports/youtube-shorts-2026-07-02/shorts-renders/ai-agent-basics-001.mp4", "format": "vertical" }
+    },
+    {
+      "id": "ai-agent-basics-002",
+      "label": "云端 AI 导不全评论",
+      "kind": "legacy-composition",
+      "description": "为什么云端 AI 导不出所有评论。",
+      "status": "ready",
+      "preview": { "state": "ready", "poster": "reports/youtube-shorts-2026-07-02/shorts-overlays/ai-agent-basics-002.png", "loop": "reports/youtube-shorts-2026-07-02/shorts-renders/ai-agent-basics-002.mp4", "format": "vertical" }
+    },
+    {
+      "id": "ai-agent-basics-003",
+      "label": "GO 模式真正厉害在哪",
+      "kind": "legacy-composition",
+      "description": "给目标和验收标准，Agent 会一直向前追。",
+      "status": "ready",
+      "preview": { "state": "ready", "poster": "reports/youtube-shorts-2026-07-02/shorts-overlays/ai-agent-basics-003.png", "loop": "reports/youtube-shorts-2026-07-02/shorts-renders/ai-agent-basics-003.mp4", "format": "vertical" }
+    },
+    {
+      "id": "gmvmax-001",
+      "label": "加预算不等于有流量",
+      "kind": "legacy-composition",
+      "description": "GMV Max 不是你加预算就有流量。",
+      "status": "ready",
+      "preview": { "state": "ready", "poster": "reports/youtube-shorts-2026-07-02/shorts-overlays/gmvmax-001.png", "loop": "reports/youtube-shorts-2026-07-02/shorts-renders/gmvmax-001.mp4", "format": "vertical" }
+    },
+    {
+      "id": "gmvmax-002",
+      "label": "投手会变成辅助",
+      "kind": "legacy-composition",
+      "description": "GMV Max 时代，投手会变成辅助。",
+      "status": "ready",
+      "preview": { "state": "ready", "poster": "reports/youtube-shorts-2026-07-02/shorts-overlays/gmvmax-002.png", "loop": "reports/youtube-shorts-2026-07-02/shorts-renders/gmvmax-002.mp4", "format": "vertical" }
+    },
+    {
+      "id": "gmvmax-003",
+      "label": "素材评分在评什么",
+      "kind": "legacy-composition",
+      "description": "GMV Max 素材评分到底在评什么。",
+      "status": "ready",
+      "preview": { "state": "ready", "poster": "reports/youtube-shorts-2026-07-02/shorts-overlays/gmvmax-003.png", "loop": "reports/youtube-shorts-2026-07-02/shorts-renders/gmvmax-003.mp4", "format": "vertical" }
+    },
+    {
+      "id": "gmvmax-004",
+      "label": "AB 链解决什么问题",
+      "kind": "legacy-composition",
+      "description": "AB 链打法到底解决什么问题。",
+      "status": "ready",
+      "preview": { "state": "ready", "poster": "reports/youtube-shorts-2026-07-02/shorts-overlays/gmvmax-004.png", "loop": "reports/youtube-shorts-2026-07-02/shorts-renders/gmvmax-004.mp4", "format": "vertical" }
+    }
+  ],
+  "migrationCandidates": [
+    { "targetId": "beats-v2-face-safe", "note": "若继续使用，应以真实组件包重建，不能从 PNG 反推为生产 renderer。" }
+  ],
+  "lineage": {
+    "parents": [],
+    "supersedes": [],
+    "supersededBy": []
+  },
+  "apply": { "mode": "none" },
+  "preview": {
+    "state": "ready",
+    "poster": "reports/youtube-shorts-2026-07-02/shorts-overlays/ai-agent-basics-001.png",
+    "loop": "reports/youtube-shorts-2026-07-02/shorts-renders/ai-agent-basics-001.mp4",
+    "format": "vertical"
+  }
+}

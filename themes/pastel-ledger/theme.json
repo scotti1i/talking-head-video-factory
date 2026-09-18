@@ -1,8 +1,8 @@
 {
   "id": "pastel-ledger",
   "label": "奶白账本",
-  "description": "奶白纸卡、打字机字距标签、糖果数据色与黄绿贴纸 kicker。",
-  "source": "public theme tokens",
+  "description": "对标小Lin说:奶白纸卡 + 打字机字距标签 + 糖果数据色 + 黄绿贴纸 kicker。复刻自真实帧(themes/_reference/xiaolin-*.jpg,2026-07-07)。",
+  "source": "小Lin说《AI巨头资本混战》帧取证 + uvuvu/数说拆解",
   "fonts": [
     { "family": "Inter", "file": "Inter-700-latin.woff2", "weight": 700 },
     { "family": "LXGWWenKaiTC", "file": "LXGWWenKaiTC-400-latin.woff2", "weight": 400 }

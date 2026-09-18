@@ -1,0 +1,42 @@
+{
+  "id": "market-proof",
+  "label": "义乌市场证据流",
+  "description": "复刻 27_1787821916 的证据型外贸短视频语言：A-roll 信任锚点、全屏现场证据簇、黄白全大写短字幕、红色地点与私信胶囊、硬切为主并以短促甩镜交接。v1，2026-08-27。",
+  "source": "reports/reference-template-27-1787821916/template-breakdown.md + 60fps frame audit",
+  "fonts": [
+    { "family": "MarketProofBlack", "file": "SampleReplicaBlack-LatinCyrillic.woff2", "weight": 900 }
+  ],
+  "tokens": {
+    "pageBg": "#000000",
+    "text": "#FFFFFF",
+    "textBody": "#FFFFFF",
+    "fontHead": "MarketProofBlack, sans-serif",
+    "fontBody": "Arial, sans-serif",
+    "radius": "0px",
+    "kicker": "#FFF000",
+    "accent": "#FFF000",
+    "accentFillBg": "#F20D46",
+    "accentFillText": "#FFFFFF",
+    "accentFillBorder": "#000000",
+    "cardBg": "#F20D46",
+    "cardBorder": "#000000",
+    "cardShadow": "0 10px 24px rgba(0, 0, 0, 0.28)",
+    "cardTopline": "linear-gradient(90deg, transparent, transparent)",
+    "cardBlur": "0px",
+    "chipBg": "#F20D46",
+    "chipBorder": "#000000",
+    "chipText": "#FFFFFF",
+    "heroNumber": "rgba(255, 240, 0, 0.18)",
+    "boxBg": "#F20D46",
+    "boxHotBg": "#F20D46",
+    "boxHotBorder": "#000000",
+    "boxLabel": "#FFFFFF",
+    "mutedText": "rgba(255, 255, 255, 0.72)",
+    "mutedBorder": "rgba(255, 255, 255, 0.2)",
+    "mutedBg": "rgba(0, 0, 0, 0.42)",
+    "scrim": "linear-gradient(180deg, transparent, transparent)",
+    "vignette": "radial-gradient(circle, transparent, transparent)",
+    "captionText": "#FFFFFF",
+    "captionShadow": "none"
+  }
+}

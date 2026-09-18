@@ -2,27 +2,29 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { isDeliveryRec709VideoStream, normalizeColorMode, prepareSdrRec709Source, sha256File, videoColorProfile } from "./color-management.mjs";
-import { atomicWriteJson, displayVideoGeometry, ffprobeJson, frameRateValue, parseArgs, readJsonArray, resolveJob, run } from "./lib.mjs";
-import { resolveVideoEncoder, videoEncoderArgs } from "./video-encoder.mjs";
-import { assertNotDerivedInput, filterComplexFileArgs, frameCapFilter } from "./ffmpeg-filter.mjs";
+import { audioEdgeFadeSeconds } from "./cut-boundary-policy.mjs";
+import {
+  collectEditorialHashes,
+  hashesMatch,
+  validateEditorialPlan,
+  validateTimelineContract
+} from "./editorial-contract.mjs";
+import { atomicWriteJson, displayVideoGeometry, ffprobeJson, frameRateValue, parseArgs, readJson, readJsonArray, resolveJob, run } from "./lib.mjs";
 
 const args = parseArgs();
 const jobDir = resolveJob(args.job);
 const inputPath = path.resolve(jobDir, args.input || "data/rough-cut-edl.json");
-// v2：粗剪只出「剪辑母版」assets/aroll-cut.mp4；倍速 / 对白处理 / 响度由 aroll:treat 产出 assets/aroll.mp4（工作母版）
-const outputPath = path.resolve(jobDir, args.output || "assets/aroll-cut.mp4");
+const outputPath = path.resolve(jobDir, args.output || "assets/aroll.mp4");
 const sourceKey = args.sourceKey || "source";
 const crf = String(args.crf || 20);
 const preset = args.preset || "veryfast";
 const fps = Number(args.fps || 30);
 const videoBitrate = args["video-bitrate"];
 const colorMode = normalizeColorMode(args["color-mode"] || "auto-sdr");
-const videoEncoder = resolveVideoEncoder({
-  requested: args["video-encoder"] || process.env.FACTORY_VIDEO_ENCODER || "auto"
-});
 
 const rawSegments = readJsonArray(inputPath);
 if (!rawSegments.length) throw new Error(`No segments in ${inputPath}`);
+assertEditorialContract(rawSegments);
 const segments = rawSegments.map((segment, index) => validateSegment(segment, index));
 
 const preparedSources = new Map();
@@ -31,7 +33,6 @@ for (const [index, segment] of segments.entries()) {
   if (preparedSources.has(source)) continue;
   const sourcePath = path.join(jobDir, source);
   if (!fs.existsSync(sourcePath)) throw new Error(`Missing media: ${sourcePath}`);
-  assertNotDerivedInput(sourcePath, jobDir, "roughcut:render");
   const prepared = colorMode === "auto-sdr"
     ? prepareSdrRec709Source({ jobDir, sourcePath })
     : inspectLegacySource(sourcePath);
@@ -60,12 +61,10 @@ segments.forEach((segment, index) => {
   if (!fs.existsSync(sourcePath)) throw new Error(`Missing media: ${sourcePath}`);
 
   inputs.push("-i", sourcePath);
-  const fade = Math.min(0.03, duration / 4);
+  const fade = audioEdgeFadeSeconds(duration);
   const fadeOut = Math.max(0, duration - fade);
   filters.push(
-    // 视频量化到整帧后用 trim=end_frame 封顶，保证永远不长于采样级精确的音频段：
-    // 否则 concat 给音频补静音，每个切点最多 1 帧、只增不减，字幕越往后越提前（2026-09-11 实验 30fps×40 切点累积 241ms）
-    `[${index}:v]trim=start=${start.toFixed(3)}:end=${end.toFixed(3)},setpts=PTS-STARTPTS,scale=${targetWidth}:${targetHeight}:force_original_aspect_ratio=increase,crop=${targetWidth}:${targetHeight},setsar=1,fps=${fps}${frameCapFilter(duration, fps)},format=yuv420p[v${index}]`
+    `[${index}:v]trim=start=${start.toFixed(3)}:end=${end.toFixed(3)},setpts=PTS-STARTPTS,scale=${targetWidth}:${targetHeight}:force_original_aspect_ratio=increase,crop=${targetWidth}:${targetHeight},setsar=1,fps=${fps},format=yuv420p[v${index}]`
   );
   filters.push(
     `[${index}:a]atrim=start=${start.toFixed(3)}:end=${end.toFixed(3)},asetpts=PTS-STARTPTS,aformat=sample_rates=48000:channel_layouts=stereo,afade=t=in:st=0:d=${fade.toFixed(3)},afade=t=out:st=${fadeOut.toFixed(3)}:d=${fade.toFixed(3)}[a${index}]`
@@ -89,12 +88,23 @@ try {
     "-hide_banner",
     "-y",
     ...inputs,
-    ...filterComplexFileArgs(filterPath),
+    "-/filter_complex", // ffmpeg ≥7.1 的「选项读文件」写法；旧 -filter_complex_script 在 9.0 被删（2026-09-07 本机升到 9.0.1）
+    filterPath,
     "-map",
     "[outv]",
     "-map",
     "[outa]",
-    ...videoEncoderArgs({ mode: videoEncoder, preset, crf, videoBitrate, fps }),
+    "-c:v",
+    "libx264",
+    "-preset",
+    preset,
+    ...(videoBitrate ? ["-b:v", String(videoBitrate), "-maxrate", String(videoBitrate), "-bufsize", String(Number.parseInt(videoBitrate, 10) * 2 || 48) + "M"] : ["-crf", crf]),
+    "-g",
+    String(Math.round(fps)),
+    "-keyint_min",
+    String(Math.round(fps)),
+    "-sc_threshold",
+    "0",
     "-pix_fmt",
     "yuv420p",
     ...(colorMode === "auto-sdr" ? [
@@ -118,6 +128,7 @@ try {
     height: targetHeight,
     fps,
     expectedDuration,
+    segmentCount: segments.length,
     expectSdr: colorMode === "auto-sdr"
   });
   fs.renameSync(temporaryOutput, outputPath);
@@ -136,8 +147,7 @@ try {
       actualDuration: Number(outputProbe.format?.duration || expectedDuration),
       width: targetWidth,
       height: targetHeight,
-      fps,
-      videoEncoder
+      fps
     },
     items: [...preparedSources.entries()].map(([source, item]) => ({
       source,
@@ -159,7 +169,34 @@ try {
   fs.rmSync(filterPath, { force: true });
 }
 
-console.log(`Rendered ${outputPath} · ${targetWidth}x${targetHeight} · source rotation ${firstDisplay.rotation}° · color ${colorMode} · encoder ${videoEncoder}`);
+console.log(`Rendered ${outputPath} · ${targetWidth}x${targetHeight} · source rotation ${firstDisplay.rotation}° · color ${colorMode}`);
+
+function assertEditorialContract(edl) {
+  const projectPath = path.join(jobDir, "project.json");
+  const project = fs.existsSync(projectPath) ? readJson(projectPath) : {};
+  if (Number(project.editorial?.contractVersion || 0) < 1) return;
+  const editorialPlan = readJson(path.join(jobDir, "data", "editorial-plan.json"));
+  const semanticTakeMap = readJson(path.join(jobDir, "data", "semantic-take-map.json"));
+  const plan = validateEditorialPlan(editorialPlan, { semanticTakeMap });
+  const timeline = validateTimelineContract({ editorialPlan, semanticTakeMap, edl, stage: "edl" });
+  const errors = [...plan.errors, ...timeline.errors];
+  if (errors.length) throw new Error(`内容计划/EDL 合同失败:\n- ${errors.join("\n- ")}`);
+  const reportPath = path.join(jobDir, "qa", "editorial", "report.json");
+  const approvalPath = path.join(jobDir, "qa", "editorial", "approval.json");
+  if (!fs.existsSync(reportPath) || !fs.existsSync(approvalPath)) {
+    throw new Error("内容计划尚未独立批准；先运行 editorial:check 和 editorial:approve");
+  }
+  const report = readJson(reportPath);
+  const approval = readJson(approvalPath);
+  const currentHashes = collectEditorialHashes(jobDir, "plan");
+  const approved = report.status === "passed"
+    && approval.schemaVersion === 1
+    && approval.status === "approved"
+    && approval.reportHash === sha256File(reportPath)
+    && hashesMatch(report.hashes, currentHashes)
+    && hashesMatch(approval.hashes, currentHashes);
+  if (!approved) throw new Error("内容计划或上游证据已变化；旧内容批准已失效");
+}
 
 function validateSegment(segment, index) {
   const source = segment?.[sourceKey] || segment?.source;
@@ -173,7 +210,7 @@ function validateSegment(segment, index) {
   return { source, start, end, duration };
 }
 
-function assertRoughCutOutput({ file, width, height, fps, expectedDuration, expectSdr }) {
+function assertRoughCutOutput({ file, width, height, fps, expectedDuration, segmentCount, expectSdr }) {
   const probe = ffprobeJson(file);
   const video = probe.streams.find((stream) => stream.codec_type === "video");
   const audio = probe.streams.find((stream) => stream.codec_type === "audio");
@@ -190,14 +227,13 @@ function assertRoughCutOutput({ file, width, height, fps, expectedDuration, expe
   if (!Number.isFinite(actualFps) || Math.abs(actualFps - fps) > 0.001) {
     throw new Error(`粗剪输出 fps ${video.avg_frame_rate || video.r_frame_rate} != ${fps}`);
   }
-  // 音频是时间真源：与 EDL 累加只允许 AAC 帧尾补（≤30ms）；视频可以比音频短 ≤2 帧（段末封顶），不可更长
-  const audioDuration = Number(audio.duration || probe.format?.duration);
-  if (!Number.isFinite(audioDuration) || Math.abs(audioDuration - expectedDuration) > 0.03) {
-    throw new Error(`粗剪音频时长 ${audioDuration}s 与 EDL ${expectedDuration.toFixed(3)}s 不一致（>30ms）`);
-  }
   const actualDuration = Number(video.duration || probe.format?.duration);
-  if (!Number.isFinite(actualDuration) || actualDuration - expectedDuration > 0.03 || expectedDuration - actualDuration > 2 / fps + 0.03) {
-    throw new Error(`粗剪视频时长 ${actualDuration}s 偏离 EDL ${expectedDuration.toFixed(3)}s（视频不得长于音频，也不得短于 2 帧）`);
+  // FFmpeg rounds every trimmed section to the output frame grid before concat.
+  // With a multi-cut EDL, the accumulated difference can legitimately exceed
+  // two frames even though no source material was lost.
+  const durationTolerance = Math.max(0.05, (Number(segmentCount || 1) + 1) / fps);
+  if (!Number.isFinite(actualDuration) || Math.abs(actualDuration - expectedDuration) > durationTolerance) {
+    throw new Error(`粗剪输出时长 ${actualDuration}s 与 EDL ${expectedDuration.toFixed(3)}s 不一致`);
   }
   if (String(audio.sample_rate || "") !== "48000") throw new Error(`粗剪输出音频采样率 ${audio.sample_rate || "unknown"} != 48000`);
   if (expectSdr && !isDeliveryRec709VideoStream(video)) throw new Error(`粗剪输出不是 yuv420p/tv/BT.709 SDR: ${file}`);

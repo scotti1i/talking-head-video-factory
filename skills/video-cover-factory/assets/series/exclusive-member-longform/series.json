@@ -1,0 +1,14 @@
+{
+  "id": "exclusive-member-longform",
+  "name": "专属会员",
+  "status": "approved",
+  "approved_at": "2026-07-20",
+  "master_3x4": "series-master-3x4.png",
+  "master_sha256": "b155e0de2b44ac17cbc82c24a4b4d7e3aa6c643985e59f785df6fd1883853e00",
+  "skin_color_preset": "neutral-daylight",
+  "generation_mode": "built-in-gpt-image-2",
+  "identity_source": "current-episode-video-frames",
+  "number_format": "专属会员 NN",
+  "topic_length": "4-8 Chinese characters",
+  "candidate_job": "jobs/exclusive-member-series-01-cover"
+}

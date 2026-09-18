@@ -1,0 +1,49 @@
+{
+  "title": "beats builder 回归基准",
+  "slug": "beats-regression",
+  "profile": "clean-talkinghead",
+  "policies": [],
+  "platform": "douyin",
+  "theme": "trade-proof",
+  "width": 1080,
+  "height": 1920,
+  "sourceVideo": "assets/aroll-front-focus.mp4",
+  "outputName": "beats-regression-60fps.mp4",
+  "downloadFolderName": "beats-regression",
+  "variants": [
+    {
+      "id": "vertical",
+      "label": "竖屏回归",
+      "layout": "vertical",
+      "width": 1080,
+      "height": 1920
+    },
+    {
+      "id": "horizontal",
+      "label": "横屏回归",
+      "layout": "horizontal",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "id": "caption-phrase",
+      "label": "逐词高亮字幕回归",
+      "layout": "vertical",
+      "width": 1080,
+      "height": 1920,
+      "caption": {
+        "mode": "phrase-highlight"
+      }
+    },
+    {
+      "id": "caption-single-word",
+      "label": "单词冲击字幕回归",
+      "layout": "vertical",
+      "width": 1080,
+      "height": 1920,
+      "caption": {
+        "mode": "single-word-pop"
+      }
+    }
+  ]
+}

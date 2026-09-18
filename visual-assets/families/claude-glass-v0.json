@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "claude-glass-v0",
+  "label": "Claude Glass · v0",
+  "kind": "legacy-composition",
+  "description": "暖玻璃大卡竖屏版本，是 Face-safe 收敛前的直接前身；专用源 job 已不在当前工作区。",
+  "lifecycle": "archived",
+  "compatibility": "preview-only",
+  "formats": ["vertical"],
+  "sources": [
+    { "path": "scripts/build-claude-glass-job.mjs", "role": "legacy-renderer" },
+    { "path": "scripts/build-dynamic-tight-job.mjs", "role": "derived-renderer" },
+    { "path": "visual-assets/evidence/claude-glass-v0/diagram.jpg", "role": "frozen-preview", "note": "Dynamic Tight 派生版真实成片抽帧" }
+  ],
+  "preview": { "state": "ready", "poster": "visual-assets/evidence/claude-glass-v0/diagram.jpg", "format": "vertical" },
+  "items": [
+    { "id": "statement", "label": "判断金句", "kind": "component", "status": "ready", "provenance": "Dynamic Tight 派生版真实成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/claude-glass-v0/statement.jpg", "format": "vertical" } },
+    { "id": "hero", "label": "核心数字", "kind": "component", "status": "ready", "provenance": "Dynamic Tight 派生版真实成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/claude-glass-v0/hero.jpg", "format": "vertical" } },
+    { "id": "panel", "label": "大面板", "kind": "component", "status": "ready", "provenance": "Dynamic Tight 派生版真实成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/claude-glass-v0/panel.jpg", "format": "vertical" } },
+    { "id": "chips", "label": "标签组", "kind": "component", "status": "ready", "provenance": "Dynamic Tight 派生版真实成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/claude-glass-v0/chips.jpg", "format": "vertical" } },
+    { "id": "split", "label": "双栏对比", "kind": "component", "status": "ready", "provenance": "Dynamic Tight 派生版真实成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/claude-glass-v0/split.jpg", "format": "vertical" } },
+    { "id": "duel", "label": "错与对", "kind": "component", "status": "ready", "provenance": "Dynamic Tight 派生版真实成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/claude-glass-v0/duel.jpg", "format": "vertical" } },
+    { "id": "pipeline", "label": "流程链", "kind": "component", "status": "ready", "provenance": "Dynamic Tight 派生版真实成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/claude-glass-v0/pipeline.jpg", "format": "vertical" } },
+    { "id": "trio", "label": "三要素", "kind": "component", "status": "ready", "provenance": "Dynamic Tight 派生版真实成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/claude-glass-v0/trio.jpg", "format": "vertical" } },
+    { "id": "diagram", "label": "关系图", "kind": "component", "status": "ready", "provenance": "Dynamic Tight 派生版真实成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/claude-glass-v0/diagram.jpg", "format": "vertical" } },
+    { "id": "cta", "label": "行动收束", "kind": "component", "status": "ready", "provenance": "Dynamic Tight 派生版真实成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/claude-glass-v0/cta.jpg", "format": "vertical" } }
+  ],
+  "migrationCandidates": [
+    { "targetId": "beats-v2-face-safe", "note": "十种结构已完整收编，并改为底部安全区和全字幕共存。" }
+  ],
+  "lineage": {
+    "parents": ["warm-minimal-v0"],
+    "supersedes": ["warm-minimal-v0"],
+    "supersededBy": ["beats-v2-face-safe"]
+  },
+  "apply": { "mode": "none" }
+}

@@ -1,0 +1,13 @@
+[
+  {
+    "id": "regression-fullscreen-pip",
+    "start": 10,
+    "end": 15,
+    "src": "assets/aroll-front-focus.mp4",
+    "mode": "fullscreen-pip",
+    "pipShape": "circle",
+    "intent": "验证通用 B-roll 与人像小窗的层级和时序",
+    "reason": "回归样片必须覆盖 B-roll 分支",
+    "label": "B-roll 回归"
+  }
+]

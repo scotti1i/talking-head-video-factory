@@ -1,0 +1,52 @@
+[
+  {
+    "id": "regression-demo-focus",
+    "kind": "demo-stage",
+    "start": 7.75,
+    "end": 9.3,
+    "src": "assets/primary-regression-proxy.mp4",
+    "sourceStart": 0,
+    "fit": "contain",
+    "focus": { "x": 0.5, "y": 0.42 },
+    "speakerPip": false,
+    "transition": {
+      "type": "focus-dissolve",
+      "enter": 0.46,
+      "exit": 0.36
+    },
+    "intent": "回归工程覆盖 demo-stage 与稳定焦点交接",
+    "reason": "新增转场不得破坏旧 demo-stage 路径"
+  },
+  {
+    "id": "regression-proof-whip",
+    "kind": "proof-footage",
+    "start": 28.8,
+    "end": 31.3,
+    "src": "assets/primary-regression-proxy.mp4",
+    "sourceStart": 2,
+    "speakerPip": false,
+    "transition": {
+      "type": "whip-blur",
+      "duration": 0.17,
+      "exit": 0.17,
+      "direction": "left"
+    },
+    "intent": "回归工程覆盖全屏 proof-footage 与短 whip 交接",
+    "reason": "确保证据主轨默认 cover 且转场可 seek"
+  },
+  {
+    "id": "regression-proof-flash",
+    "kind": "proof-footage",
+    "start": 93.9,
+    "end": 95.7,
+    "src": "assets/primary-regression-proxy.mp4",
+    "sourceStart": 5,
+    "speakerPip": false,
+    "transition": {
+      "type": "flash",
+      "duration": 0.2
+    },
+    "intent": "回归工程覆盖只闪入一次的语义转折",
+    "reason": "确保 flash overlay 在片段边界被确定性清理"
+  }
+]

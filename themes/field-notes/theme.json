@@ -1,8 +1,8 @@
 {
   "id": "field-notes",
   "label": "牛皮档案",
-  "description": "米黄档案纸、墨黑重衬线、砖红马克笔与胶带贴片，采用直角硬裁边和记者手账质感。",
-  "source": "public theme tokens",
+  "description": "对标 Johnny Harris:米黄档案纸 + 墨黑重衬线 + 砖红马克笔 + 胶带贴片。直角硬裁边,做旧记者手账感。",
+  "source": "Johnny Harris(vmacke/aescripts/Motion Array 拆解)",
   "fonts": [
     { "family": "Inter", "file": "Inter-700-latin.woff2", "weight": 700 },
     { "family": "LXGWWenKaiTC", "file": "LXGWWenKaiTC-400-latin.woff2", "weight": 400 }

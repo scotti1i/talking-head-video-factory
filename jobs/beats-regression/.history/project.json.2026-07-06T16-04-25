@@ -1,0 +1,11 @@
+{
+  "title": "beats builder 回归基准",
+  "slug": "beats-regression",
+  "platform": "douyin",
+  "theme": "warm-glass",
+  "width": 1080,
+  "height": 1920,
+  "sourceVideo": "assets/aroll-front-focus.mp4",
+  "outputName": "beats-regression-60fps.mp4",
+  "downloadFolderName": "beats-regression"
+}

@@ -1,0 +1,371 @@
+/* sample-replica：只保留 3543 / 3544 / 3545 的视觉语法。 */
+#main {
+  --impact-ink: #000000;
+  --impact-paper: #FFFFFF;
+  --impact-signal: #FFFF00;
+  --impact-action: #17257F;
+  --impact-question: #7900E8;
+  --impact-cta: #FF5EB8;
+}
+
+#talking-video {
+  filter: none;
+}
+
+.vignette,
+#scrim {
+  display: none;
+}
+
+/* V5：商品图不是卡片。它们只在具体品类词上出现，字幕始终压在最上层。 */
+#card-host {
+  z-index: 8;
+}
+
+.broll-floating-frame {
+  inset: auto;
+  top: 20%;
+  width: 38%;
+  height: 23%;
+  margin: 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  filter:
+    drop-shadow(0 7px 3px rgba(0, 0, 0, 0.16))
+    drop-shadow(0 22px 20px rgba(0, 0, 0, 0.34));
+  transform-origin: 50% 50%;
+  will-change: transform, opacity;
+}
+
+.broll-floating-frame[data-placement="left"] {
+  left: 1.8%;
+  right: auto;
+}
+
+.broll-floating-frame[data-placement="right"] {
+  left: auto;
+  right: 1.8%;
+}
+
+.broll-floating-media {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  background-color: transparent;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: contain;
+  will-change: transform;
+}
+
+#broll-02,
+#broll-04 {
+  left: 0.5%;
+  top: 20.5%;
+}
+
+#broll-01 {
+  left: 2.5%;
+  width: 36%;
+}
+
+#broll-02 {
+  width: 42%;
+}
+
+#broll-03 {
+  left: 2%;
+  top: 22%;
+  width: 40%;
+}
+
+#broll-04 {
+  left: 4%;
+  width: 34%;
+}
+
+.caption,
+.caption-over-card,
+.caption-primary,
+.caption-primary-pip {
+  left: 5%;
+  right: 5%;
+  top: auto;
+  bottom: 16.8%;
+  width: 90%;
+  max-width: 90%;
+  transform: none;
+  color: #FFFFFF;
+  font-family: SampleReplicaBlack, FactoryCJK, sans-serif;
+  font-size: 64px;
+  line-height: 1.04;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: normal;
+  -webkit-text-stroke: 6px #000000;
+  paint-order: stroke fill;
+  text-shadow: none;
+}
+
+/* 3814：顶部标签常驻；字幕在任何贴图期间都必须继续显示。 */
+.beat-topline-label .topline-label {
+  top: 4.1%;
+  padding: 0;
+  gap: 9px;
+  color: transparent;
+  -webkit-text-stroke: 0;
+  font-family: Arial, FactoryCJK, sans-serif;
+  text-shadow: none;
+}
+
+.beat-topline-label .topline-label-kicker { display: none; }
+.beat-topline-label .topline-label-title {
+  padding: 8px 14px 9px;
+  color: #17257F;
+  border: 3px solid #000000;
+  background: #FFFFFF;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.16);
+  font-size: 34px;
+  letter-spacing: 0;
+}
+
+.caption-emphasis {
+  color: #FFFF00;
+  -webkit-text-fill-color: #FFFF00;
+}
+
+/* 3545：复用用户样片中的义乌地图视觉，作为 location 组件。 */
+.beat-micro-overlay:has(.micro-overlay--locator) {
+  top: 2%;
+  right: auto;
+  left: 21%;
+  width: 58%;
+}
+
+.beat-micro-overlay .micro-overlay--locator {
+  width: 100%;
+  max-width: none;
+  min-height: 0;
+  aspect-ratio: 442 / 334;
+  border: 0;
+  border-radius: 30px;
+  background: url("assets/overlays/yiwu-map.jpg") center / cover no-repeat;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+}
+
+.beat-micro-overlay .micro-overlay--locator > * {
+  display: none;
+}
+
+#main .beat-impact-sticker .impact-sticker .impact-sticker-kicker {
+  display: none;
+}
+
+.beat-impact-sticker .impact-sticker-title {
+  font-family: SampleReplicaBlack, FactoryCJK, sans-serif;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+/* 3544：顶部白色问题气泡。 */
+.beat-impact-sticker .impact-sticker--question {
+  top: 12%;
+  left: 14%;
+  width: 72%;
+  transform: none;
+}
+
+.beat-impact-sticker .impact-sticker--question .impact-sticker-surface {
+  min-height: 210px;
+  color: #7900E8;
+  border: 0;
+  border-radius: 58px;
+  background: #FFFFFF;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
+}
+
+.beat-impact-sticker .impact-sticker--question .impact-sticker-surface::after {
+  display: none;
+}
+
+.beat-impact-sticker .impact-sticker--question .impact-sticker-copy {
+  padding: 34px 48px 38px;
+}
+
+.beat-impact-sticker .impact-sticker--question .impact-sticker-title {
+  color: #7900E8;
+  font-size: 64px;
+  line-height: 0.98;
+  text-align: center;
+}
+
+/* 3543：图标在上、白底蓝字直角动作标签。 */
+.beat-impact-sticker .impact-sticker--action,
+.beat-impact-sticker .impact-sticker--reject,
+.beat-impact-sticker .impact-sticker--identity,
+.beat-impact-sticker .impact-sticker--pivot {
+  top: auto;
+  right: auto;
+  bottom: 36.5%;
+  left: 17%;
+  width: 66%;
+  transform: none;
+}
+
+.beat-impact-sticker .impact-sticker--action .impact-sticker-surface,
+.beat-impact-sticker .impact-sticker--reject .impact-sticker-surface,
+.beat-impact-sticker .impact-sticker--identity .impact-sticker-surface,
+.beat-impact-sticker .impact-sticker--pivot .impact-sticker-surface {
+  min-height: 112px;
+  color: #17257F;
+  border: 0;
+  border-radius: 0;
+  background: #FFFFFF;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+}
+
+.beat-impact-sticker .impact-sticker--action .impact-sticker-copy,
+.beat-impact-sticker .impact-sticker--reject .impact-sticker-copy,
+.beat-impact-sticker .impact-sticker--identity .impact-sticker-copy,
+.beat-impact-sticker .impact-sticker--pivot .impact-sticker-copy {
+  padding: 18px 26px 20px;
+}
+
+.beat-impact-sticker .impact-sticker--action .impact-sticker-title,
+.beat-impact-sticker .impact-sticker--reject .impact-sticker-title,
+.beat-impact-sticker .impact-sticker--identity .impact-sticker-title,
+.beat-impact-sticker .impact-sticker--pivot .impact-sticker-title {
+  color: #17257F;
+  font-size: 56px;
+  line-height: 0.94;
+  -webkit-text-stroke: 0;
+  text-shadow: none;
+  text-align: center;
+}
+
+.beat-impact-sticker .impact-sticker--action .impact-sticker-mark,
+.beat-impact-sticker .impact-sticker--reject .impact-sticker-mark,
+.beat-impact-sticker .impact-sticker--identity .impact-sticker-mark,
+.beat-impact-sticker .impact-sticker--pivot .impact-sticker-mark {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 14px);
+  display: grid;
+  width: 146px;
+  height: 146px;
+  transform: translateX(-50%);
+  color: #17257F;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.beat-impact-sticker .impact-sticker--action .impact-sticker-mark svg,
+.beat-impact-sticker .impact-sticker--reject .impact-sticker-mark svg,
+.beat-impact-sticker .impact-sticker--identity .impact-sticker-mark svg,
+.beat-impact-sticker .impact-sticker--pivot .impact-sticker-mark svg {
+  width: 122px;
+  height: 122px;
+  stroke-width: 2.8;
+}
+
+.beat-impact-sticker .impact-sticker[data-icon="package"] .impact-sticker-mark svg path:first-child {
+  fill: #C9A47A;
+  stroke: #A78258;
+}
+
+.beat-impact-sticker .impact-sticker[data-icon="package"] .impact-sticker-mark svg path:last-child {
+  fill: none;
+  stroke: #8D6C49;
+}
+
+.beat-impact-sticker .impact-sticker[data-icon="package"] .impact-sticker-mark {
+  bottom: calc(100% + 820px);
+  width: 300px;
+  height: 260px;
+}
+
+.beat-impact-sticker .impact-sticker[data-icon="package"] .impact-sticker-mark svg {
+  width: 260px;
+  height: 260px;
+}
+
+.beat-impact-sticker .impact-sticker-strike {
+  display: none;
+}
+
+/* 3545：顶部粉橙 CTA，和 lower-third 字幕完全分离。 */
+.beat-impact-sticker .impact-sticker--cta {
+  top: 10.2%;
+  right: auto;
+  bottom: auto;
+  left: 29.8%;
+  width: 40.4%;
+}
+
+.beat-impact-sticker .impact-sticker--cta .impact-sticker-surface {
+  min-height: 116px;
+  color: #FF9A1F;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+}
+
+.beat-impact-sticker .impact-sticker--cta .impact-sticker-mark {
+  position: absolute;
+  top: -48px;
+  left: 50%;
+  z-index: 2;
+  width: 80px;
+  height: 58px;
+  transform: translateX(-50%);
+  color: #FFFFFF;
+  border-radius: 0;
+  background: #F16F14;
+}
+
+.beat-impact-sticker .impact-sticker--cta .impact-sticker-mark svg {
+  width: 58px;
+  height: 44px;
+  stroke-width: 3;
+}
+
+.beat-impact-sticker .impact-sticker--cta .impact-sticker-copy {
+  width: 100%;
+  padding: 24px 24px 25px;
+  border: 5px solid #FFFFFF;
+  border-radius: 18px;
+  background: #F5B2DA;
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.16);
+}
+
+.beat-impact-sticker .impact-sticker--cta .impact-sticker-title {
+  color: #F16F14;
+  font-family: Impact, "Arial Black", Arial, FactoryCJK, sans-serif;
+  font-size: 58px;
+  line-height: 0.9;
+  font-style: italic;
+  text-align: center;
+  -webkit-text-stroke: 2px #FFFFFF;
+  paint-order: stroke fill;
+}
+
+/* 回归棚包含旧组件；仅收住文字边界，成片不会调用这些组件。 */
+#main .hero-number {
+  font-size: 88px;
+  line-height: 0.9;
+}
+
+#main .cta-badge-copy strong {
+  font-size: 34px;
+  line-height: 1.05;
+}

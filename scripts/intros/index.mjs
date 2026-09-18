@@ -120,10 +120,10 @@ function introObjectDataUri(data, tokens) {
     <defs><filter id="shadow" x="-30%" y="-20%" width="160%" height="170%"><feDropShadow dx="0" dy="24" stdDeviation="24" flood-color="#12100c" flood-opacity="0.30"/></filter></defs>
     <g filter="url(#shadow)"><rect x="2" y="2" width="434" height="578" rx="34" fill="${tokens.cardBg}" stroke="${tokens.cardBorder}" stroke-width="2"/>
       <rect x="24" y="24" width="390" height="326" rx="25" fill="${tokens.chipBg}" stroke="${tokens.chipBorder}"/><rect x="333" y="42" width="67" height="32" rx="9" fill="${tokens.mutedBg}"/>
-      <text x="366.5" y="64" text-anchor="middle" fill="${tokens.textBody}" font-family="Inter, FactoryCJK, sans-serif" font-size="18" font-weight="700" letter-spacing="0.7">${escapeHtml(data.episode)}</text>
-      <text x="213" y="292" text-anchor="middle" fill="${tokens.text}" font-family="Inter, FactoryCJK, sans-serif" font-size="188" font-weight="700" letter-spacing="-12">${escapeHtml(data.number)}</text>
-      <text x="31" y="392" fill="${tokens.textBody}" font-family="FactoryCJK, sans-serif" font-size="29" font-weight="700" letter-spacing="-0.7">${escapeHtml(data.series)}</text>
-      <text x="31" y="451" fill="${tokens.text}" font-family="FactoryCJK, sans-serif" font-size="36" font-weight="700" letter-spacing="-1">${escapeHtml(data.title)}</text>
+      <text x="366.5" y="64" text-anchor="middle" fill="${tokens.textBody}" font-family="Inter,Arial,sans-serif" font-size="18" font-weight="700" letter-spacing="0.7">${escapeHtml(data.episode)}</text>
+      <text x="213" y="292" text-anchor="middle" fill="${tokens.text}" font-family="Inter,Arial,sans-serif" font-size="188" font-weight="700" letter-spacing="-12">${escapeHtml(data.number)}</text>
+      <text x="31" y="392" fill="${tokens.textBody}" font-family="PingFang SC,Hiragino Sans GB,Arial,sans-serif" font-size="29" font-weight="700" letter-spacing="-0.7">${escapeHtml(data.series)}</text>
+      <text x="31" y="451" fill="${tokens.text}" font-family="PingFang SC,Hiragino Sans GB,Arial,sans-serif" font-size="36" font-weight="700" letter-spacing="-1">${escapeHtml(data.title)}</text>
     </g></svg>`;
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }

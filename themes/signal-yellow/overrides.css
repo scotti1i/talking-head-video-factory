@@ -1,4 +1,4 @@
-/* 海报字重 + 全大写宽字距 kicker + 荧光笔扫过的 accent */
+/* Vox 签名:海报字重 + 全大写宽字距 kicker + 荧光笔扫过的 accent */
       .kicker { text-transform: uppercase; letter-spacing: 0.16em; text-shadow: none; font-weight: 700; }
       h2 { font-weight: 800; letter-spacing: -0.01em; }
       .beat strong { font-weight: 800; }

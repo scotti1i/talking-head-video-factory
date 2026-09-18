@@ -1,9 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
-import { copyDir, jobsRoot, parseArgs, projectRoot, readJson, relinkJobPackage, sanitizeSlug, writeJson } from "./lib.mjs";
+import { copyDir, parseArgs, projectRoot, readJson, sanitizeSlug, writeJson } from "./lib.mjs";
 import { loadWorkflowRegistry, profileIds } from "./workflow-profile.mjs";
-import { loadFineCutRegistry, resolveFineCutPreset } from "./fine-cut-policy.mjs";
-import { applyTemplatePack, loadTemplatePackRegistry, resolveTemplatePack, stageTemplatePackAssets } from "./template-pack.mjs";
 
 const args = parseArgs();
 const slug = sanitizeSlug(args._[0] || args.slug);
@@ -16,7 +14,7 @@ if (!slug) {
 const root = projectRoot();
 const registry = loadWorkflowRegistry(root);
 const templateDir = path.join(root, "templates", "job");
-const jobDir = path.join(jobsRoot(), slug);
+const jobDir = path.join(root, "jobs", slug);
 
 if (fs.existsSync(jobDir)) {
   console.error(`Job already exists: ${jobDir}`);
@@ -25,7 +23,7 @@ if (fs.existsSync(jobDir)) {
 
 // 先验证所有用户输入，再创建目录。参数错误不能留下半成品 job。
 const templateConfigPath = path.join(templateDir, "project.json");
-let config = readJson(templateConfigPath);
+const config = readJson(templateConfigPath);
 config.slug = slug;
 config.title = args.title || slug;
 config.profile = String(args.profile || config.profile || registry.default);
@@ -33,6 +31,13 @@ if (!profileIds(registry).includes(config.profile)) {
   console.error(`Unknown profile: ${config.profile}. Available: ${profileIds(registry).join(", ")}`);
   process.exit(1);
 }
+const selectedProfile = registry.profiles[config.profile];
+config.editorial = {
+  ...(config.editorial || {}),
+  editingMode: selectedProfile.editingMode,
+  // 预剪录屏允许没有 EDL；选择语义重剪时再显式启用 v1 合同。
+  contractVersion: selectedProfile.editingMode === "preedited-or-semantic-edl" ? 0 : 1
+};
 config.policies = parseList(args.policies);
 const unknownPolicies = config.policies.filter((id) => !registry.policies?.[id]);
 if (unknownPolicies.length) {
@@ -40,39 +45,25 @@ if (unknownPolicies.length) {
   process.exit(1);
 }
 config.variants = selectTargets(config.variants, parseList(args.targets || "douyin"));
-const fineCutRegistry = loadFineCutRegistry(root);
-const profileFineCutDefault = fineCutRegistry.profileDefaults?.[config.profile];
-config.editorial = {
-  ...(config.editorial || {}),
-  fineCutPreset: String(args["fine-cut"] || profileFineCutDefault || config.editorial?.fineCutPreset || fineCutRegistry.default)
-};
-resolveFineCutPreset(config, fineCutRegistry);
-const requestedTemplatePack = args["template-pack"]
-  || (config.profile === "factory-acquisition" ? loadTemplatePackRegistry(root).default : "");
-if (requestedTemplatePack) {
-  config.templatePack = String(requestedTemplatePack);
-  config = applyTemplatePack(config, root).project;
-}
 const selectedPlatforms = new Set(config.variants.map((item) => item.platform).filter(Boolean));
 config.platform = selectedPlatforms.size === 1 ? [...selectedPlatforms][0] : "multi";
 config.downloadFolderName = args.folder || defaultDownloadFolder(slug, config.variants);
 
 copyDir(templateDir, jobDir);
-relinkJobPackage(jobDir);
-stageTemplatePackAssets({ pack: resolveTemplatePack(config, root), jobDir, root });
 const configPath = path.join(jobDir, "project.json");
 writeJson(configPath, config);
 
 console.log(`Created job: ${jobDir}`);
 console.log(`Profile: ${config.profile}`);
-console.log(`Fine cut: ${config.editorial.fineCutPreset}`);
-if (config.templatePack) console.log(`Template pack: ${config.templatePack}`);
 console.log(`Targets: ${config.variants.map((item) => `${item.id}/${item.platform}`).join(", ")}`);
 console.log("Next:");
 console.log(`  1. Put untouched recordings in ${path.join(jobDir, "assets", "originals")}`);
 console.log(`  2. Run npm run inventory -- --job jobs/${slug}`);
 console.log(`  3. Run npm run transcribe:editor -- --job jobs/${slug}`);
-console.log(`  4. Review EDL/captions/beats, then run npm run build:beats -- --job jobs/${slug}`);
+console.log(`  4. Fill data/semantic-take-map.json before writing the EDL`);
+console.log(`  5. Fill data/editorial-plan.json; every EDL segment must reference storyBeatId + takeId`);
+console.log(`  6. Run npm run editorial:check and approve the reviewed plan`);
+console.log(`  7. Build captions/visuals, run npm run visual:check, then build variants`);
 
 function parseList(value) {
   if (!value) return [];

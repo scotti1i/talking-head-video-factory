@@ -1,0 +1,67 @@
+{
+  "title": "Smoke Test Talking Head",
+  "slug": "smoke",
+  "platform": "douyin",
+  "width": 1080,
+  "height": 1920,
+  "layout": "vertical",
+  "duration": 6,
+  "sourceVideo": "assets/aroll.mp4",
+  "outputName": "smoke-final.mp4",
+  "downloadFolderName": "smoke-抖音成片",
+  "caption": {
+    "enabled": true,
+    "maxCharsPerLine": 14,
+    "hideDuring": []
+  },
+  "qa": {
+    "sampleTimes": [
+      0.5,
+      2.2,
+      4.5,
+      5.5
+    ]
+  },
+  "delivery": {
+    "includeCover": true,
+    "coverFile": "cover/cover.png",
+    "downloadsRoot": "~/talking-head-video-factory/out"
+  },
+  "variants": [
+    {
+      "id": "douyin-vertical",
+      "label": "抖音竖屏",
+      "platform": "douyin",
+      "width": 1080,
+      "height": 1920,
+      "layout": "vertical",
+      "outputName": "smoke-douyin-vertical.mp4",
+      "downloadFolderName": "smoke-抖音竖屏",
+      "render": {
+        "fps": 60,
+        "quality": "standard",
+        "workers": 8,
+        "videoBitrate": "24M"
+      }
+    },
+    {
+      "id": "youtube-horizontal",
+      "label": "YouTube 横屏",
+      "platform": "youtube",
+      "width": 1920,
+      "height": 1080,
+      "layout": "horizontal",
+      "outputName": "smoke-youtube-horizontal.mp4",
+      "downloadFolderName": "smoke-YouTube横屏",
+      "caption": {
+        "maxCharsPerLine": 22
+      },
+      "render": {
+        "fps": 60,
+        "quality": "standard",
+        "workers": 8,
+        "videoBitrate": "24M"
+      }
+    }
+  ]
+}

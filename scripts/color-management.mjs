@@ -5,13 +5,22 @@ import path from "node:path";
 import { atomicWriteJson, displayVideoGeometry, ffprobeJson, run } from "./lib.mjs";
 
 export const COLOR_MODES = Object.freeze(["auto-sdr", "legacy"]);
-export const COLOR_POLICY_VERSION = "rec709-v2";
+export const COLOR_POLICY_VERSION = "hdr-to-sdr-rec709-v2";
 
 const HDR_TRANSFERS = new Set(["arib-std-b67", "smpte2084"]);
 const SDR_TRANSFERS = new Set(["bt709", "iec61966-2-1", "smpte170m"]);
 const AVCONVERT = "/usr/bin/avconvert";
-const AVFOUNDATION_PRESET = "PresetHighestQuality";
-const FFMPEG_PRESET = "zscale-tonemap-mobius-crf18";
+const SDR_PRESET = "PresetHighestQuality";
+const FFMPEG_FULL = "/opt/homebrew/opt/ffmpeg-full/bin/ffmpeg";
+const FFMPEG_SDR_PRESET = "zscale-hable-rec709-superfast-crf16";
+const FFMPEG_SDR_FILTER = [
+  "zscale=t=linear",
+  "format=gbrpf32le",
+  "zscale=p=bt709",
+  "tonemap=hable:desat=0",
+  "zscale=t=bt709:m=bt709:r=tv",
+  "format=yuv420p"
+].join(",");
 
 export function normalizeColorMode(value = "auto-sdr") {
   const mode = String(value || "auto-sdr");
@@ -85,8 +94,7 @@ export function prepareSdrRec709Source(options) {
     runCommand = run,
     platform = process.platform,
     avconvertPath = AVCONVERT,
-    ffmpegPath = "ffmpeg",
-    backend = "auto"
+    ffmpegFullPath = avconvertPath === AVCONVERT ? FFMPEG_FULL : null
   } = options;
   const sourceProbe = probe(sourcePath);
   const sourceVideo = requireVideo(sourceProbe, sourcePath);
@@ -106,9 +114,12 @@ export function prepareSdrRec709Source(options) {
     throw new Error(`素材缺少完整色彩标记，auto-sdr 拒绝只改标签: ${sourcePath}；人工确认后可显式使用 --color-mode legacy`);
   }
 
-  const selectedBackend = resolveToneMapBackend({ backend, platform, avconvertPath, ffmpegPath });
-  const selectedTool = selectedBackend === "avfoundation" ? avconvertPath : ffmpegPath;
-  const selectedPreset = selectedBackend === "avfoundation" ? AVFOUNDATION_PRESET : FFMPEG_PRESET;
+  const useFfmpegFull = Boolean(ffmpegFullPath && fs.existsSync(ffmpegFullPath));
+  if (!useFfmpegFull && (platform !== "darwin" || !fs.existsSync(avconvertPath))) {
+    throw new Error(`HDR 素材需要显式 tone-map 到 Rec.709；当前环境缺少带 zscale 的 ffmpeg-full 和 ${avconvertPath}`);
+  }
+  const backend = useFfmpegFull ? ffmpegFullPath : avconvertPath;
+  const selectedPreset = useFfmpegFull ? FFMPEG_SDR_PRESET : SDR_PRESET;
 
   const sourceHash = sha256File(sourcePath);
   const outputPath = sdrCachePath({ jobDir, sourcePath, sourceHash });
@@ -119,14 +130,7 @@ export function prepareSdrRec709Source(options) {
     try {
       assertRec709Conversion({ sourceProbe, outputProbe: probe(outputPath), sourcePath, outputPath });
       provenance = JSON.parse(fs.readFileSync(provenancePath, "utf8"));
-      assertCacheProvenance({
-        provenance,
-        sourceHash,
-        outputPath,
-        expectedBackend: selectedBackend,
-        expectedTool: selectedTool,
-        expectedPreset: selectedPreset
-      });
+      assertCacheProvenance({ provenance, sourceHash, outputPath, expectedBackend: backend, expectedPreset: selectedPreset });
       cached = true;
     } catch {
       cached = false;
@@ -137,26 +141,64 @@ export function prepareSdrRec709Source(options) {
   if (!cached) {
     fs.mkdirSync(path.dirname(outputPath), { recursive: true });
     const nonce = `${process.pid}.${crypto.randomUUID()}`;
-    const workingPath = path.join(path.dirname(outputPath), `.${path.basename(outputPath)}.${nonce}.${selectedBackend}.mov`);
+    const workingPath = path.join(path.dirname(outputPath), `.${path.basename(outputPath)}.${nonce}.avconvert.mov`);
     const remuxPath = path.join(path.dirname(outputPath), `.${path.basename(outputPath)}.${nonce}.remux.mov`);
     try {
-      const candidatePath = selectedBackend === "avfoundation"
-        ? runAvfoundationToneMap({ runCommand, avconvertPath, ffmpegPath, sourcePath, workingPath, remuxPath })
-        : runFfmpegToneMap({ runCommand, ffmpegPath, sourcePath, outputPath: workingPath, classification });
-      const candidateProbe = probe(candidatePath);
-      const candidateVideo = assertRec709Conversion({ sourceProbe, outputProbe: candidateProbe, sourcePath, outputPath: candidatePath });
-      const outputHash = sha256File(candidatePath);
+      if (useFfmpegFull) {
+        runCommand(ffmpegFullPath, [
+          "-hide_banner", "-loglevel", "error", "-y",
+          "-i", sourcePath,
+          "-map", "0:v:0",
+          "-map", "0:a:0?",
+          "-vf", FFMPEG_SDR_FILTER,
+          "-c:v", "libx264",
+          "-preset", "superfast",
+          "-crf", "16",
+          "-pix_fmt", "yuv420p",
+          "-color_range", "tv",
+          "-colorspace", "bt709",
+          "-color_trc", "bt709",
+          "-color_primaries", "bt709",
+          "-c:a", "aac",
+          "-b:a", "192k",
+          "-ar", "48000",
+          "-map_metadata", "-1",
+          "-metadata:s:v:0", "rotate=0",
+          "-movflags", "+faststart",
+          remuxPath
+        ]);
+      } else {
+        runCommand(avconvertPath, [
+          "--source", sourcePath,
+          "--preset", SDR_PRESET,
+          "--output", workingPath,
+          "--replace",
+          "--progress"
+        ]);
+        runCommand("ffmpeg", [
+          "-hide_banner", "-loglevel", "error", "-y",
+          "-i", workingPath,
+          "-map", "0:v:0",
+          "-map", "0:a:0?",
+          "-c", "copy",
+          "-map_metadata", "-1",
+          "-movflags", "+faststart",
+          remuxPath
+        ]);
+      }
+      const remuxProbe = probe(remuxPath);
+      const remuxVideo = assertRec709Conversion({ sourceProbe, outputProbe: remuxProbe, sourcePath, outputPath: remuxPath });
+      const outputHash = sha256File(remuxPath);
       provenance = {
         sourceHash,
         outputHash,
         policyVersion: COLOR_POLICY_VERSION,
-        backend: selectedBackend,
-        tool: selectedTool,
+        backend,
         preset: selectedPreset,
         sourceProfile,
-        outputProfile: videoColorProfile(candidateVideo)
+        outputProfile: videoColorProfile(remuxVideo)
       };
-      fs.renameSync(candidatePath, outputPath);
+      fs.renameSync(remuxPath, outputPath);
       atomicWriteJson(provenancePath, provenance);
     } finally {
       fs.rmSync(workingPath, { force: true });
@@ -167,22 +209,14 @@ export function prepareSdrRec709Source(options) {
   const outputProbe = probe(outputPath);
   const outputVideo = assertRec709Conversion({ sourceProbe, outputProbe, sourcePath, outputPath });
   if (!provenance) provenance = JSON.parse(fs.readFileSync(provenancePath, "utf8"));
-  assertCacheProvenance({
-    provenance,
-    sourceHash,
-    outputPath,
-    expectedBackend: selectedBackend,
-    expectedTool: selectedTool,
-    expectedPreset: selectedPreset
-  });
+  assertCacheProvenance({ provenance, sourceHash, outputPath, expectedBackend: backend, expectedPreset: selectedPreset });
   return {
     sourcePath,
     outputPath,
     sourceHash,
     converted: true,
     cached,
-    backend: selectedBackend,
-    tool: selectedTool,
+    tool: backend,
     preset: selectedPreset,
     policyVersion: COLOR_POLICY_VERSION,
     outputHash: provenance.outputHash,
@@ -190,70 +224,6 @@ export function prepareSdrRec709Source(options) {
     sourceProfile,
     outputProfile: videoColorProfile(outputVideo)
   };
-}
-
-export function resolveToneMapBackend({ backend = "auto", platform = process.platform, avconvertPath = AVCONVERT, ffmpegPath = "ffmpeg" } = {}) {
-  const requested = String(backend || "auto").toLowerCase();
-  if (!new Set(["auto", "avfoundation", "ffmpeg"]).has(requested)) {
-    throw new Error("tone-map backend 只能是 auto/avfoundation/ffmpeg");
-  }
-  if (requested === "avfoundation") {
-    if (platform !== "darwin" || !fs.existsSync(avconvertPath)) throw new Error(`当前环境不能使用 AVFoundation: ${avconvertPath}`);
-    return "avfoundation";
-  }
-  if (requested === "ffmpeg") return "ffmpeg";
-  if (platform === "darwin" && fs.existsSync(avconvertPath)) return "avfoundation";
-  if (!ffmpegPath) throw new Error("当前环境缺少 FFmpeg tone-map 后端");
-  return "ffmpeg";
-}
-
-function runAvfoundationToneMap({ runCommand, avconvertPath, ffmpegPath, sourcePath, workingPath, remuxPath }) {
-  runCommand(avconvertPath, [
-    "--source", sourcePath,
-    "--preset", AVFOUNDATION_PRESET,
-    "--output", workingPath,
-    "--replace",
-    "--progress"
-  ]);
-  runCommand(ffmpegPath, [
-    "-hide_banner", "-loglevel", "error", "-y",
-    "-i", workingPath,
-    "-map", "0:v:0",
-    "-map", "0:a:0?",
-    "-c", "copy",
-    "-map_metadata", "-1",
-    "-movflags", "+faststart",
-    remuxPath
-  ]);
-  return remuxPath;
-}
-
-function runFfmpegToneMap({ runCommand, ffmpegPath, sourcePath, outputPath, classification }) {
-  const filter = classification === "hdr"
-    ? "zscale=transfer=linear:npl=100,format=gbrpf32le,tonemap=mobius:desat=0,zscale=primaries=bt709:transfer=bt709:matrix=bt709:range=limited,format=yuv420p"
-    : "zscale=primaries=bt709:transfer=bt709:matrix=bt709:range=limited,format=yuv420p";
-  runCommand(ffmpegPath, [
-    "-hide_banner", "-loglevel", "error", "-y",
-    "-i", sourcePath,
-    "-map", "0:v:0",
-    "-map", "0:a:0?",
-    "-vf", filter,
-    "-c:v", "libx264",
-    "-preset", "medium",
-    "-crf", "18",
-    "-pix_fmt", "yuv420p",
-    "-color_range", "tv",
-    "-colorspace", "bt709",
-    "-color_trc", "bt709",
-    "-color_primaries", "bt709",
-    "-c:a", "aac",
-    "-b:a", "192k",
-    "-map_metadata", "-1",
-    "-map_chapters", "-1",
-    "-movflags", "+faststart",
-    outputPath
-  ]);
-  return outputPath;
 }
 
 export function assertRec709Conversion({ sourceProbe, outputProbe, sourcePath, outputPath }) {
@@ -302,10 +272,10 @@ export function assertRec709Conversion({ sourceProbe, outputProbe, sourcePath, o
   return outputVideo;
 }
 
-function assertCacheProvenance({ provenance, sourceHash, outputPath, expectedBackend, expectedTool, expectedPreset }) {
+function assertCacheProvenance({ provenance, sourceHash, outputPath, expectedBackend, expectedPreset = SDR_PRESET }) {
   if (provenance?.sourceHash !== sourceHash) throw new Error("tone-map cache sourceHash 不匹配");
   if (provenance?.policyVersion !== COLOR_POLICY_VERSION) throw new Error("tone-map cache policyVersion 不匹配");
-  if (provenance?.backend !== expectedBackend || provenance?.tool !== expectedTool || provenance?.preset !== expectedPreset) {
+  if (provenance?.backend !== expectedBackend || provenance?.preset !== expectedPreset) {
     throw new Error("tone-map cache backend/preset 不匹配");
   }
   const actualOutputHash = sha256File(outputPath);

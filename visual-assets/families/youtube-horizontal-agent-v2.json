@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "youtube-horizontal-agent-v2",
+  "label": "YouTube 横屏 · Agent v2",
+  "kind": "layout",
+  "description": "AI Agent 长视频使用的第二代横屏技术板布局，支持独立 overlay-only 产物；原始 EDL 外部依赖已缺失。",
+  "lifecycle": "archived",
+  "compatibility": "preview-only",
+  "formats": ["horizontal"],
+  "sources": [
+    { "path": "scripts/build-youtube-horizontal-v2.mjs", "role": "legacy-renderer" },
+    { "path": "scripts/compose-youtube-horizontal-v2.mjs", "role": "legacy-compositor" },
+    { "path": "visual-assets/evidence/youtube-horizontal-agent-v2/family.jpg", "role": "published-cover", "note": "公开视频 Ai-flNXDA7E 的真实封面" },
+    { "path": "visual-assets/evidence/youtube-horizontal-agent-v2/compare.jpg", "role": "published-frame", "note": "从公开视频恢复的真实场景抽帧；本地原始 EDL 已缺失" }
+  ],
+  "preview": { "state": "ready", "poster": "visual-assets/evidence/youtube-horizontal-agent-v2/family.jpg", "format": "horizontal" },
+  "items": [
+    { "id": "compare", "label": "双栏对比", "kind": "component", "status": "ready", "provenance": "公开视频真实成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/youtube-horizontal-agent-v2/compare.jpg", "format": "horizontal" } },
+    { "id": "workflow", "label": "流程链", "kind": "component", "status": "ready", "provenance": "公开视频真实成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/youtube-horizontal-agent-v2/workflow.jpg", "format": "horizontal" } },
+    { "id": "stack", "label": "能力栈", "kind": "component", "status": "ready", "provenance": "公开视频真实成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/youtube-horizontal-agent-v2/stack.jpg", "format": "horizontal" } },
+    { "id": "map", "label": "业务地图", "kind": "component", "status": "ready", "provenance": "公开视频真实成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/youtube-horizontal-agent-v2/map.jpg", "format": "horizontal" } },
+    { "id": "pipeline", "label": "生产线", "kind": "component", "status": "ready", "provenance": "公开视频真实成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/youtube-horizontal-agent-v2/pipeline.jpg", "format": "horizontal" } },
+    { "id": "pillars", "label": "双支柱", "kind": "component", "status": "ready", "provenance": "公开视频真实成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/youtube-horizontal-agent-v2/pillars.jpg", "format": "horizontal" } },
+    { "id": "flywheel", "label": "增长飞轮", "kind": "component", "status": "ready", "provenance": "公开视频真实成片抽帧", "preview": { "state": "ready", "poster": "visual-assets/evidence/youtube-horizontal-agent-v2/flywheel.jpg", "format": "horizontal" } },
+    { "id": "overlay-only", "label": "透明解释层", "kind": "layout", "status": "ready", "provenance": "归档 renderer 重建 overlay-only fixture", "preview": { "state": "ready", "poster": "visual-assets/evidence/youtube-horizontal-agent-v2/overlay-only.jpg", "format": "horizontal" } }
+  ],
+  "migrationCandidates": [
+    { "targetId": "beats-v2-face-safe", "note": "通用横屏走统一 builder；map/pillars/flywheel 值得另行组件化。" }
+  ],
+  "lineage": {
+    "parents": [],
+    "supersedes": [],
+    "supersededBy": ["beats-v2-face-safe"]
+  },
+  "apply": { "mode": "none" }
+}

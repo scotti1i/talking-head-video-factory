@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 1,
+  "source": "https://github.com/Vincentwei1021/video-shotcraft",
+  "license": "Apache-2.0",
+  "licenseFile": "../LICENSE",
+  "policy": "pristine-upstream-motion-recipes-do-not-edit",
+  "files": [
+    {
+      "source": "demos/interaction/canvas-materialize-moves/DiagramCascadeBuild.tsx",
+      "target": "DiagramCascadeBuild.tsx",
+      "sha256": "c22146209dc68542d3ac630c8816d713d92786501c9cc9e592d1637852fbb548"
+    },
+    {
+      "source": "demos/ui-entrance/bezier-source-converge-merge/BezierSourceConvergeMerge.tsx",
+      "target": "BezierSourceConvergeMerge.tsx",
+      "sha256": "a58bdab4308a4f6d92282b969c494359547445b4f8ac92d3742798d31a6adf07"
+    },
+    {
+      "source": "demos/transition/transition-travel/SharedElementMorph.tsx",
+      "target": "SharedElementMorph.tsx",
+      "sha256": "fe5d3a1071e71cce96470939bb6f4b4e7dc52e61058697ffa010c3e17e3521f3"
+    },
+    {
+      "source": "demos/_fixtures/Motion.tsx",
+      "target": "_fixtures/Motion.tsx",
+      "sha256": "961a9ce2401e38b5fe22fce7f44d84fc656d76aad0b178082e447feb01494421"
+    },
+    {
+      "source": "demos/_fixtures/Fixtures.tsx",
+      "target": "_fixtures/Fixtures.tsx",
+      "sha256": "e06a6edce67ba854c46b897c11575d487ab265a2b3edf2b480be85dbe29bb5a0"
+    },
+    {
+      "source": "demos/typography/blur-slide/BlurSlide.tsx",
+      "target": "BlurSlide.tsx",
+      "sha256": "1ad15a7dd560d43fe4a6f40a823d69d6f87ac4f5fc31196f556b31342fd8932f"
+    },
+    {
+      "source": "demos/typography/type-rhythm-sync/KaraokeFillSync.tsx",
+      "target": "KaraokeFillSync.tsx",
+      "sha256": "eddd5a37905bbc7be54066a349dec2c48ebc1e856b30b9f6de906b6c6a374579"
+    },
+    {
+      "source": "demos/typography/marker-underline-title/MarkerUnderlineTitle.tsx",
+      "target": "MarkerUnderlineTitle.tsx",
+      "sha256": "5881cb0b5e38b53eec9dae5093b9dfdb4c69d5b6cf76cf587bc9b123d0e38477"
+    },
+    {
+      "source": "demos/ui-entrance/element-body-moves/ContactShadowLift.tsx",
+      "target": "ContactShadowLift.tsx",
+      "sha256": "f29a6d77b407b9c6ad8caa8fe9e5c12cfa2d51202d6ea8258cae5015a736843c"
+    },
+    {
+      "source": "demos/ui-entrance/morph-from-primitive/MorphFromPrimitive.tsx",
+      "target": "MorphFromPrimitive.tsx",
+      "sha256": "f18d82ce6675be5c0b097969285a973c122633f2844fd1c4a81cc1c6a97a0d5e"
+    },
+    {
+      "source": "demos/effects/slam-entrance-moves/ScoreSlam.tsx",
+      "target": "ScoreSlam.tsx",
+      "sha256": "e2ce99bd4e387e0ff03ffc22948d787fc1e7696f72ffe482f50daabd9336e878"
+    },
+    {
+      "source": "demos/effects/icon-performance-moves/PopBurstConfirm.tsx",
+      "target": "PopBurstConfirm.tsx",
+      "sha256": "cca22774f4d75754795f96e0060f727a8b062c3005b7bab5cf45fce86f02b80f"
+    },
+    {
+      "source": "demos/effects/scanline-annotate-focus/ScanlineAnnotateFocus.tsx",
+      "target": "ScanlineAnnotateFocus.tsx",
+      "sha256": "c0bff214f004465455400f468847b0ed73f672a6d75b05d6ee8b3704b9d82fd7"
+    },
+    {
+      "source": "demos/camera/crash-zoom-punch/CrashZoomReal.tsx",
+      "target": "CrashZoomReal.tsx",
+      "sha256": "495a5afc91a4c93424d15edf35c8767d1ff90f4d9515bb9194f68d7f355a181f"
+    },
+    {
+      "source": "demos/data/odometer-digit-roll/OdometerDigitRoll.tsx",
+      "target": "OdometerDigitRoll.tsx",
+      "sha256": "e91c46c1c80f68f83fbed2c1c39e5ad22d6be5799f3541978f56b9e61ee73af2"
+    },
+    {
+      "source": "demos/data/before-after-slider-scrub/BeforeAfterSliderScrub.tsx",
+      "target": "BeforeAfterSliderScrub.tsx",
+      "sha256": "69096e8839be16b7818d3ac375ad170828cb08fa7fcd4fd826d4cc1b4cdf7f69"
+    },
+    {
+      "source": "demos/data/hatch-depth/HatchDepth.tsx",
+      "target": "HatchDepth.tsx",
+      "sha256": "a6e3050ac9b86590a6c74fc9aae3f764e5a4664c891957a98a421303bc8e6b49"
+    },
+    {
+      "source": "demos/ui-entrance/integration-hub-map/IntegrationHubMap.tsx",
+      "target": "IntegrationHubMap.tsx",
+      "sha256": "fcd9ed29f4f0ca41a05377f31459c2dba664784ea7f5c900abefabc2dc59f3c9"
+    },
+    {
+      "source": "demos/effects/glow-flyline-moves/FlylineArc.tsx",
+      "target": "FlylineArc.tsx",
+      "sha256": "6c2f3a636d343474dcb489393ad7c71d6f454c1962113c9c90988bfa5f48ae4c"
+    },
+    {
+      "source": "demos/transition/line-carry-transition/LineCarryTransition.tsx",
+      "target": "LineCarryTransition.tsx",
+      "sha256": "e3cf0eafab68e3fced8705adedadcd685033af84595d3c738e92af782687ac95"
+    },
+    {
+      "source": "demos/transition/circle-match-iris/CircleMatchIris.tsx",
+      "target": "CircleMatchIris.tsx",
+      "sha256": "0c2afbb49d65aa15241396fb2343ba3cb046d0958cd80a9eac1925e4f93efd20"
+    },
+    {
+      "source": "demos/camera/depth-layer-moves/MultiplaneReal.tsx",
+      "target": "MultiplaneReal.tsx",
+      "sha256": "b67c6ab37f02f1df6033b54fdb08d1fa0aa85300404578be50715285d16d2124"
+    }
+  ]
+}

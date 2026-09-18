@@ -1,8 +1,8 @@
 {
   "id": "neon-forest",
   "label": "墨绿霓虹",
-  "description": "深墨绿底 + 荧光青绿高亮 + 琥珀次强调，适合技术与制造业解释卡。",
-  "source": "public design tokens",
+  "description": "深墨绿底 + 荧光青绿高亮 + 琥珀次强调。源自 build-composition.mjs 的原生视觉(2026-06 系列成片)。",
+  "source": "scripts/build-composition.mjs 硬编码色板抽取",
   "fonts": [
     { "family": "Inter", "file": "Inter-700-latin.woff2", "weight": 700 },
     { "family": "LXGWWenKaiTC", "file": "LXGWWenKaiTC-400-latin.woff2", "weight": 400 }

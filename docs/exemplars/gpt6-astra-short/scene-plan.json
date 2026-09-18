@@ -1,0 +1,509 @@
+{
+  "schemaVersion": 1,
+  "fps": 30,
+  "duration": 95.0,
+  "skin": "stage3d",
+  "source": {
+    "media": "factory/gpt6-astra-future-20260905/aroll.mp4",
+    "start": 0.0
+  },
+  "background": {
+    "plate": "factory/plates/studio-topglow.png"
+  },
+  "keywords": [
+    "GPT-6 Astra",
+    "控制电脑",
+    "API",
+    "MCP",
+    "SOP",
+    "说明书",
+    "一下午",
+    "CEO",
+    "Codex",
+    "实测",
+    "每一个软件"
+  ],
+  "sfx": true,
+  "speaker": [
+    {
+      "at": 0,
+      "mode": "hero"
+    },
+    {
+      "at": 2.7,
+      "mode": "hidden"
+    },
+    {
+      "at": 7.09,
+      "mode": "dock"
+    },
+    {
+      "at": 57.79,
+      "mode": "orb-right"
+    },
+    {
+      "at": 70.58,
+      "mode": "dock"
+    },
+    {
+      "at": 91.2,
+      "mode": "hero"
+    }
+  ],
+  "scenes": [
+    {
+      "id": "hook-title",
+      "type": "title",
+      "start": 0.0,
+      "end": 2.6,
+      "at": 0.1,
+      "title": "GPT-6 Astra 最狠的一个功能",
+      "sub": "它会用你电脑上的每一个软件",
+      "intent": "开屏钩子：话题 + 悬念（叠在正脸上）",
+      "layout": "side"
+    },
+    {
+      "id": "hook-broll",
+      "type": "broll",
+      "start": 3.4,
+      "end": 7.0,
+      "intent": "开屏钩子后的视觉冲击：第三方用 Astra 在 Blender 复刻的旧金山艺术宫夜景（通栏，人物隐藏）",
+      "media": "factory/gpt6-astra-future-20260905/broll/t07-palace-fine-arts-blender.mp4",
+      "origin": "third-party",
+      "layout": "strip"
+    },
+    {
+      "id": "osworld-board",
+      "type": "leaderboard",
+      "start": 7.09,
+      "end": 12.74,
+      "intent": "可信度：官方 OSWorld 2.0 电脑操作成绩",
+      "title": "OSWorld 2.0 · 电脑操作成功率（OpenAI 官方发布页）",
+      "highlight": 0,
+      "rows": [
+        {
+          "label": "GPT-6 Astra",
+          "value": 72.6,
+          "display": "72.6%",
+          "at": 7.69,
+          "image": "factory/gpt6-astra-future-20260905/logos/openai.svg"
+        },
+        {
+          "label": "Claude Opus 5",
+          "value": 70.2,
+          "display": "70.2%",
+          "at": 8.79,
+          "image": "factory/gpt6-astra-future-20260905/logos/claude.svg"
+        },
+        {
+          "label": "GPT-5.6 Sol（上一代）",
+          "value": 65.7,
+          "display": "65.7%",
+          "at": 9.89
+        }
+      ]
+    },
+    {
+      "id": "interface-stack",
+      "type": "reminders",
+      "start": 12.74,
+      "end": 23.84,
+      "intent": "有 API 的、有 MCP 的、剩下的每一个软件",
+      "items": [
+        {
+          "text": "有 API 的软件",
+          "at": 16.22
+        },
+        {
+          "text": "有 MCP 的软件",
+          "at": 16.76
+        },
+        {
+          "text": "剩下的：每一个软件都要能控制",
+          "at": 20.14,
+          "tone": "accent"
+        }
+      ]
+    },
+    {
+      "id": "interface-verdict",
+      "type": "label",
+      "start": 21.34,
+      "end": 23.84,
+      "intent": "不管它提不提供接口",
+      "items": [
+        {
+          "text": "不管它提不提供接口",
+          "at": 21.64,
+          "until": 23.74,
+          "x": 900,
+          "y": 720,
+          "size": "l",
+          "form": "fill",
+          "tone": "accent",
+          "anchor": "center"
+        }
+      ]
+    },
+    {
+      "id": "compound-failure",
+      "type": "equation",
+      "start": 23.84,
+      "end": 34.85,
+      "intent": "单步 60% 连乘：两步 36%，复杂任务几乎必败",
+      "rows": [
+        {
+          "terms": [
+            {
+              "text": "60%",
+              "at": 26.64
+            },
+            {
+              "text": "×",
+              "at": 30.13,
+              "kind": "op"
+            },
+            {
+              "text": "60%",
+              "at": 30.29
+            },
+            {
+              "text": "=",
+              "at": 30.64,
+              "kind": "op"
+            },
+            {
+              "text": "36%",
+              "at": 30.79,
+              "kind": "result"
+            }
+          ]
+        },
+        {
+          "terms": [
+            {
+              "text": "复杂任务",
+              "at": 31.7
+            },
+            {
+              "text": "→",
+              "at": 33.14,
+              "kind": "op"
+            },
+            {
+              "text": "几乎一定失败",
+              "at": 33.94,
+              "kind": "result",
+              "tone": "red"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compound-bridge",
+      "type": "accent",
+      "start": 23.84,
+      "end": 26.2,
+      "intent": "承上：以前的电脑操作 AI 单步成功率（贴脸，板子还没开）",
+      "items": [
+        {
+          "at": 23.89,
+          "until": 26.0,
+          "anchor": "speaker-right",
+          "text": "以前的电脑操作 AI，单步成功率"
+        }
+      ]
+    },
+    {
+      "id": "compound-note",
+      "type": "label",
+      "start": 23.84,
+      "end": 34.85,
+      "intent": "承上：以前的电脑操作 AI 单步成功率 + 标注 60% 是假设值",
+      "items": [
+        {
+          "text": "假设值 · 官方旧基线 OSWorld 65.7%",
+          "at": 27.24,
+          "until": 34.64,
+          "x": 1195,
+          "y": 805,
+          "size": "s",
+          "anchor": "center"
+        }
+      ]
+    },
+    {
+      "id": "screen-broll",
+      "type": "broll",
+      "start": 35.2,
+      "end": 39.7,
+      "intent": "「盯着你的屏幕」：第三方实测 Astra 通过 iPhone 镜像操作真机（面板）",
+      "media": "factory/gpt6-astra-future-20260905/broll/t08-iphone-mirroring-instagram.mp4",
+      "origin": "third-party",
+      "layout": "panel"
+    },
+    {
+      "id": "screen-ai",
+      "type": "graph",
+      "start": 39.7,
+      "end": 47.28,
+      "intent": "盯着屏幕、看画面变化、像人一样操作的 AI",
+      "nodes": [
+        {
+          "id": "screen",
+          "label": "你的屏幕",
+          "kind": "content",
+          "at": 40.22,
+          "x": 1000,
+          "y": 470,
+          "image": "factory/objects/device.png",
+          "tone": "ink",
+          "en": "Screen"
+        },
+        {
+          "id": "astra",
+          "label": "GPT-6 Astra",
+          "kind": "agent",
+          "at": 42.46,
+          "x": 1440,
+          "y": 470,
+          "image": "factory/gpt6-astra-future-20260905/logos/openai.svg",
+          "tone": "lime",
+          "en": "Astra",
+          "badge": {
+            "at": 44.05,
+            "text": "像人一样操作",
+            "tone": "accent",
+            "fx": "impact"
+          }
+        }
+      ],
+      "edges": [
+        {
+          "from": "astra",
+          "to": "screen",
+          "at": 43.36,
+          "style": "chevron",
+          "highlight": [
+            [
+              43.36,
+              45.05
+            ]
+          ]
+        }
+      ],
+      "notes": [
+        {
+          "text": "看画面变化",
+          "at": 41.19,
+          "until": 43.8,
+          "x": 800,
+          "y": 760,
+          "w": 320,
+          "pill": true
+        },
+        {
+          "text": "去干活",
+          "at": 45.05,
+          "until": 47.18,
+          "x": 1060,
+          "y": 760,
+          "w": 200,
+          "tone": "accent",
+          "pill": true
+        }
+      ]
+    },
+    {
+      "id": "teach-once",
+      "type": "ladder",
+      "start": 47.28,
+      "end": 57.79,
+      "intent": "演示一下 → 说明书 → SOP → 干活",
+      "steps": [
+        {
+          "id": "demo",
+          "label": "演示操作一下",
+          "at": 48.58,
+          "image": "factory/objects/screen-recording.png"
+        },
+        {
+          "id": "manual",
+          "label": "一份说明书",
+          "at": 52.93,
+          "image": "factory/objects/document.png"
+        },
+        {
+          "id": "sop",
+          "label": "SOP",
+          "at": 55.22,
+          "image": "factory/objects/rulebook.png"
+        }
+      ],
+      "verdict": {
+        "at": 56.28,
+        "text": "直接把活干了",
+        "tone": "accent"
+      }
+    },
+    {
+      "id": "learned-in-an-afternoon",
+      "type": "converge",
+      "start": 57.79,
+      "end": 70.58,
+      "intent": "重复劳动、判断、创意 → 一下午被 Codex + Astra 学走",
+      "sources": [
+        {
+          "label": "重复性劳动",
+          "at": 60.53
+        },
+        {
+          "label": "带判断的工作",
+          "at": 61.93
+        },
+        {
+          "label": "带创意的工作",
+          "at": 62.59
+        }
+      ],
+      "sink": {
+        "label": "Codex + GPT-6 Astra",
+        "kind": "agent",
+        "at": 66.59,
+        "image": "factory/gpt6-astra-future-20260905/logos/openai.svg"
+      },
+      "convergeAt": 67.34,
+      "caption": {
+        "text": "一下午之内，直接学过去",
+        "at": 69.12
+      },
+      "eraseAt": 70.29
+    },
+    {
+      "id": "org-before-accent",
+      "type": "accent",
+      "start": 74.4,
+      "end": 77.4,
+      "intent": "「以前：一个小领导」贴脸",
+      "items": [
+        {
+          "at": 74.64,
+          "until": 77.2,
+          "anchor": "speaker-right",
+          "text": "以前：一个小领导"
+        }
+      ]
+    },
+    {
+      "id": "org-chart",
+      "type": "graph",
+      "start": 77.9,
+      "end": 84.65,
+      "intent": "以后：CEO → 业务 Leader → Codex + Astra 执行层（「以前：小领导」用贴脸点缀带过）",
+      "nodes": [
+        {
+          "id": "ceo",
+          "label": "CEO",
+          "kind": "content",
+          "at": 78.2,
+          "x": 1400,
+          "y": 240,
+          "image": "factory/objects/boss.png",
+          "tone": "red"
+        },
+        {
+          "id": "lead1",
+          "label": "业务 Leader",
+          "kind": "content",
+          "at": 79.65,
+          "x": 1200,
+          "y": 480,
+          "image": "factory/objects/business.png",
+          "tone": "purple",
+          "small": true
+        },
+        {
+          "id": "lead2",
+          "label": "业务 Leader",
+          "kind": "content",
+          "at": 79.95,
+          "x": 1600,
+          "y": 480,
+          "image": "factory/objects/business.png",
+          "tone": "purple",
+          "small": true
+        },
+        {
+          "id": "codex",
+          "label": "Codex",
+          "kind": "agent",
+          "at": 82.49,
+          "x": 1200,
+          "y": 720,
+          "image": "factory/objects/ai-agent.png",
+          "tone": "lime",
+          "small": true
+        },
+        {
+          "id": "astra2",
+          "label": "GPT-6 Astra",
+          "kind": "agent",
+          "at": 83.69,
+          "x": 1600,
+          "y": 720,
+          "image": "factory/gpt6-astra-future-20260905/logos/openai.svg",
+          "tone": "lime",
+          "small": true
+        }
+      ],
+      "edges": [
+        {
+          "from": "ceo",
+          "to": "lead1",
+          "at": 79.65,
+          "style": "chevron"
+        },
+        {
+          "from": "ceo",
+          "to": "lead2",
+          "at": 79.95,
+          "style": "chevron"
+        },
+        {
+          "from": "lead1",
+          "to": "codex",
+          "at": 82.49,
+          "style": "chevron"
+        },
+        {
+          "from": "lead2",
+          "to": "astra2",
+          "at": 83.69,
+          "style": "chevron"
+        }
+      ]
+    },
+    {
+      "id": "test-broll",
+      "type": "broll",
+      "start": 85.0,
+      "end": 91.0,
+      "intent": "「实测…Blender」：第三方用 Astra 在 Blender 生成的哥特大教堂（面板）",
+      "media": "factory/gpt6-astra-future-20260905/broll/t01-blender-cathedral-viewport.mp4",
+      "origin": "third-party",
+      "layout": "panel"
+    },
+    {
+      "id": "outro-title",
+      "type": "title",
+      "start": 91.2,
+      "end": 95.0,
+      "at": 91.4,
+      "title": "下一期：实测 GPT-6 Astra",
+      "sub": "剪映 · Blender",
+      "intent": "收口",
+      "layout": "side"
+    }
+  ]
+}

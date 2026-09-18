@@ -1,0 +1,438 @@
+{
+  "note": "跨 job 共享物件库：Codex 图像工具生成 + 纯色底抠透明 512px；引用路径 factory/objects/<id>.png（工作区准备时会同步进 public/factory/objects）",
+  "style": "小Lin说式扁平体积插画：柔和顶光、两三层明度、无渐变霓虹、无文字、无品牌标志；主体米白 #EADFC5 与深灰 #2A2A2E 为主，哑金 #D6B25E 作一处点缀；背景纯色 #0B0B0D，主体占画面 70%，居中，四周留白",
+  "objects": {
+    "scroll-phone": {
+      "label": "刷抖音",
+      "subject": "一只手拿着竖屏手机，拇指上滑刷短视频，屏幕上是模糊的视频卡片",
+      "job": "ai-editing-xiaolin-stage-20260903",
+      "file": "scroll-phone.png"
+    },
+    "ai-god": {
+      "label": "AI 就是神",
+      "subject": "一个圆润的小机器人头顶一圈发光的光环，双手张开",
+      "job": "ai-editing-xiaolin-stage-20260903",
+      "file": "ai-god.png"
+    },
+    "ai-skeptic": {
+      "label": "AI 不能剪辑",
+      "subject": "一个人的剪影双手叉腰，旁边一个被划了叉的小机器人",
+      "job": "ai-editing-xiaolin-stage-20260903",
+      "file": "ai-skeptic.png"
+    },
+    "youtube-screen": {
+      "label": "YouTube 视频",
+      "subject": "一台横屏显示器，屏幕中央一个大的播放按钮",
+      "job": "ai-editing-xiaolin-stage-20260903",
+      "file": "youtube-screen.png"
+    },
+    "editing": {
+      "label": "剪辑",
+      "subject": "一段胶片条被一把剪刀剪开",
+      "job": "ai-editing-xiaolin-stage-20260903",
+      "file": "editing.png"
+    },
+    "publish": {
+      "label": "一键发布分发",
+      "subject": "一架纸飞机从一部手机上飞出去，后面拖着三条细线",
+      "job": "ai-editing-xiaolin-stage-20260903",
+      "file": "publish.png"
+    },
+    "transcript": {
+      "label": "转录",
+      "subject": "一张文稿纸上有几行文字线条，旁边一个麦克风",
+      "job": "ai-editing-xiaolin-stage-20260903",
+      "file": "transcript.png"
+    },
+    "waveform": {
+      "label": "波形图",
+      "subject": "一段音频波形，中间有一条竖线光标切开它",
+      "job": "ai-editing-xiaolin-stage-20260903",
+      "file": "waveform.png"
+    },
+    "rough-cut": {
+      "label": "粗剪",
+      "subject": "一把大剪刀剪掉一段胶片的一大块",
+      "job": "ai-editing-xiaolin-stage-20260903",
+      "file": "rough-cut.png"
+    },
+    "fine-cut": {
+      "label": "精剪",
+      "subject": "一把镊子和放大镜对着一小段胶片",
+      "job": "ai-editing-xiaolin-stage-20260903",
+      "file": "fine-cut.png"
+    },
+    "business": {
+      "label": "业务",
+      "subject": "一个公文包旁边一叠订单纸",
+      "job": "ai-editing-xiaolin-stage-20260903",
+      "file": "business.png"
+    },
+    "novelty": {
+      "label": "标新立异",
+      "subject": "一颗发光的灯泡，周围几颗普通灯泡是暗的",
+      "job": "ai-editing-xiaolin-stage-20260903",
+      "file": "novelty.png"
+    },
+    "traffic": {
+      "label": "流量",
+      "subject": "一群小人剪影朝着一部手机聚拢",
+      "job": "ai-editing-xiaolin-stage-20260903",
+      "file": "traffic.png"
+    },
+    "judgment": {
+      "label": "判断",
+      "subject": "一个人的侧脸剪影，脑中一个发光的对勾",
+      "job": "ai-editing-xiaolin-stage-20260903",
+      "file": "judgment.png"
+    },
+    "product-skincare": {
+      "label": "个护保健带货",
+      "subject": "一瓶护肤品和一瓶保健品胶囊并排放在一个小台子上",
+      "job": "ai-editing-xiaolin-stage-20260903",
+      "file": "product-skincare.png"
+    },
+    "toolkit": {
+      "label": "剪辑工具包",
+      "subject": "一个打开的工具箱，里面是剪刀、胶片和一块小屏幕",
+      "job": "ai-editing-xiaolin-stage-20260903",
+      "file": "toolkit.png"
+    },
+    "template": {
+      "label": "模板",
+      "subject": "三张叠放的版式卡片，最上面一张有网格线",
+      "job": "ai-editing-xiaolin-stage-20260903",
+      "file": "template.png"
+    },
+    "hourglass": {
+      "label": "时间太长",
+      "subject": "一个沙漏，沙子快漏完",
+      "job": "ai-editing-xiaolin-stage-20260903",
+      "file": "hourglass.png"
+    },
+    "expert": {
+      "label": "专业人员",
+      "subject": "一个人的剪影戴着耳机坐在剪辑台前，屏幕上有时间线",
+      "job": "ai-editing-xiaolin-stage-20260903",
+      "file": "expert.png"
+    },
+    "roi": {
+      "label": "ROI 怎么衡量",
+      "subject": "一台老式黄铜天平，一侧托盘放一枚金币，另一侧托盘放一小卷胶片，天平微微向金币倾斜（不要文字、不要问号）",
+      "job": "ai-editing-xiaolin-stage-20260903",
+      "file": "roi.png"
+    },
+    "boundary": {
+      "label": "技术边界",
+      "subject": "一段虚线围栏，围栏外一片空白",
+      "job": "ai-editing-xiaolin-stage-20260903",
+      "file": "boundary.png"
+    },
+    "hundred-videos": {
+      "label": "一天剪 100 条",
+      "subject": "一摞叠得很高的手机视频缩略图卡片",
+      "job": "ai-editing-xiaolin-stage-20260903",
+      "file": "hundred-videos.png"
+    },
+    "creator-video": {
+      "label": "达人视频",
+      "subject": "一部竖屏手机，屏幕里是一个正在讲话的博主剪影和播放按钮",
+      "job": "gmv-max-xiaolin-stage-20260902",
+      "file": "creator-video.png"
+    },
+    "brand-search": {
+      "label": "品牌搜索",
+      "subject": "一个放大镜叠在一个小店铺门面上",
+      "job": "gmv-max-xiaolin-stage-20260902",
+      "file": "brand-search.png"
+    },
+    "ad-click": {
+      "label": "广告点击",
+      "subject": "一个鼠标光标正点在一张带喇叭标记的广告卡片上",
+      "job": "gmv-max-xiaolin-stage-20260902",
+      "file": "ad-click.png"
+    },
+    "order": {
+      "label": "订单",
+      "subject": "一个带打勾收据的购物袋",
+      "job": "gmv-max-xiaolin-stage-20260902",
+      "file": "order.png"
+    },
+    "ad-seen": {
+      "label": "看过广告",
+      "subject": "一个喇叭朝着一只眼睛，表示看过但没点",
+      "job": "gmv-max-xiaolin-stage-20260902",
+      "file": "ad-seen.png"
+    },
+    "organic-video": {
+      "label": "自然视频",
+      "subject": "一部竖屏手机，屏幕里是播放按钮和一片叶子标记",
+      "job": "gmv-max-xiaolin-stage-20260902",
+      "file": "organic-video.png"
+    },
+    "platform-tiktok": {
+      "label": "TikTok（泛指短视频平台）",
+      "subject": "一部手机屏幕上有一个音符形状的抽象图形，不使用任何真实品牌标志",
+      "job": "gmv-max-xiaolin-stage-20260902",
+      "file": "platform-tiktok.png"
+    },
+    "platform-amazon": {
+      "label": "Amazon（泛指电商平台）",
+      "subject": "一个快递纸箱上有一个微笑弧线，不使用任何真实品牌标志",
+      "job": "gmv-max-xiaolin-stage-20260902",
+      "file": "platform-amazon.png"
+    },
+    "platform-site": {
+      "label": "独立站",
+      "subject": "一个带地址栏的浏览器窗口，里面是一个小店铺",
+      "job": "gmv-max-xiaolin-stage-20260902",
+      "file": "platform-site.png"
+    },
+    "erp": {
+      "label": "ERP",
+      "subject": "一台显示表格的电脑显示器",
+      "job": "gmv-max-xiaolin-stage-20260902",
+      "file": "erp.png"
+    },
+    "stock": {
+      "label": "库存",
+      "subject": "一排货架上摞着纸箱",
+      "job": "gmv-max-xiaolin-stage-20260902",
+      "file": "stock.png"
+    },
+    "cost": {
+      "label": "成本",
+      "subject": "一摞硬币旁边一张价签",
+      "job": "gmv-max-xiaolin-stage-20260902",
+      "file": "cost.png"
+    },
+    "refund": {
+      "label": "退款",
+      "subject": "一个纸箱带着回转箭头",
+      "job": "gmv-max-xiaolin-stage-20260902",
+      "file": "refund.png"
+    },
+    "creator-content": {
+      "label": "达人内容",
+      "subject": "一台摄像机对着一个博主剪影",
+      "job": "gmv-max-xiaolin-stage-20260902",
+      "file": "creator-content.png"
+    },
+    "ai-agent": {
+      "label": "AI agent",
+      "subject": "一个圆润友好的小机器人头部，面板上有两只发光的眼睛",
+      "job": "gmv-max-xiaolin-stage-20260902",
+      "file": "ai-agent.png"
+    },
+    "report": {
+      "label": "报表",
+      "subject": "一张带柱状图的报表纸",
+      "job": "gmv-max-xiaolin-stage-20260902",
+      "file": "report.png"
+    },
+    "money-1000": {
+      "label": "下一千块钱",
+      "subject": "一小摞纸币被一条纸带扎着",
+      "job": "gmv-max-xiaolin-stage-20260902",
+      "file": "money-1000.png"
+    },
+    "algorithm": {
+      "label": "同一套算法",
+      "subject": "一个带等号和天平的计算器",
+      "job": "gmv-max-xiaolin-stage-20260902",
+      "file": "algorithm.png"
+    },
+    "warehouse": {
+      "label": "仓库（B-roll 备用）",
+      "subject": "跨境电商仓库内景，货架、打包台、纸箱，广角",
+      "job": "gmv-max-xiaolin-stage-20260902",
+      "file": "warehouse.png"
+    },
+    "search-magnifier": {
+      "label": "搜商品",
+      "subject": "一个放大镜悬在三张小商品卡片上方，镜片里映出其中一张",
+      "job": "ai-shopping-independent-site-20260831",
+      "file": "search-magnifier.png"
+    },
+    "compare-scale": {
+      "label": "比价格",
+      "subject": "一台小天平，两侧托盘各放一个带价签的小盒子，一侧略低",
+      "job": "ai-shopping-independent-site-20260831",
+      "file": "compare-scale.png"
+    },
+    "wallet-pay": {
+      "label": "付钱",
+      "subject": "一只从钱包里抽出的信用卡，卡面空白无文字，旁边一个小的支付成功圆形图标",
+      "job": "ai-shopping-independent-site-20260831",
+      "file": "wallet-pay.png"
+    },
+    "storefront": {
+      "label": "独立站",
+      "subject": "一间小小的立体网店门面，门楣上一块空白招牌，橱窗里三件小商品，门前一块迎宾垫",
+      "job": "ai-shopping-independent-site-20260831",
+      "file": "storefront.png"
+    },
+    "clothes": {
+      "label": "衣服",
+      "subject": "一件挂在木衣架上的米白色 T 恤，领口挂着一枚空白尺码吊牌，旁边三个不同颜色的小色块",
+      "job": "ai-shopping-independent-site-20260831",
+      "file": "clothes.png"
+    },
+    "device": {
+      "label": "设备",
+      "subject": "一台深灰色的小型电子设备（像便携投影仪），旁边散落着数据线、遥控器和一把小螺丝刀",
+      "job": "ai-shopping-independent-site-20260831",
+      "file": "device.png"
+    },
+    "brand-box": {
+      "label": "品牌",
+      "subject": "一个高级的深色礼盒套装打开着，里面三件小瓶子，盒盖内侧一枚金色徽章",
+      "job": "ai-shopping-independent-site-20260831",
+      "file": "brand-box.png"
+    },
+    "checkout-page": {
+      "label": "收款页",
+      "subject": "一台笔记本电脑屏幕上只有一个大大的金色结账按钮和一行空白输入框的极简页面",
+      "job": "ai-shopping-independent-site-20260831",
+      "file": "checkout-page.png"
+    },
+    "after-sales": {
+      "label": "售后",
+      "subject": "一个带耳麦的对话气泡里画着一把扳手和一个对勾",
+      "job": "ai-shopping-independent-site-20260831",
+      "file": "after-sales.png"
+    },
+    "member-card": {
+      "label": "会员",
+      "subject": "一张深色的会员卡，右上角一枚金色星形徽章，卡面有一条弧形高光",
+      "job": "ai-shopping-independent-site-20260831",
+      "file": "member-card.png"
+    },
+    "repeat-order": {
+      "label": "复购",
+      "subject": "一个快递箱旁边有一个首尾相接的金色循环箭头",
+      "job": "ai-shopping-independent-site-20260831",
+      "file": "repeat-order.png"
+    },
+    "product-data": {
+      "label": "真实商品数据",
+      "subject": "一张立起来的表格卡片，三列整齐的行，右上角一个绿色对勾印章",
+      "job": "ai-shopping-independent-site-20260831",
+      "file": "product-data.png"
+    },
+    "robot-article": {
+      "label": "机器文章",
+      "subject": "一台小机器人手臂正在往一摞纸上盖章，纸上是灰色的文字横线，纸堆高得摇摇欲坠",
+      "job": "ai-shopping-independent-site-20260831",
+      "file": "robot-article.png"
+    },
+    "parcel-open": {
+      "label": "买一次就走",
+      "subject": "一个已经拆开、翻着盖子的空快递箱，旁边散着揉皱的包装纸",
+      "job": "ai-shopping-independent-site-20260831",
+      "file": "parcel-open.png"
+    },
+    "chat-log": {
+      "label": "聊天记录",
+      "subject": "一叠微信/企业微信式的聊天气泡卡片，堆叠成小山，最上面一张气泡里有省略号",
+      "job": "employee-distillation-20260831",
+      "file": "chat-log.png"
+    },
+    "document": {
+      "label": "文档",
+      "subject": "三份摞在一起的 A4 文档，最上面一份有标题横线和几行灰色文字，右上角一个回形针",
+      "job": "employee-distillation-20260831",
+      "file": "document.png"
+    },
+    "screen-recording": {
+      "label": "操作录像",
+      "subject": "一台笔记本电脑屏幕上正在录屏，屏幕左上角一个红色圆点录制标记，屏幕里是模糊的表格窗口",
+      "job": "employee-distillation-20260831",
+      "file": "screen-recording.png"
+    },
+    "customer": {
+      "label": "客户",
+      "subject": "一个正在举着手机打字的人物半身像，穿浅色外套，手机屏幕朝向观众",
+      "job": "employee-distillation-20260831",
+      "file": "customer.png"
+    },
+    "customer-service": {
+      "label": "客服",
+      "subject": "戴着耳麦的客服人物半身像，面前一台显示对话窗口的显示器",
+      "job": "employee-distillation-20260831",
+      "file": "customer-service.png"
+    },
+    "logistics-api": {
+      "label": "物流 API",
+      "subject": "一辆小货车图标嵌在一个圆角接口方块里，方块右侧伸出一根数据线插头",
+      "job": "employee-distillation-20260831",
+      "file": "logistics-api.png"
+    },
+    "lost-parcel": {
+      "label": "货丢了",
+      "subject": "一个被撕开一角、边角压扁的纸箱，箱侧贴着一张红色的“破损”警示贴纸，箱子微微倾斜（不要问号、不要文字）",
+      "job": "employee-distillation-20260831",
+      "file": "lost-parcel.png"
+    },
+    "vip-customer": {
+      "label": "长期客户",
+      "subject": "一张客户档案卡片，左侧圆形头像，右侧五颗金色小星星和一条时间轴",
+      "job": "employee-distillation-20260831",
+      "file": "vip-customer.png"
+    },
+    "tracking-map": {
+      "label": "查物流轨迹",
+      "subject": "一张简化的路线地图，一条虚线从仓库图标连到定位针，中途一个小货车",
+      "job": "employee-distillation-20260831",
+      "file": "tracking-map.png"
+    },
+    "verify": {
+      "label": "多方验证",
+      "subject": "一个放大镜叠在三张票据上，放大镜里显示一个对勾",
+      "job": "employee-distillation-20260831",
+      "file": "verify.png"
+    },
+    "profit-calc": {
+      "label": "还赚不赚",
+      "subject": "一台老式计算器旁边一枚硬币和一枚硬币大小的空缺凹槽，显示屏上一条向下的小箭头",
+      "job": "employee-distillation-20260831",
+      "file": "profit-calc.png"
+    },
+    "boss": {
+      "label": "请示领导",
+      "subject": "一把高背办公椅背对观众，椅背上方露出一点头顶，椅子旁一盏台灯",
+      "job": "employee-distillation-20260831",
+      "file": "boss.png"
+    },
+    "gmvmax-dashboard": {
+      "label": "GMV Max 诊断系统",
+      "subject": "一块仪表盘显示屏，上面三块小图表和一个圆形仪表指针，屏幕边缘微微发暗金色",
+      "job": "employee-distillation-20260831",
+      "file": "gmvmax-dashboard.png"
+    },
+    "rulebook": {
+      "label": "官方改了规则",
+      "subject": "一本打开的规则手册，一页上有一个红色印章和一条被红笔改动的顺序箭头",
+      "job": "employee-distillation-20260831",
+      "file": "rulebook.png"
+    },
+    "video-stack": {
+      "label": "操作视频",
+      "subject": "一摞堆得很高的视频缩略图卡片，每张中央一个播放三角，最上面几张微微散开",
+      "job": "employee-distillation-20260831",
+      "file": "video-stack.png"
+    },
+    "checklist": {
+      "label": "流程一二三四",
+      "subject": "一张竖排的清单卡片，四行编号 1 2 3 4，每行前面一个方框，前两个打了金色对勾",
+      "job": "employee-distillation-20260831",
+      "file": "checklist.png"
+    },
+    "boundary-line": {
+      "label": "边界条件",
+      "subject": "一条金色的警戒线在两根短桩之间拉开，桩子是深灰色",
+      "job": "employee-distillation-20260831",
+      "file": "boundary-line.png"
+    }
+  }
+}

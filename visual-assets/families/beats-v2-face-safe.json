@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "id": "beats-v2-face-safe",
+  "label": "Beats v2 · Face-safe",
+  "kind": "preset",
+  "description": "当前唯一生产级视觉家族。十种信息组件共享一份数据，在抖音竖屏和 YouTube 横屏中分别重排。",
+  "lifecycle": "published",
+  "compatibility": "supported",
+  "formats": ["vertical", "horizontal"],
+  "sources": [
+    { "path": "scripts/build-beats-composition.mjs", "role": "production-renderer" },
+    { "path": "themes/registry.json", "role": "theme-registry" },
+    { "path": "jobs/beats-regression/data/beats.json", "role": "regression-fixture" }
+  ],
+  "items": [
+    { "id": "statement", "label": "判断金句", "kind": "component" },
+    { "id": "hero", "label": "核心数字", "kind": "component" },
+    { "id": "panel", "label": "要点面板", "kind": "component" },
+    { "id": "chips", "label": "标签组", "kind": "component" },
+    { "id": "split", "label": "双栏对比", "kind": "component" },
+    { "id": "duel", "label": "错与对", "kind": "component" },
+    { "id": "pipeline", "label": "流程链", "kind": "component" },
+    { "id": "trio", "label": "三要素", "kind": "component" },
+    { "id": "diagram", "label": "中心关系图", "kind": "component" },
+    { "id": "cta", "label": "行动收束", "kind": "component" },
+    {
+      "id": "vertical-face-safe",
+      "label": "竖屏人物安全布局",
+      "kind": "layout",
+      "formats": ["vertical"],
+      "preview": { "status": "ready", "format": "vertical", "poster": "jobs/beats-regression/snapshots/frame-00-at-44.7s.png" }
+    },
+    {
+      "id": "horizontal-explainer",
+      "label": "横屏左解说右人物布局",
+      "kind": "layout",
+      "formats": ["horizontal"],
+      "preview": { "status": "ready", "format": "horizontal", "poster": "jobs/beats-regression/variants/horizontal/snapshots/frame-00-at-9.5s.png" }
+    }
+  ],
+  "migrationCandidates": [],
+  "lineage": {
+    "parents": ["claude-glass-v0", "legacy-neon-guides"],
+    "supersedes": ["warm-minimal-v0", "brandkit-neon-rich-v1", "claude-glass-v0"],
+    "supersededBy": []
+  },
+  "usageMatch": {
+    "componentIds": ["statement", "hero", "panel", "chips", "split", "duel", "pipeline", "trio", "diagram", "cta"]
+  },
+  "apply": {
+    "mode": "preset",
+    "payload": { "preset": "beats-v2-face-safe" }
+  },
+  "preview": {
+    "state": "ready",
+    "poster": "jobs/beats-regression/snapshots/frame-00-at-44.7s.png",
+    "format": "vertical",
+    "theme": "warm-glass"
+  }
+}

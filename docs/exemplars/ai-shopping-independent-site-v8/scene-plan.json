@@ -1,0 +1,1121 @@
+{
+  "schemaVersion": 1,
+  "fps": 30,
+  "duration": 182.3,
+  "source": {
+    "media": "factory/ai-shopping-independent-site-20260831/aroll.mp4",
+    "start": 0
+  },
+  "anchors": "data/words-timeline.json（成片 A-roll 的 turbo 转录，单源）",
+  "background": {
+    "plate": "factory/plates/slate-gradient.png"
+  },
+  "sfx": true,
+  "speaker": [
+    {
+      "at": 0,
+      "mode": "hero"
+    },
+    {
+      "at": 1.6,
+      "mode": "orb-left"
+    },
+    {
+      "at": 3.9,
+      "mode": "dock"
+    },
+    {
+      "at": 9.6,
+      "mode": "orb-left"
+    },
+    {
+      "at": 13.5,
+      "mode": "hero"
+    },
+    {
+      "at": 22,
+      "mode": "dock"
+    },
+    {
+      "at": 26.3,
+      "mode": "hero-center"
+    },
+    {
+      "at": 33.3,
+      "mode": "hero"
+    },
+    {
+      "at": 36.3,
+      "mode": "dock"
+    },
+    {
+      "at": 51.3,
+      "mode": "orb-right"
+    },
+    {
+      "at": 58.9,
+      "mode": "hero"
+    },
+    {
+      "at": 68,
+      "mode": "dock"
+    },
+    {
+      "at": 74,
+      "mode": "hero"
+    },
+    {
+      "at": 83,
+      "mode": "hero"
+    },
+    {
+      "at": 85.9,
+      "mode": "dock"
+    },
+    {
+      "at": 91.5,
+      "mode": "dock"
+    },
+    {
+      "at": 102.5,
+      "mode": "dock"
+    },
+    {
+      "at": 120.4,
+      "mode": "hero-right"
+    },
+    {
+      "at": 127.6,
+      "mode": "dock"
+    },
+    {
+      "at": 138.8,
+      "mode": "hero"
+    },
+    {
+      "at": 145.1,
+      "mode": "orb-left"
+    },
+    {
+      "at": 150,
+      "mode": "hero"
+    },
+    {
+      "at": 153.5,
+      "mode": "dock"
+    },
+    {
+      "at": 163.3,
+      "mode": "orb-left"
+    },
+    {
+      "at": 166.7,
+      "mode": "hero"
+    },
+    {
+      "at": 171,
+      "mode": "orb-left"
+    },
+    {
+      "at": 172.4,
+      "mode": "hero"
+    },
+    {
+      "at": 175.4,
+      "mode": "hero"
+    }
+  ],
+  "scenes": [
+    {
+      "id": "agentic-evidence",
+      "type": "evidence",
+      "start": 0.6,
+      "end": 3.8,
+      "intent": "开场用真实页面：Shopify「Agentic Commerce」文章，撞推到标题——与其他片的开场手法不同",
+      "image": "factory/ai-shopping-independent-site-20260831/evidence/shopify-agentic-commerce.png",
+      "imageSize": {
+        "w": 1440,
+        "h": 1600
+      },
+      "thumbCrop": {
+        "x": 0,
+        "y": 400,
+        "w": 1440,
+        "h": 810
+      },
+      "expandAt": 2,
+      "focus": [
+        {
+          "at": 2.1,
+          "box": {
+            "x": 360,
+            "y": 470,
+            "w": 720,
+            "h": 130
+          },
+          "scale": 1.6,
+          "zoom": "crash",
+          "note": "代理式商务：好处与怎么起步"
+        },
+        {
+          "at": 3,
+          "box": {
+            "x": 340,
+            "y": 600,
+            "w": 760,
+            "h": 60
+          },
+          "style": "brackets",
+          "note": "AI 代理替消费者选品、比价、下单"
+        }
+      ],
+      "source": "来源：Shopify Blog · Agentic Commerce（2026-04）"
+    },
+    {
+      "id": "chatgpt-ladder",
+      "type": "ladder",
+      "start": 3.9,
+      "end": 9.5,
+      "intent": "用户在 ChatGPT 里搜商品 → 比价格 → 付钱，一路到底：还进你网站干嘛",
+      "steps": [
+        {
+          "id": "search",
+          "label": "搜商品",
+          "at": 5.34,
+          "image": "factory/objects/search-magnifier.png"
+        },
+        {
+          "id": "compare",
+          "label": "比价格",
+          "at": 6.22,
+          "image": "factory/objects/compare-scale.png"
+        },
+        {
+          "id": "pay",
+          "label": "付钱",
+          "at": 7.37,
+          "image": "factory/objects/wallet-pay.png"
+        }
+      ],
+      "verdict": {
+        "at": 8,
+        "text": "还进你网站干嘛？",
+        "tone": "red"
+      }
+    },
+    {
+      "id": "openai-evidence",
+      "type": "evidence",
+      "start": 9.6,
+      "end": 13.4,
+      "intent": "「OpenAI 改了方向」：OpenAI 开发者商务协议页作引用卡",
+      "image": "factory/ai-shopping-independent-site-20260831/evidence/openai-commerce-protocol.png",
+      "imageSize": {
+        "w": 1440,
+        "h": 1600
+      },
+      "thumbCrop": {
+        "x": 0,
+        "y": 0,
+        "w": 1440,
+        "h": 810
+      },
+      "source": "来源：OpenAI Developers · Agentic Commerce Protocol",
+      "expandAt": 10.4,
+      "focus": [
+        {
+          "at": 10.5,
+          "box": {
+            "x": 260,
+            "y": 135,
+            "w": 640,
+            "h": 70
+          },
+          "scale": 1.8,
+          "zoom": "crash",
+          "note": "代理式商务协议：商家与 ChatGPT 买家之间的基础设施"
+        },
+        {
+          "at": 12,
+          "box": {
+            "x": 260,
+            "y": 195,
+            "w": 540,
+            "h": 40
+          },
+          "style": "brackets",
+          "note": "让 ChatGPT 直接读到你的商品目录"
+        }
+      ]
+    },
+    {
+      "id": "front-vs-checkout",
+      "type": "split",
+      "start": 13.5,
+      "end": 26.2,
+      "intent": "第一版结账灵活度不够 → 前半段 OpenAI 做好，付钱进商家自己的店",
+      "header": {
+        "glyph": "site"
+      },
+      "cards": [
+        {
+          "text": "找商品 · 比较 · 缩小",
+          "glyph": "search",
+          "tag": {
+            "text": "前半段",
+            "at": 17.99
+          },
+          "image": "factory/objects/search-magnifier.png"
+        },
+        {
+          "text": "进商家自己的店结账",
+          "glyph": "order",
+          "tag": {
+            "text": "付钱",
+            "at": 22.64
+          },
+          "accent": true,
+          "pulseAt": 25.19,
+          "image": "factory/objects/storefront.png"
+        }
+      ],
+      "shiftAt": 22
+    },
+    {
+      "id": "not-cut",
+      "type": "label",
+      "start": 33.3,
+      "end": 36.2,
+      "intent": "别理解错：没砍即时结账，只是发现电商没那么简单",
+      "items": [
+        {
+          "text": "电商没那么简单",
+          "at": 33.7,
+          "x": 1283,
+          "y": 470,
+          "until": 36.1,
+          "form": "fill",
+          "tone": "accent",
+          "size": "xl",
+          "anchor": "center"
+        }
+      ]
+    },
+    {
+      "id": "not-cut-accents",
+      "type": "accent",
+      "start": 26.3,
+      "end": 33.2,
+      "items": [
+        {
+          "at": 28.3,
+          "until": 33.1,
+          "anchor": "speaker-right",
+          "text": "没砍即时结账"
+        },
+        {
+          "at": 30.7,
+          "until": 33.1,
+          "anchor": "speaker-left",
+          "text": "大部分商品还能直接买"
+        }
+      ]
+    },
+    {
+      "id": "product-complexity",
+      "type": "graph",
+      "start": 36.3,
+      "end": 51.2,
+      "intent": "三类商品各自的复杂度按口播一颗颗长出来：衣服 / 设备 / 品牌",
+      "nodes": [
+        {
+          "id": "clothes",
+          "label": "衣服",
+          "kind": "content",
+          "at": 41.57,
+          "x": 720,
+          "y": 250,
+          "image": "factory/objects/clothes.png",
+          "tone": "ink"
+        },
+        {
+          "id": "size",
+          "label": "尺码",
+          "kind": "none",
+          "shape": "pill",
+          "small": true,
+          "at": 42.28,
+          "x": 720,
+          "y": 440
+        },
+        {
+          "id": "color",
+          "label": "颜色",
+          "kind": "none",
+          "shape": "pill",
+          "small": true,
+          "at": 42.84,
+          "x": 720,
+          "y": 530
+        },
+        {
+          "id": "device",
+          "label": "设备",
+          "kind": "content",
+          "at": 44.14,
+          "x": 1180,
+          "y": 250,
+          "image": "factory/objects/device.png",
+          "tone": "ink"
+        },
+        {
+          "id": "parts",
+          "label": "配件",
+          "kind": "none",
+          "shape": "pill",
+          "small": true,
+          "at": 45.24,
+          "x": 1180,
+          "y": 440
+        },
+        {
+          "id": "repair",
+          "label": "维修",
+          "kind": "none",
+          "shape": "pill",
+          "small": true,
+          "at": 45.76,
+          "x": 1180,
+          "y": 530
+        },
+        {
+          "id": "install",
+          "label": "安装",
+          "kind": "none",
+          "shape": "pill",
+          "small": true,
+          "at": 46.28,
+          "x": 1180,
+          "y": 620
+        },
+        {
+          "id": "brand",
+          "label": "品牌",
+          "kind": "content",
+          "at": 47.38,
+          "x": 1640,
+          "y": 250,
+          "image": "factory/objects/brand-box.png",
+          "tone": "ink"
+        },
+        {
+          "id": "bundle",
+          "label": "套装",
+          "kind": "none",
+          "shape": "pill",
+          "small": true,
+          "at": 48.49,
+          "x": 1640,
+          "y": 440
+        },
+        {
+          "id": "points",
+          "label": "积分",
+          "kind": "none",
+          "shape": "pill",
+          "small": true,
+          "at": 48.82,
+          "x": 1640,
+          "y": 530
+        },
+        {
+          "id": "sub",
+          "label": "订阅",
+          "kind": "none",
+          "shape": "pill",
+          "small": true,
+          "at": 49.84,
+          "x": 1640,
+          "y": 620
+        },
+        {
+          "id": "after",
+          "label": "售后",
+          "kind": "none",
+          "shape": "pill",
+          "small": true,
+          "at": 50.2,
+          "x": 1640,
+          "y": 710
+        },
+        {
+          "id": "repeat",
+          "label": "复购",
+          "kind": "none",
+          "shape": "pill",
+          "small": true,
+          "at": 50.91,
+          "x": 1640,
+          "y": 800
+        }
+      ],
+      "edges": [
+        {
+          "from": "clothes",
+          "to": "size",
+          "at": 42.28
+        },
+        {
+          "from": "size",
+          "to": "color",
+          "at": 42.84
+        },
+        {
+          "from": "device",
+          "to": "parts",
+          "at": 45.24
+        },
+        {
+          "from": "parts",
+          "to": "repair",
+          "at": 45.76
+        },
+        {
+          "from": "repair",
+          "to": "install",
+          "at": 46.28
+        },
+        {
+          "from": "brand",
+          "to": "bundle",
+          "at": 48.49
+        },
+        {
+          "from": "bundle",
+          "to": "points",
+          "at": 48.82
+        },
+        {
+          "from": "points",
+          "to": "sub",
+          "at": 49.84
+        },
+        {
+          "from": "sub",
+          "to": "after",
+          "at": 50.2
+        },
+        {
+          "from": "after",
+          "to": "repeat",
+          "at": 50.91
+        }
+      ]
+    },
+    {
+      "id": "all-into-chatgpt",
+      "type": "converge",
+      "start": 51.3,
+      "end": 59.1,
+      "intent": "把这些全接进 ChatGPT = 每一户商家的生意重做一遍",
+      "sources": [
+        {
+          "label": "尺码颜色",
+          "at": 53.38
+        },
+        {
+          "label": "配件安装",
+          "at": 53.9
+        },
+        {
+          "label": "套装订阅",
+          "at": 54.3
+        },
+        {
+          "label": "售后复购",
+          "at": 54.64
+        }
+      ],
+      "sink": {
+        "label": "ChatGPT",
+        "kind": "agent",
+        "at": 52.47,
+        "image": "factory/ai-shopping-independent-site-20260831/logos/openai.svg"
+      },
+      "convergeAt": 55.15,
+      "caption": {
+        "text": "每一户商家的生意重做一遍",
+        "at": 56
+      },
+      "eraseAt": 58.9
+    },
+    {
+      "id": "ai-front-merchant-back",
+      "type": "split",
+      "start": 59.45,
+      "end": 73.9,
+      "intent": "AI 擅长前面（告诉它要什么，它挑几款）；买哪个组合、售后、回不回来还是商家的",
+      "header": {
+        "glyph": "agent"
+      },
+      "cards": [
+        {
+          "text": "想买什么 · 预算 · 要求",
+          "glyph": "search",
+          "tag": {
+            "text": "AI 擅长",
+            "at": 59.6
+          },
+          "image": "factory/objects/search-magnifier.png",
+          "pulseAt": 64.63
+        },
+        {
+          "text": "买哪个组合 · 售后 · 复购",
+          "glyph": "order",
+          "tag": {
+            "text": "商家的",
+            "at": 72.98
+          },
+          "accent": true,
+          "image": "factory/objects/storefront.png"
+        }
+      ],
+      "shiftAt": 68
+    },
+    {
+      "id": "my-stores-record",
+      "type": "broll",
+      "start": 74,
+      "end": 79.5,
+      "intent": "「我自己做 TikTok Shop 和 Shopify」：Scott 自己录的 TikTok Shop 店铺页 → Shopify 页（Screen Studio，2026-09-03 给的）",
+      "media": "factory/ai-shopping-independent-site-20260831/broll/tiktokshopandshopify-record.mp4",
+      "origin": "own",
+      "layout": "panel"
+    },
+    {
+      "id": "my-stores-verdict",
+      "type": "label",
+      "start": 79.6,
+      "end": 83,
+      "intent": "独立站不会不重要，只是活不一样了",
+      "items": [
+        {
+          "text": "独立站不会变得不重要",
+          "at": 79.87,
+          "until": 82.9,
+          "x": 1283,
+          "y": 420,
+          "size": "xl",
+          "anchor": "center"
+        },
+        {
+          "text": "只是以后干的活不一样了",
+          "at": 81.71,
+          "until": 82.9,
+          "x": 1283,
+          "y": 600,
+          "form": "fill",
+          "tone": "accent",
+          "size": "l",
+          "anchor": "center"
+        }
+      ]
+    },
+    {
+      "id": "checkout-broll",
+      "type": "broll",
+      "start": 83.1,
+      "end": 86.2,
+      "intent": "「独立站以前是什么呢？说白了就是一个收款页」：夜里厨房桌上的笔记本，一个只有按钮和三个输入框的结账页（即梦 seedance2.5，2026-09-04）",
+      "media": "factory/ai-shopping-independent-site-20260831/broll/checkout-page.mp4",
+      "origin": "generated",
+      "layout": "panel"
+    },
+    {
+      "id": "old-flow-timeline",
+      "type": "timeline",
+      "start": 86.6,
+      "end": 91.4,
+      "intent": "独立站以前就是一个收款页：流量进来 → 付钱 → 走人（时间线，避免与前一场关系图连用）",
+      "milestones": [
+        {
+          "id": "site",
+          "label": "一个收款页",
+          "at": 87.1,
+          "image": "factory/objects/checkout-page.png"
+        },
+        {
+          "id": "traffic",
+          "label": "Facebook / TikTok 送流量",
+          "at": 87.8,
+          "image": "factory/ai-shopping-independent-site-20260831/logos/facebook.svg"
+        },
+        {
+          "id": "paid",
+          "label": "付了钱",
+          "at": 90.52,
+          "image": null
+        },
+        {
+          "id": "leave",
+          "label": "走人",
+          "at": 91.18,
+          "tone": "red",
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "before-after",
+      "type": "compare",
+      "start": 91.5,
+      "end": 102.3,
+      "intent": "以前：进来先找、比、看评论；以后：这些在 ChatGPT 里做完，进来就是买（前后对比，替换第二个汇流）",
+      "left": {
+        "title": "以前",
+        "at": 91.6,
+        "lines": [
+          {
+            "text": "找商品",
+            "at": 92.57
+          },
+          {
+            "text": "比价格",
+            "at": 93.1
+          },
+          {
+            "text": "看评论",
+            "at": 93.54
+          }
+        ],
+        "image": "factory/objects/scroll-phone.png"
+      },
+      "right": {
+        "title": "以后",
+        "at": 95.72,
+        "lines": [
+          {
+            "text": "在 ChatGPT 里做完",
+            "at": 96.02
+          },
+          {
+            "text": "进来的人，购买意向非常强",
+            "at": 98.27
+          }
+        ],
+        "image": "factory/objects/product-skincare.png"
+      }
+    },
+    {
+      "id": "site-cycle",
+      "type": "cycle",
+      "start": 102.5,
+      "end": 120.3,
+      "intent": "独立站以后要接的一整圈：看懂 → 为什么买你 → 结账顺 → 售后靠谱 → 订阅会员 → 复购，再回到进来",
+      "nodes": [
+        {
+          "id": "understand",
+          "label": "看懂你卖啥",
+          "at": 104.72,
+          "image": "factory/objects/storefront.png"
+        },
+        {
+          "id": "why",
+          "label": "为什么买你",
+          "at": 106.33,
+          "image": "factory/objects/brand-box.png"
+        },
+        {
+          "id": "checkout",
+          "label": "结账顺",
+          "at": 109.97,
+          "image": "factory/objects/wallet-pay.png"
+        },
+        {
+          "id": "service",
+          "label": "售后靠谱",
+          "at": 111.27,
+          "image": "factory/objects/after-sales.png"
+        },
+        {
+          "id": "member",
+          "label": "订阅会员",
+          "at": 114.04,
+          "image": "factory/objects/member-card.png"
+        },
+        {
+          "id": "rebuy",
+          "label": "复购",
+          "at": 116.89,
+          "image": "factory/objects/repeat-order.png"
+        }
+      ],
+      "hub": {
+        "label": "独立站",
+        "at": 118.12,
+        "image": "factory/objects/storefront.png"
+      },
+      "closeAt": 117.5
+    },
+    {
+      "id": "geo-sellers",
+      "type": "label",
+      "start": 120.4,
+      "end": 128.3,
+      "intent": "一说 AI 购物就卖 GEO：发几百篇文章、确保 GPT 抓到你",
+      "items": [
+        {
+          "text": "卖 GEO",
+          "at": 123.92,
+          "x": 637,
+          "y": 470,
+          "until": 127.5,
+          "tone": "red",
+          "form": "fill",
+          "size": "xl",
+          "anchor": "center"
+        }
+      ]
+    },
+    {
+      "id": "geo-accent",
+      "type": "accent",
+      "start": 122.5,
+      "end": 128.3,
+      "items": [
+        {
+          "at": 123.5,
+          "until": 126,
+          "x": 637,
+          "y": 640,
+          "text": "几百篇文章"
+        }
+      ]
+    },
+    {
+      "id": "shopify-catalog",
+      "type": "graph",
+      "start": 128.4,
+      "end": 138.7,
+      "intent": "Shopify 商品目录已经通过 Shopify Catalog 接进 ChatGPT（真实 logo）",
+      "nodes": [
+        {
+          "id": "shopify2",
+          "label": "Shopify",
+          "kind": "none",
+          "at": 128.04,
+          "x": 720,
+          "y": 470,
+          "image": "factory/ai-shopping-independent-site-20260831/logos/shopify.svg",
+          "tone": "ink"
+        },
+        {
+          "id": "catalog",
+          "label": "Shopify Catalog",
+          "kind": "none",
+          "shape": "pill",
+          "at": 130.82,
+          "x": 1180,
+          "y": 470,
+          "w": 300
+        },
+        {
+          "id": "chatgpt2",
+          "label": "ChatGPT",
+          "kind": "none",
+          "at": 132.82,
+          "x": 1640,
+          "y": 470,
+          "image": "factory/ai-shopping-independent-site-20260831/logos/openai.svg",
+          "enter": "slam",
+          "highlight": [
+            [
+              132.82,
+              134.5
+            ]
+          ],
+          "tone": "lime"
+        }
+      ],
+      "edges": [
+        {
+          "from": "shopify2",
+          "to": "catalog",
+          "at": 130.82,
+          "style": "chevron"
+        },
+        {
+          "from": "catalog",
+          "to": "chatgpt2",
+          "at": 132.82,
+          "style": "chevron"
+        }
+      ],
+      "notes": [
+        {
+          "text": "最基础的接入",
+          "at": 134.72,
+          "until": 136.3,
+          "x": 1000,
+          "y": 740,
+          "w": 320,
+          "pill": true
+        },
+        {
+          "text": "单个商家不用重做一套",
+          "at": 136.44,
+          "until": 138.7,
+          "x": 960,
+          "y": 740,
+          "w": 420,
+          "tone": "accent",
+          "pill": true
+        }
+      ]
+    },
+    {
+      "id": "not-auto-recommend",
+      "type": "reminders",
+      "start": 138.8,
+      "end": 145,
+      "intent": "接进去不一定推你，它还要看三样",
+      "items": [
+        {
+          "text": "商品信息准不准",
+          "at": 141.9
+        },
+        {
+          "text": "价格 · 库存准不准",
+          "at": 142.21
+        },
+        {
+          "text": "商家质量怎么样",
+          "at": 143.6,
+          "tone": "accent"
+        }
+      ]
+    },
+    {
+      "id": "wordpress-evidence",
+      "type": "evidence",
+      "start": 145.1,
+      "end": 149.9,
+      "intent": "「WordPress 这种自建站」：wordpress.org 首页，聚焦「Meet WordPress」",
+      "image": "factory/ai-shopping-independent-site-20260831/evidence/wordpress-home.png",
+      "imageSize": {
+        "w": 1440,
+        "h": 1600
+      },
+      "thumbCrop": {
+        "x": 0,
+        "y": 0,
+        "w": 1440,
+        "h": 810
+      },
+      "expandAt": 146.5,
+      "focus": [
+        {
+          "at": 146.6,
+          "box": {
+            "x": 110,
+            "y": 250,
+            "w": 360,
+            "h": 80
+          },
+          "note": "认识 WordPress：数百万网站在用的开源发布平台"
+        }
+      ],
+      "source": "来源：wordpress.org"
+    },
+    {
+      "id": "self-built",
+      "type": "label",
+      "start": 150,
+      "end": 153.4,
+      "intent": "WordPress 自建站要自己搞收录，但顺序别搞反",
+      "items": [
+        {
+          "text": "顺序不要搞反",
+          "at": 152.28,
+          "x": 1283,
+          "y": 470,
+          "until": 153.3,
+          "tone": "red",
+          "form": "fill",
+          "size": "l",
+          "anchor": "center"
+        }
+      ]
+    },
+    {
+      "id": "order-ladder",
+      "type": "ladder",
+      "start": 153.5,
+      "end": 163.2,
+      "intent": "先真实商品数据和商家信息，再谈机器文章（还得找专业的）",
+      "steps": [
+        {
+          "id": "data",
+          "label": "真实商品数据",
+          "at": 153.8,
+          "image": "factory/objects/product-data.png"
+        },
+        {
+          "id": "merchant",
+          "label": "商家信息",
+          "at": 155.6,
+          "image": "factory/objects/storefront.png"
+        },
+        {
+          "id": "articles",
+          "label": "机器文章",
+          "at": 158.31,
+          "image": "factory/objects/robot-article.png"
+        }
+      ],
+      "verdict": {
+        "at": 162.41,
+        "text": "找专业的",
+        "tone": "accent"
+      }
+    },
+    {
+      "id": "aup-evidence",
+      "type": "evidence",
+      "start": 163.3,
+      "end": 166.6,
+      "intent": "「别上来就被 Claude / OpenAI 风控」：Anthropic 使用政策页，撞推到标题",
+      "image": "factory/ai-shopping-independent-site-20260831/evidence/anthropic-aup.png",
+      "imageSize": {
+        "w": 1440,
+        "h": 1600
+      },
+      "thumbCrop": {
+        "x": 0,
+        "y": 0,
+        "w": 1440,
+        "h": 810
+      },
+      "expandAt": 164.3,
+      "focus": [
+        {
+          "at": 164.4,
+          "box": {
+            "x": 500,
+            "y": 170,
+            "w": 440,
+            "h": 90
+          },
+          "scale": 1.8,
+          "zoom": "crash",
+          "note": "使用政策：什么能做、什么不能做，违规就封"
+        }
+      ],
+      "source": "来源：anthropic.com/legal/aup"
+    },
+    {
+      "id": "can-you-hold",
+      "type": "label",
+      "start": 166.7,
+      "end": 172.3,
+      "intent": "AI 真推荐来一个用户，你接得住吗",
+      "items": [
+        {
+          "text": "AI 推荐来一个用户",
+          "at": 167.2,
+          "x": 1283,
+          "y": 340,
+          "until": 171.2,
+          "form": "glass",
+          "size": "l",
+          "anchor": "center"
+        },
+        {
+          "text": "接得住吗？",
+          "at": 171.38,
+          "x": 960,
+          "y": 430,
+          "until": 172.2,
+          "size": "giant",
+          "anchor": "center"
+        }
+      ]
+    },
+    {
+      "id": "once-vs-repeat",
+      "type": "split",
+      "start": 172.4,
+      "end": 175.3,
+      "intent": "买一次就走 vs 以后还来复购",
+      "header": {
+        "glyph": "order"
+      },
+      "cards": [
+        {
+          "text": "买一次就走",
+          "glyph": "order",
+          "tag": {
+            "text": "一次",
+            "at": 172.68
+          },
+          "image": "factory/objects/parcel-open.png"
+        },
+        {
+          "text": "以后还会回来",
+          "glyph": "order",
+          "tag": {
+            "text": "复购",
+            "at": 175.1
+          },
+          "accent": true,
+          "image": "factory/objects/repeat-order.png"
+        }
+      ]
+    },
+    {
+      "id": "forgotten-box-broll",
+      "type": "broll",
+      "start": 175.5,
+      "end": 177.5,
+      "intent": "「如果用户买完了之后」：拆完快递把纸箱压扁丢进回收桶（即梦 seedance2.5，2026-09-04）",
+      "media": "factory/ai-shopping-independent-site-20260831/broll/forgotten-box.mp4",
+      "origin": "generated",
+      "layout": "panel"
+    },
+    {
+      "id": "conclusion",
+      "type": "concept",
+      "start": 177.6,
+      "end": 182.2,
+      "intent": "结论：用户记不记得你，决定独立站有没有区别",
+      "term": "他记不记得你",
+      "underline": true,
+      "phrases": [
+        {
+          "text": "买完之后他都不记得你",
+          "at": 177.9
+        },
+        {
+          "text": "有没有独立站区别不大",
+          "at": 178.81
+        }
+      ],
+      "glyph": "site",
+      "image": "factory/objects/member-card.png",
+      "slot": 0
+    }
+  ],
+  "keywords": [
+    "独立站",
+    "ChatGPT",
+    "结账",
+    "Shopify",
+    "GEO",
+    "风控",
+    "复购",
+    "收款页",
+    "商品目录",
+    "WordPress"
+  ],
+  "skin": "stage3d"
+}

@@ -3,7 +3,6 @@ import path from "node:path";
 import {
   deepMerge,
   ensureSymlink,
-  hyperframesCli,
   parseArgs,
   projectRoot,
   readJson,
@@ -12,7 +11,6 @@ import {
   sanitizeSlug,
   writeJson
 } from "./lib.mjs";
-import { applyTemplatePack } from "./template-pack.mjs";
 
 const args = parseArgs();
 const jobDir = resolveJob(args.job);
@@ -24,7 +22,7 @@ if (!fs.existsSync(configPath)) {
   process.exit(1);
 }
 
-const { project: baseConfig } = applyTemplatePack(readJson(configPath), root);
+const baseConfig = readJson(configPath);
 const variants = Array.isArray(baseConfig.variants) && baseConfig.variants.length
   ? baseConfig.variants
   : [{ id: "default", label: "Default", width: baseConfig.width, height: baseConfig.height, layout: baseConfig.layout }];
@@ -56,25 +54,22 @@ for (const variant of selected) {
   merged.downloadFolderName = variant.downloadFolderName || `${baseConfig.downloadFolderName || baseConfig.slug || "口播视频"}-${id}`;
 
   writeJson(path.join(variantDir, "project.json"), merged);
-  writeJson(path.join(variantDir, "package.json"), packageForVariant(id, merged, variantDir));
+  writeJson(path.join(variantDir, "package.json"), packageForVariant(id, merged));
 
-  // 传绝对路径：jobs 根目录可在仓库外（FACTORY_JOBS_ROOT）
-  const buildArgs = [path.join(root, "scripts", "build-beats-composition.mjs"), "--job", variantDir];
+  const buildArgs = [path.join(root, "scripts", "build-beats-composition.mjs"), "--job", path.relative(root, variantDir)];
   run("node", buildArgs);
   console.log(`Built variant: ${id}`);
 }
 
-function packageForVariant(id, config, variantDir) {
+function packageForVariant(id, config) {
   const render = config.render || {};
   const fps = render.fps || 60;
   const quality = render.quality || "standard";
   const workers = render.workers || 8;
   const bitrate = render.videoBitrate || "24M";
   const sdrFlag = render.sdr === false ? "" : " --sdr";
-  const gpuFlag = render.gpu === true ? " --gpu" : "";
-  const browserGpuFlag = render.browserGpu === false ? " --no-browser-gpu" : render.browserGpu === true ? " --browser-gpu" : "";
   const output = `renders/${config.outputName || `${id}-60fps.mp4`}`;
-  const cli = hyperframesCli(variantDir);
+  const cli = "../../../../node_modules/.bin/hyperframes";
   return {
     name: `talking-head-${id}`,
     private: true,
@@ -84,7 +79,7 @@ function packageForVariant(id, config, variantDir) {
       lint: `${cli} lint`,
       validate: `${cli} validate`,
       inspect: `${cli} inspect --samples 20`,
-      "render:final": `${cli} render${sdrFlag}${gpuFlag}${browserGpuFlag} --fps ${fps} --quality ${quality} --workers ${workers} --video-bitrate ${bitrate} --output ${output}`
+      "render:final": `${cli} render${sdrFlag} --fps ${fps} --quality ${quality} --workers ${workers} --video-bitrate ${bitrate} --output ${output}`
     },
     dependencies: {
       hyperframes: "0.5.6"

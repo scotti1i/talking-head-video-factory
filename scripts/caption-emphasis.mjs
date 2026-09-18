@@ -6,37 +6,28 @@ export function renderCaptionMarkup(item = {}) {
   const text = String(item.t ?? item.text ?? "").trim();
   if (!text) return "";
   if (item.emphasis == null) return escapeHtml(text);
-  const terms = Array.isArray(item.emphasis) ? item.emphasis : [item.emphasis];
-  if (!terms.length || terms.some((term) => typeof term !== "string" || !term.trim())) {
-    throw new Error("caption.emphasis 必须是非空字符串或非空字符串数组");
+  if (typeof item.emphasis !== "string" || !item.emphasis.trim()) {
+    throw new Error("caption.emphasis 必须是非空字符串");
   }
 
-  const matches = terms.map((term) => {
-    const emphasis = term.trim();
-    const match = findWholeTerm(text, emphasis);
-    if (!match) throw new Error(`caption.emphasis 未在字幕中找到完整词组: ${emphasis}`);
-    return { ...match, emphasis };
-  }).sort((left, right) => left.start - right.start);
-
-  for (let index = 1; index < matches.length; index += 1) {
-    if (matches[index].start < matches[index - 1].end) {
-      throw new Error(`caption.emphasis 词组重叠: ${matches[index - 1].emphasis} / ${matches[index].emphasis}`);
-    }
+  const emphasis = item.emphasis.trim();
+  const match = findWholeTerm(text, emphasis);
+  if (!match) {
+    throw new Error(`caption.emphasis 未在字幕中找到完整词组: ${emphasis}`);
   }
-
-  let cursor = 0;
-  let markup = "";
-  for (const match of matches) {
-    markup += escapeHtml(text.slice(cursor, match.start));
-    markup += `<span class="caption-emphasis">${escapeHtml(text.slice(match.start, match.end))}</span>`;
-    cursor = match.end;
-  }
-  return `${markup}${escapeHtml(text.slice(cursor))}`;
+  const before = escapeHtml(text.slice(0, match.start));
+  const highlighted = escapeHtml(text.slice(match.start, match.end));
+  const after = escapeHtml(text.slice(match.end));
+  return `${before}<span class="caption-emphasis">${highlighted}</span>${after}`;
 }
 
 function findWholeTerm(text, term) {
   const haystack = text.toLocaleLowerCase();
   const needle = term.toLocaleLowerCase();
+  if (/\p{Script=Han}/u.test(term)) {
+    const start = haystack.indexOf(needle);
+    return start < 0 ? null : { start, end: start + needle.length };
+  }
   let cursor = 0;
   while (cursor <= haystack.length - needle.length) {
     const start = haystack.indexOf(needle, cursor);

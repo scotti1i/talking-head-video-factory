@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { classifyCutBoundary, parseSilenceLog } from "./cut-boundary-policy.mjs";
 import { parseArgs, readJson, readJsonArray, resolveJob, run, writeJson } from "./lib.mjs";
 
 const args = parseArgs();
@@ -17,14 +18,16 @@ const index = readJson(indexPath);
 const edl = fs.existsSync(edlPath) ? readJsonArray(edlPath) : [];
 const sources = index.sources.map(auditSource);
 const report = {
-  version: 1,
+  version: 2,
   generatedAt: new Date().toISOString(),
   policy: {
+    cutBoundaryPolicy: "inside-real-silence-v2",
     silenceThresholdDb: threshold,
     minSilenceSeconds: minSilence,
     lowConfidence: 0.8,
     internalPauseSeconds: 0.18,
-    cutPauseToleranceSeconds: 0.3
+    cutPauseGuardSeconds: 0.03,
+    wordEdgeToleranceSeconds: 0.04
   },
   sources
 };
@@ -53,22 +56,7 @@ function detectSilences(sourcePath) {
     "-af", `silencedetect=n=${threshold}dB:d=${minSilence}`,
     "-f", "null", "-"
   ], { capture: true });
-  return parseSilences(result.stderr || "");
-}
-
-function parseSilences(log) {
-  const events = [];
-  let start = null;
-  for (const line of log.split("\n")) {
-    const startMatch = line.match(/silence_start:\s*([0-9.]+)/);
-    if (startMatch) start = Number(startMatch[1]);
-    const endMatch = line.match(/silence_end:\s*([0-9.]+).*silence_duration:\s*([0-9.]+)/);
-    if (endMatch && start !== null) {
-      events.push({ start: round(start), end: round(endMatch[1]), duration: round(endMatch[2]) });
-      start = null;
-    }
-  }
-  return events;
+  return parseSilenceLog(result.stderr || "");
 }
 
 function findDisfluencySignals(transcript, silences) {
@@ -138,30 +126,21 @@ function auditCutBoundaries(source, transcript, silences) {
 }
 
 function boundarySignal(index, side, time, transcript, silences) {
-  const silenceEdges = silences.flatMap((item) => [item.start, item.end]);
-  const wordEdges = transcript.words.flatMap((item) => [item.start, item.end]);
-  const silenceDistance = nearestDistance(time, silenceEdges);
-  const wordDistance = nearestDistance(time, wordEdges);
-  const hasPause = silenceDistance <= 0.3;
-  const onWordEdge = wordDistance <= 0.09;
-  const severity = hasPause ? "ok" : onWordEdge ? "review" : "high";
+  const result = classifyCutBoundary({ time, silences, words: transcript.words });
   return {
     range: index + 1,
     side,
     time: round(time),
-    hasNearbyPause: hasPause,
-    onWordEdge,
-    silenceDistance: round(silenceDistance),
-    wordDistance: round(wordDistance),
-    severity,
-    reason: boundaryReason(hasPause, onWordEdge)
+    insidePause: result.insidePause,
+    hasSafePause: result.hasSafePause,
+    hasNearbyPause: result.hasSafePause,
+    pauseMargin: result.pauseMargin,
+    silenceDistance: result.pauseDistance,
+    onWordEdge: result.onWordEdge,
+    wordDistance: result.wordDistance,
+    severity: result.severity,
+    reason: result.reason
   };
-}
-
-function boundaryReason(hasPause, onWordEdge) {
-  if (hasPause) return "切点附近存在真实低能量停顿";
-  if (onWordEdge) return "只贴合词边界，但附近没有可靠气口，需要听审";
-  return "附近没有可靠气口，也没有贴合词边界";
 }
 
 function wordSignal(type, word) {
@@ -189,11 +168,6 @@ function adjacentRepeat(text) {
     }
   }
   return "";
-}
-
-function nearestDistance(value, candidates) {
-  if (!candidates.length) return Number.POSITIVE_INFINITY;
-  return Math.min(...candidates.map((candidate) => Math.abs(value - candidate)));
 }
 
 function renderMarkdown(report) {

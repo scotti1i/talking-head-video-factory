@@ -1,0 +1,11 @@
+[
+  {
+    "type": "statement",
+    "start": 1,
+    "end": 5.4,
+    "kicker": "SMOKE TEST",
+    "title": "同一 builder 覆盖字幕与解释卡",
+    "body": "用于快速确认 HyperFrames 合同与布局。",
+    "accent": "确定性回归"
+  }
+]

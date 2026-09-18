@@ -29,7 +29,7 @@ export function render(beat) {
     : "";
 
   return `<div class="micro-overlay micro-overlay--${variant}" data-variant="${variant}">
-    <span class="micro-overlay-mark" data-beat-item>${ICON_MARKUP[icon]}</span>
+    <span class="micro-overlay-mark" data-beat-item data-layout-allow-overflow>${ICON_MARKUP[icon]}</span>
     <div class="micro-overlay-copy">
       <div class="kicker">${escapeHtml(beat.kicker)}</div>
       <h2>${escapeHtml(beat.title)}</h2>

@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "salesmartly-commercial",
+  "label": "SaleSmartly Commercial",
+  "kind": "legacy-composition",
+  "description": "SaleSmartly 商单竖屏专用包装，包含产品 B-roll、卖点卡和成交预警；不允许接入新 job。",
+  "lifecycle": "archived",
+  "compatibility": "preview-only",
+  "formats": ["vertical"],
+  "sources": [
+    { "path": "scripts/build-salesmartly-commercial.mjs", "role": "campaign-renderer" },
+    { "path": "scripts/bake-salesmartly-broll.mjs", "role": "broll-compositor" }
+  ],
+  "items": [
+    { "id": "hook", "label": "商单钩子", "kind": "component", "status": "ready", "preview": { "state": "ready", "poster": "visual-assets/evidence/salesmartly-commercial/hook.jpg", "format": "vertical" } },
+    { "id": "duel", "label": "方向对决", "kind": "component", "status": "ready", "preview": { "state": "ready", "poster": "visual-assets/evidence/salesmartly-commercial/duel.jpg", "format": "vertical" } },
+    { "id": "statement", "label": "核心判断", "kind": "component", "status": "ready", "preview": { "state": "ready", "poster": "visual-assets/evidence/salesmartly-commercial/statement.jpg", "format": "vertical" } },
+    { "id": "compare", "label": "B2C/B2B 对比", "kind": "component", "status": "ready", "preview": { "state": "ready", "poster": "visual-assets/evidence/salesmartly-commercial/compare.jpg", "format": "vertical" } },
+    { "id": "chips", "label": "渠道标签", "kind": "component", "status": "ready", "preview": { "state": "ready", "poster": "visual-assets/evidence/salesmartly-commercial/chips.jpg", "format": "vertical" } },
+    { "id": "flow", "label": "获客流程", "kind": "component", "status": "ready", "preview": { "state": "ready", "poster": "visual-assets/evidence/salesmartly-commercial/flow.jpg", "format": "vertical" } },
+    { "id": "product", "label": "产品能力", "kind": "component", "status": "ready", "preview": { "state": "ready", "poster": "visual-assets/evidence/salesmartly-commercial/product.jpg", "format": "vertical" } },
+    { "id": "warning", "label": "成交预警", "kind": "component", "status": "ready", "preview": { "state": "ready", "poster": "visual-assets/evidence/salesmartly-commercial/warning.jpg", "format": "vertical" } },
+    { "id": "proof", "label": "商业证明", "kind": "component", "status": "ready", "preview": { "state": "ready", "poster": "visual-assets/evidence/salesmartly-commercial/proof.jpg", "format": "vertical" } },
+    { "id": "cta", "label": "商单收束", "kind": "component", "status": "ready", "preview": { "state": "ready", "poster": "visual-assets/evidence/salesmartly-commercial/cta.jpg", "format": "vertical" } },
+    { "id": "proof-broll", "label": "全屏产品实证", "kind": "layout", "status": "ready", "preview": { "state": "ready", "poster": "visual-assets/evidence/salesmartly-commercial/proof-broll.jpg", "format": "vertical" } },
+    { "id": "fullscreen-pip", "label": "B-roll + 人物小窗", "kind": "layout", "status": "ready", "preview": { "state": "ready", "poster": "visual-assets/evidence/salesmartly-commercial/fullscreen-pip.jpg", "format": "vertical" } }
+  ],
+  "migrationCandidates": [
+    { "targetId": "beats-v2-face-safe", "note": "信息卡迁移到 beats，真实产品素材走统一 broll.json 合同。" }
+  ],
+  "lineage": {
+    "parents": ["legacy-neon-guides"],
+    "supersedes": [],
+    "supersededBy": ["beats-v2-face-safe"]
+  },
+  "apply": { "mode": "none" }
+}

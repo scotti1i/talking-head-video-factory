@@ -1,0 +1,548 @@
+{
+  "schemaVersion": 1,
+  "fps": 30,
+  "duration": 230.9,
+  "skin": "studio",
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "source": {
+    "media": "factory/aroll.mp4",
+    "start": 0
+  },
+  "keywords": [
+    "Astra",
+    "GPT-6",
+    "Computer Use",
+    "SOP",
+    "CRM",
+    "ERP",
+    "Codex"
+  ],
+  "speaker": [
+    {
+      "at": 0,
+      "mode": "full"
+    },
+    {
+      "at": 8.2,
+      "mode": "focus"
+    },
+    {
+      "at": 17.17,
+      "mode": "full"
+    },
+    {
+      "at": 38.65,
+      "mode": "focus"
+    },
+    {
+      "at": 42.8,
+      "mode": "full"
+    },
+    {
+      "at": 48.33,
+      "mode": "focus"
+    },
+    {
+      "at": 65.22,
+      "mode": "full"
+    },
+    {
+      "at": 85.52,
+      "mode": "focus"
+    },
+    {
+      "at": 96.13,
+      "mode": "full"
+    },
+    {
+      "at": 129.62,
+      "mode": "focus"
+    },
+    {
+      "at": 136.32,
+      "mode": "full"
+    },
+    {
+      "at": 139.79,
+      "mode": "focus"
+    },
+    {
+      "at": 161.67,
+      "mode": "full"
+    },
+    {
+      "at": 179.27,
+      "mode": "focus"
+    },
+    {
+      "at": 189.7,
+      "mode": "full"
+    },
+    {
+      "at": 191.55,
+      "mode": "focus"
+    },
+    {
+      "at": 210.97,
+      "mode": "full"
+    }
+  ],
+  "scenes": [
+    {
+      "id": "hook-accent",
+      "type": "accent",
+      "start": 0.55,
+      "end": 8.55,
+      "intent": "两个反问贴脸",
+      "items": [
+        {
+          "at": 0.91,
+          "until": 3.91,
+          "anchor": "speaker-left",
+          "text": "机器人为什么像人？"
+        },
+        {
+          "at": 4.18,
+          "until": 7.6,
+          "anchor": "speaker-right",
+          "text": "AI 为什么要学软件？",
+          "tone": "accent"
+        }
+      ]
+    },
+    {
+      "id": "world-reminders",
+      "type": "reminders",
+      "start": 9.3,
+      "end": 16.57,
+      "intent": "楼梯扶手门把手台面全按人的身体设计",
+      "items": [
+        {
+          "text": "楼梯 · 扶手 · 人行横道",
+          "at": 10.03
+        },
+        {
+          "text": "门把手 · 厨房台面",
+          "at": 11.3
+        },
+        {
+          "text": "全按人的身体设计",
+          "at": 14.21,
+          "tone": "accent"
+        }
+      ]
+    },
+    {
+      "id": "robot-accent",
+      "type": "accent",
+      "start": 18.39,
+      "end": 20.57,
+      "intent": "机器人要干活",
+      "items": [
+        {
+          "at": 19.03,
+          "until": 20.57,
+          "anchor": "speaker-right",
+          "text": "总不能先把家拆了"
+        }
+      ]
+    },
+    {
+      "id": "reason-accent",
+      "type": "accent",
+      "start": 23.6,
+      "end": 29.87,
+      "intent": "命题一",
+      "items": [
+        {
+          "at": 24.42,
+          "until": 29.69,
+          "anchor": "speaker-right",
+          "text": "适应人建好的环境",
+          "tone": "accent"
+        }
+      ]
+    },
+    {
+      "id": "software-accent",
+      "type": "accent",
+      "start": 32.56,
+      "end": 38.38,
+      "intent": "软件也一样",
+      "items": [
+        {
+          "at": 33.11,
+          "until": 36.56,
+          "anchor": "speaker-left",
+          "text": "CRM · ERP · 店铺后台"
+        },
+        {
+          "at": 37.02,
+          "until": 38.05,
+          "anchor": "speaker-right",
+          "text": "按钮 · 菜单 · 表格"
+        }
+      ]
+    },
+    {
+      "id": "human-quote",
+      "type": "quote",
+      "start": 39.75,
+      "end": 42.2,
+      "at": 39.93,
+      "y": 1010,
+      "w": 800,
+      "intent": "刚开始设计全是给人看的",
+      "text": "刚开始设计的时候，全都是给人看的"
+    },
+    {
+      "id": "sop-ladder",
+      "type": "ladder",
+      "start": 49.43,
+      "end": 64.62,
+      "intent": "客户问货没到：看消息 → 查订单 → 查物流 → 找仓库",
+      "steps": [
+        {
+          "id": "s1",
+          "label": "看你发给他的消息",
+          "at": 50.7,
+          "image": "factory/objects/chat-log.png"
+        },
+        {
+          "id": "s2",
+          "label": "店铺后台查订单状态",
+          "at": 51.97,
+          "image": "factory/objects/storefront.png"
+        },
+        {
+          "id": "s3",
+          "label": "打开物流 tracking",
+          "at": 55.97,
+          "image": "factory/objects/logistics-api.png"
+        },
+        {
+          "id": "s4",
+          "label": "物流卡住 → 找仓库",
+          "at": 60.71,
+          "image": "factory/objects/warehouse.png",
+          "tone": "accent"
+        }
+      ],
+      "note": {
+        "text": "一个基础运营 SOP",
+        "at": 62.62,
+        "until": 64.53,
+        "tone": "accent"
+      }
+    },
+    {
+      "id": "segment-accent",
+      "type": "accent",
+      "start": 66.25,
+      "end": 74.89,
+      "intent": "软件各接管一段",
+      "items": [
+        {
+          "at": 66.8,
+          "until": 69.89,
+          "anchor": "speaker-left",
+          "text": "每个环节接管一段"
+        },
+        {
+          "at": 73.44,
+          "until": 74.89,
+          "anchor": "speaker-right",
+          "text": "还得靠一个人",
+          "tone": "red"
+        }
+      ]
+    },
+    {
+      "id": "release-accent",
+      "type": "accent",
+      "start": 76.44,
+      "end": 83.98,
+      "intent": "主命题",
+      "items": [
+        {
+          "at": 77.16,
+          "until": 83.35,
+          "anchor": "speaker-right",
+          "text": "像人一样操作软件",
+          "tone": "accent"
+        }
+      ]
+    },
+    {
+      "id": "ai-reminders",
+      "type": "reminders",
+      "start": 86.62,
+      "end": 95.53,
+      "intent": "AI 找订单 → 找物流 → 整理情况 → 回复草稿 → 查不到交回来",
+      "items": [
+        {
+          "text": "找订单 · 找物流",
+          "at": 87.16
+        },
+        {
+          "text": "整理情况 → 给你回复草稿",
+          "at": 88.44,
+          "tone": "accent"
+        },
+        {
+          "text": "查不到的，交回来",
+          "at": 90.71
+        }
+      ]
+    },
+    {
+      "id": "astra-accent",
+      "type": "accent",
+      "start": 97.24,
+      "end": 119.24,
+      "intent": "Computer Use",
+      "items": [
+        {
+          "at": 97.96,
+          "until": 102.15,
+          "anchor": "speaker-right",
+          "text": "Computer Use",
+          "tone": "accent"
+        },
+        {
+          "at": 107.6,
+          "until": 111.24,
+          "anchor": "speaker-left",
+          "text": "真实地会用电脑了",
+          "tone": "accent"
+        },
+        {
+          "at": 112.15,
+          "until": 119.05,
+          "anchor": "speaker-right",
+          "text": "不是另起一套新流程",
+          "tone": "red"
+        }
+      ]
+    },
+    {
+      "id": "code-accent",
+      "type": "accent",
+      "start": 121.26,
+      "end": 127.26,
+      "intent": "为什么不写代码",
+      "items": [
+        {
+          "at": 121.99,
+          "until": 127.08,
+          "anchor": "speaker-left",
+          "text": "直接写代码连起来？"
+        }
+      ]
+    },
+    {
+      "id": "systems-ladder",
+      "type": "ladder",
+      "start": 130.72,
+      "end": 135.72,
+      "intent": "店铺后台 / 物流网站 / 供应商系统不是一家公司做的",
+      "steps": [
+        {
+          "id": "y1",
+          "label": "店铺后台",
+          "at": 131.26,
+          "image": "factory/objects/storefront.png"
+        },
+        {
+          "id": "y2",
+          "label": "物流网站",
+          "at": 132.45,
+          "image": "factory/objects/logistics-api.png"
+        },
+        {
+          "id": "y3",
+          "label": "供应商的系统",
+          "at": 133.08,
+          "image": "factory/objects/erp.png"
+        }
+      ],
+      "note": {
+        "text": "不是一家公司做的",
+        "at": 134.17,
+        "until": 135.63,
+        "tone": "accent"
+      }
+    },
+    {
+      "id": "cost-compare",
+      "type": "compare",
+      "start": 140.89,
+      "end": 161.07,
+      "intent": "搭整套系统 vs 看懂界面按人的方式操作",
+      "left": {
+        "title": "自己搭整套系统",
+        "at": 141.35,
+        "lines": [
+          {
+            "text": "开发团队 + 打通权限",
+            "at": 142.71
+          },
+          {
+            "text": "投入很大",
+            "at": 147.25,
+            "tone": "red"
+          }
+        ]
+      },
+      "right": {
+        "title": "AI 看懂现有界面",
+        "at": 149.62,
+        "lines": [
+          {
+            "text": "按人已经在做的方式操作",
+            "at": 153.25
+          }
+        ]
+      },
+      "verdict": {
+        "text": "多一条进入业务的路",
+        "at": 159.07
+      }
+    },
+    {
+      "id": "keep-accent",
+      "type": "accent",
+      "start": 162.35,
+      "end": 167.62,
+      "intent": "原有 SOP 交给它",
+      "items": [
+        {
+          "at": 162.62,
+          "until": 164.89,
+          "anchor": "speaker-left",
+          "text": "原来的软件照用"
+        },
+        {
+          "at": 165.62,
+          "until": 167.53,
+          "anchor": "speaker-right",
+          "text": "SOP 一点点交给它",
+          "tone": "accent"
+        }
+      ]
+    },
+    {
+      "id": "common-accent",
+      "type": "accent",
+      "start": 172.71,
+      "end": 175.98,
+      "intent": "收拢类比",
+      "items": [
+        {
+          "at": 173.25,
+          "until": 175.89,
+          "anchor": "speaker-right",
+          "text": "先让机器适应人的环境",
+          "tone": "accent"
+        }
+      ]
+    },
+    {
+      "id": "limit-reminders",
+      "type": "reminders",
+      "start": 180.37,
+      "end": 189.1,
+      "intent": "会点按钮 ≠ 做好",
+      "items": [
+        {
+          "text": "查到物流 ≠ 处理客诉",
+          "at": 180.74
+        },
+        {
+          "text": "能填表 ≠ 填得对",
+          "at": 182.1
+        },
+        {
+          "text": "拿一个真实任务试一试",
+          "at": 186.83,
+          "tone": "accent"
+        }
+      ]
+    },
+    {
+      "id": "try-ladder",
+      "type": "ladder",
+      "start": 192.65,
+      "end": 210.37,
+      "intent": "找一段活 → 要切几个软件 → 用 Astra 试 → 跑完一笔",
+      "steps": [
+        {
+          "id": "t1",
+          "label": "找一段每天重复的活",
+          "at": 193.65,
+          "image": "factory/objects/checklist.png"
+        },
+        {
+          "id": "t2",
+          "label": "要切好几个软件的那种",
+          "at": 194.92,
+          "image": "factory/objects/device.png"
+        },
+        {
+          "id": "t3",
+          "label": "用 Codex 的 GPT-6 Astra 试",
+          "at": 196.83,
+          "image": "factory/objects/ai-agent.png"
+        },
+        {
+          "id": "t4",
+          "label": "跑完一笔，看它离接手多远",
+          "at": 205.19,
+          "image": "factory/objects/judgment.png",
+          "tone": "accent"
+        }
+      ],
+      "note": {
+        "text": "看它能不能接一部分",
+        "at": 201.19,
+        "until": 204.83
+      }
+    },
+    {
+      "id": "nocode-accent",
+      "type": "accent",
+      "start": 213.83,
+      "end": 222.65,
+      "intent": "降低门槛",
+      "items": [
+        {
+          "at": 214.46,
+          "until": 217.28,
+          "anchor": "speaker-right",
+          "text": "不需要代码搭建",
+          "tone": "accent"
+        },
+        {
+          "at": 217.55,
+          "until": 222.55,
+          "anchor": "speaker-left",
+          "text": "演示一遍 + 一份 SOP"
+        }
+      ]
+    },
+    {
+      "id": "cta-title",
+      "type": "title",
+      "start": 223.49,
+      "end": 230.9,
+      "at": 223.95,
+      "title": "关注 SCT Scott 出海生活",
+      "sub": "AI 在出海业务里怎么落地",
+      "layout": "side",
+      "intent": "收口"
+    }
+  ]
+}

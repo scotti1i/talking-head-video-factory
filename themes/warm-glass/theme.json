@@ -1,8 +1,8 @@
 {
   "id": "warm-glass",
   "label": "Claude 暖玻璃",
-  "description": "深棕暖色玻璃卡与底部安全区包装，不挡脸并保留完整字幕。",
-  "source": "public theme tokens",
+  "description": "深棕暖色玻璃卡 + 底部安全区包装。2026-07-05 验收风格(balanced-face-safe),不挡脸、全字幕。",
+  "source": "jobs/dji-20260704-balanced-face-safe(手工验收后抽取)",
   "fonts": [
     { "family": "Inter", "file": "Inter-700-latin.woff2", "weight": 700 },
     { "family": "LXGWWenKaiTC", "file": "LXGWWenKaiTC-400-latin.woff2", "weight": 400 }

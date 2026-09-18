@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "audienceProblem": "",
+  "thesis": "",
+  "narrativeStrategy": "",
+  "sourcePolicy": "preserve-order",
+  "createdBy": {
+    "name": "",
+    "method": "agent",
+    "model": "",
+    "skill": "talkinghead-edit"
+  },
+  "storyBeats": [],
+  "exclusions": []
+}

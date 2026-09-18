@@ -1,8 +1,8 @@
 {
   "id": "warm-minimal",
   "label": "Warm Minimal",
-  "description": "奶油纸底、深棕墨色、陶土橙单一强调色；低圆角、细描边、克制投影，无玻璃、无霓虹、无发光。",
-  "source": "public theme tokens",
+  "description": "Warm Minimal v1: 奶油纸底、深棕墨色、陶土橙单一强调色。基于已冻结的 warm-minimal-v0 成片帧复刻；低圆角、细描边、克制投影，无玻璃、无霓虹、无发光。",
+  "source": "visual-assets/evidence/warm-minimal-v0 (statement/hero/split/pipeline/panel)",
   "fonts": [
     { "family": "Inter", "file": "Inter-700-latin.woff2", "weight": 700 },
     { "family": "LXGWWenKaiTC", "file": "LXGWWenKaiTC-400-latin.woff2", "weight": 400 }

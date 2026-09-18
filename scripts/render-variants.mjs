@@ -34,16 +34,6 @@ for (const id of variants) {
     ]);
     fs.renameSync(path.join(dir, normalized), path.join(dir, output));
   }
-  if (config.render?.sdr !== false) {
-    const tagged = path.join("tmp", `${path.basename(output, path.extname(output))}.rec709-tagged.mp4`);
-    run("node", [
-      path.join(process.cwd(), "scripts", "tag-sdr-rec709.mjs"),
-      "--job", path.relative(process.cwd(), dir),
-      "--input", output,
-      "--output", tagged
-    ]);
-    fs.renameSync(path.join(dir, tagged), path.join(dir, output));
-  }
   run("node", [path.join(process.cwd(), "scripts", "qa-final.mjs"), "--job", path.relative(process.cwd(), dir), "--video", output]);
   if (profile.requiredGates.includes("audioQa")) {
     run("node", [

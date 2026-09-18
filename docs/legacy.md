@@ -1,11 +1,14 @@
 # 历史兼容区
 
-以下能力不再属于 `talkinghead-edit` 主链。公开仓库只保留仍被兼容入口调用的最小集合：
+以下能力不再属于 `talkinghead-edit` 主链，只为复盘旧 job 保留：
 
+- `scripts/build-composition.mjs`：旧 chapters/overlays builder。
 - `scripts/create-rough-cut-edl.mjs`：静音检测 EDL，不能替代语义剪辑。
 - `scripts/apply-rough-cut-cuts.mjs`：旧 cuts 二次映射。
-
-旧 chapters/overlays builder、重复 Whisper 脚本、逐项目 builder、campaign-specific builder 与旧 brandkit 不进入公开发布物。它们只能留在私有历史中，不能接入新 job。
+- `scripts/transcribe-captions.mjs`：对粗剪重复 Whisper。
+- `scripts/build-*-job.mjs`、`compose-youtube-*.mjs`：逐项目或逐画幅 builder。
+- `scripts/*salesmartly*.mjs`：SaleSmartly 单项目硬编码。
+- `~/.agents/skills/talkinghead-edit/brandkit/`：Python brandkit v1。
 
 新 job 不得调用这些入口。需要复刻旧 job 时先迁移内容到：
 
