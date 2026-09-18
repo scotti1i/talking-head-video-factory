@@ -10,6 +10,8 @@
 # 可调环境变量：
 #   FACTORY_HF_ENDPOINT   whisper 模型下载源，默认 https://huggingface.co；国内慢就 export FACTORY_HF_ENDPOINT=https://hf-mirror.com
 #   FACTORY_REPO_DIR      仓库位置，默认 ~/talking-head-video-factory（必须在 WSL 家目录，别放 /mnt/c）
+#   FACTORY_SKIP_WHISPER_MODEL=1  跳过 1.6GB 模型下载（只装到 whisper-cli 编译成功；转录前再去掉该变量重跑补模型）
+#   FACTORY_SKIP_WSL_CHECK=1      跳过「必须是 WSL2」门槛（维护者在 Docker/普通 Ubuntu 里验证脚本用，学员不用）
 # 出处：从分支 v2 精简——去掉 DeepSeek Harness / Inbox / Outbox / DataRoot / 计划任务 / Gemini key（2026-09-18）
 # ============================================================
 set -euo pipefail
@@ -26,7 +28,7 @@ trap 'status=$?; if [[ $status -ne 0 ]]; then echo; echo "SETUP FAIL（上面最
 step() { echo; echo "==== $*"; }
 
 # ---------- 0. 环境门槛
-if ! grep -qi microsoft /proc/version; then
+if [[ "${FACTORY_SKIP_WSL_CHECK:-0}" != "1" ]] && ! grep -qi microsoft /proc/version; then
   echo "FAIL: 本脚本只用于 WSL2 Ubuntu（Windows 上打开「Ubuntu」再跑）。" >&2
   exit 1
 fi
@@ -39,8 +41,9 @@ fi
 
 # ---------- 1. apt：ffmpeg、CJK 字体、fonttools、编译器，以及 Chromium（chrome-headless-shell）需要的共享库
 step "apt 依赖"
-sudo apt-get update
-sudo apt-get install -y --no-install-recommends \
+# 网络抖动时 apt 默认不重试，一个包拉失败整步就挂；给 5 次重试
+sudo apt-get -o Acquire::Retries=5 update
+sudo apt-get -o Acquire::Retries=5 install -y --no-install-recommends \
   git curl unzip ca-certificates cmake build-essential \
   ffmpeg fontconfig fonts-noto-cjk fonttools python3-fonttools python3-brotli python3-pil \
   libnss3 libatk1.0-0 libatk-bridge2.0-0 libatspi2.0-0 libcups2 libdrm2 libxkbcommon0 \
@@ -133,18 +136,27 @@ export PATH="$HOME/.local/bin:$PATH"
 
 # ---------- 7. whisper 模型（1.6GB，支持断点续传；国内慢就 export FACTORY_HF_ENDPOINT=https://hf-mirror.com 再跑）
 step "whisper 模型 ggml-large-v3-turbo"
-if [[ ! -f "$MODEL" ]]; then
-  model_part="${MODEL}.part"
-  curl -fL --retry 10 --retry-all-errors --connect-timeout 20 --continue-at - -o "$model_part" \
-    "$HF_ENDPOINT/ggerganov/whisper.cpp/resolve/main/ggml-large-v3-turbo.bin"
-  printf '%s  %s\n' "$MODEL_SHA256" "$model_part" | sha256sum -c -
-  mv "$model_part" "$MODEL"
+if [[ "${FACTORY_SKIP_WHISPER_MODEL:-0}" == "1" && ! -f "$MODEL" ]]; then
+  echo "INFO: FACTORY_SKIP_WHISPER_MODEL=1，跳过模型下载；转录前去掉该变量重跑本脚本即可补上。"
+else
+  if [[ ! -f "$MODEL" ]]; then
+    model_part="${MODEL}.part"
+    curl -fL --retry 10 --retry-all-errors --connect-timeout 20 --continue-at - -o "$model_part" \
+      "$HF_ENDPOINT/ggerganov/whisper.cpp/resolve/main/ggml-large-v3-turbo.bin"
+    printf '%s  %s\n' "$MODEL_SHA256" "$model_part" | sha256sum -c -
+    mv "$model_part" "$MODEL"
+  fi
+  printf '%s  %s\n' "$MODEL_SHA256" "$MODEL" | sha256sum -c -
 fi
-printf '%s  %s\n' "$MODEL_SHA256" "$MODEL" | sha256sum -c -
 
 # ---------- 8. 体检 + 单元测试
 step "npm run doctor"
-npm run doctor
+if [[ "${FACTORY_SKIP_WHISPER_MODEL:-0}" == "1" && ! -f "$MODEL" ]]; then
+  # 跳过了模型，doctor 必报一条 MISSING（退出非零）；其余项照常检查，只把这条降级为提示
+  npm run doctor || echo "WARN: 上面的 MISSING 只有 whisper 模型一条是预期的（FACTORY_SKIP_WHISPER_MODEL=1）；有别的 MISSING 才算失败。"
+else
+  npm run doctor
+fi
 step "npm test"
 npm test
 

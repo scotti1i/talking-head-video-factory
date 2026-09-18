@@ -1,0 +1,5 @@
+# 行尾：shell 脚本必须 LF（WSL/bash 读 CRLF 会报 $'\r': command not found）；PowerShell 脚本 CRLF；
+# 学员 Windows 上 git 默认 core.autocrlf=true 会把所有文本转成 CRLF，这里显式钉死
+*.sh text eol=lf
+*.mjs text eol=lf
+*.ps1 text eol=crlf

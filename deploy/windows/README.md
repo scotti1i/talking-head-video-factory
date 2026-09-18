@@ -37,6 +37,7 @@ bash ~/talking-head-video-factory/deploy/windows/Bootstrap-Ubuntu.sh
 会问一次 sudo 密码（就是刚建的 Linux 密码）。全程 15-40 分钟，主要在编 whisper 和下 1.6GB 模型。结尾看到 **`SETUP PASS`** 就装好了；看到 `SETUP FAIL` 就把最后一屏截图发群里，修好后重跑同一条命令，装好的步骤会跳过。
 
 国内下载模型慢：先 `export FACTORY_HF_ENDPOINT=https://hf-mirror.com` 再跑第二条命令。
+想先把环境装通、模型稍后再下：`FACTORY_SKIP_WHISPER_MODEL=1 bash ~/talking-head-video-factory/deploy/windows/Bootstrap-Ubuntu.sh`，之后不带这个变量重跑一次即可补模型（其余步骤会跳过）。
 
 ## 装好之后
 
@@ -54,7 +55,8 @@ bash ~/talking-head-video-factory/deploy/windows/Bootstrap-Ubuntu.sh
 任何时候想看环境对不对：
 
 ```powershell
-# Windows 侧（普通 PowerShell 即可）
+# Windows 侧（普通 PowerShell 即可；第一行放行脚本执行策略，只对当前窗口生效）
+Set-ExecutionPolicy -Scope Process Bypass -Force
 & "\\wsl$\Ubuntu\home\<你的用户名>\talking-head-video-factory\deploy\windows\Check-Host.ps1"
 ```
 

@@ -82,6 +82,7 @@ export function prepareInkPressWorkspace({ root = projectRoot() } = {}) {
       writeGeneratedAdapter(workRoot, root);
       const checked = verifyInkPressWorkspace({ root });
       if (!checked.ok) throw new Error(`Shotcraft 适配工作区漂移:\n- ${checked.failures.join("\n- ")}`);
+      warnIfWorkspaceDepsMissing(workRoot);
       return { sourceRoot, workRoot, provenance, reused: true, report: checked };
     }
     // 换 job / 换模板只重建源码，node_modules 挪到旁边保住（2026-09-02 事故：签名变化把依赖一起删了）
@@ -125,7 +126,15 @@ export function prepareInkPressWorkspace({ root = projectRoot() } = {}) {
   });
   const checked = verifyInkPressWorkspace({ root });
   if (!checked.ok) throw new Error(`Shotcraft 适配工作区创建失败:\n- ${checked.failures.join("\n- ")}`);
+  warnIfWorkspaceDepsMissing(workRoot);
   return { sourceRoot, workRoot, provenance, reused: false, report: checked };
+}
+
+// 工作区只拷源码不装依赖；stage-stills / 渲染直接 import 工作区里的 @remotion/*，缺了就是 Cannot find module。
+// Windows 学员的 Bootstrap-Ubuntu.sh 已提前装好放在 .ink-press-node_modules-keep，Mac 学员要手动装一次（README「环境」）
+function warnIfWorkspaceDepsMissing(workRoot) {
+  if (fs.existsSync(path.join(workRoot, "node_modules", "@remotion", "bundler"))) return;
+  console.warn(`工作区还没有 Remotion 依赖，首次出片前装一次：cd ${WORK_ROOT} && npm ci && npx remotion browser ensure && cd -`);
 }
 
 export function verifyInkPressWorkspace({ root = projectRoot() } = {}) {

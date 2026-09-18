@@ -52,6 +52,12 @@ npm install
 npm run doctor
 npm test
 
+# 叙事舞台首次出片前：准备 Remotion 工作区，并装它自己的依赖
+# （prepareInkPressWorkspace 只拷源码不装依赖；不装的话 stage-stills / 渲染会报 Cannot find module '@remotion/bundler'。
+#   Windows 学员的 Bootstrap-Ubuntu.sh 已代做这一步；换 job 时依赖会自动保留，只需装一次）
+NARRATIVE_JOB=jobs/<slug> node -e "import('./scripts/shotcraft-direct-port.mjs').then(m=>m.prepareInkPressWorkspace())"
+cd renders/work-shotcraft/ink-press && npm ci && npx remotion browser ensure && cd -
+
 # 装 skill（Claude Code 和 Codex 都认这个目录）
 mkdir -p ~/.agents/skills
 cp -R skills/talkinghead-edit ~/.agents/skills/
