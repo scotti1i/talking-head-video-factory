@@ -46,3 +46,5 @@ visual-assets/evidence/
 dist/
 release/
 themes/_shared/fonts/SampleReplicaBlack-LatinCyrillic.woff2
+deploy/linux-parity/out/
+deploy/linux-parity/.lock-sha

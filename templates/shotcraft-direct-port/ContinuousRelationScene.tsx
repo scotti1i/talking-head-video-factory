@@ -34,10 +34,15 @@ const FONT = 'PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif';
 type Box = {x: number; y: number; w: number; h: number; r: number};
 type NodeKind = 'creator' | 'search' | 'click' | 'order' | 'ad' | 'organic';
 
-const routeScene = (id: string) => {
-  const scene = VISUAL_ROUTE.scenes.find((item) => item.id === id);
-  if (!scene) throw new Error(`视觉路由缺少场景: ${id}`);
-  return scene;
+type RouteScene = {id: string; startFrame: number; endFrame: number};
+// 内部参照 job 没导出（公开仓库）时 VisualRoute.ts 是空路由：这个型录兼容入口要保持惰性，
+// 不能在模块加载期抛错把 NarrativeStage 一起拖死（2026-09-18）；真渲染它时才报缺路由
+const ROUTE_ABSENT = VISUAL_ROUTE.scenes.length === 0;
+const routeScene = (id: string): RouteScene => {
+  const scene = (VISUAL_ROUTE.scenes as readonly RouteScene[]).find((item) => item.id === id);
+  if (scene) return scene;
+  if (ROUTE_ABSENT) return {id, startFrame: Number.MAX_SAFE_INTEGER, endFrame: Number.MAX_SAFE_INTEGER};
+  throw new Error(`视觉路由缺少场景: ${id}`);
 };
 
 const QUESTION = routeScene('question-real-order');
@@ -554,6 +559,7 @@ const Caption: React.FC<{frame: number}> = ({frame}) => {
 };
 
 export const ContinuousRelationScene: React.FC = () => {
+  if (ROUTE_ABSENT) throw new Error('视觉路由为空：内部参照 job 未导出，ContinuousRelationScene 不可渲染（NarrativeStage 不受影响）');
   const frame = useCurrentFrame();
   const {durationInFrames} = useVideoConfig();
   const bgScale = interpolate(frame, [0, durationInFrames - 1], [1.02, 1.055], {extrapolateRight: 'clamp'});

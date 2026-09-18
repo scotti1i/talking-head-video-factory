@@ -535,7 +535,8 @@
           "image": "factory/objects/product-skincare.png"
         }
       ],
-      "shiftAt": 55.2
+      "shiftAt": 55.2,
+      "layout": "unchecked"
     },
     {
       "id": "concept-demo",
@@ -560,7 +561,8 @@
         }
       ],
       "glyph": "agent",
-      "image": "factory/objects/boundary.png"
+      "image": "factory/objects/boundary.png",
+      "layout": "unchecked"
     },
     {
       "id": "reminders-demo",
@@ -722,7 +724,7 @@
       "intent": "B-roll 通栏（人物角标）",
       "media": "factory/stage-catalog-20260903/broll/employee-desk.mp4",
       "origin": "generated",
-      "layout": "strip"
+      "layout": "unchecked"
     },
     {
       "id": "broll-full",
@@ -732,7 +734,7 @@
       "intent": "B-roll 整屏（人物隐去）",
       "media": "factory/stage-catalog-20260903/broll/employee-desk.mp4",
       "origin": "generated",
-      "layout": "full"
+      "layout": "unchecked"
     },
     {
       "id": "ladder-demo",

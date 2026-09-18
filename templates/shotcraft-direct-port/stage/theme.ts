@@ -14,36 +14,37 @@ export {CANVAS, PORTRAIT};
 export type SkinName = 'glass' | 'blueprint' | 'paper' | 'stage3d' | 'studio';
 export const SKIN: SkinName = SKIN_NAME;
 
+// 字体栈：Mac 命中 PingFang / Hiragino，Windows 命中 YaHei，Linux / WSL 落到 fonts-noto-cjk（2026-09-18 Linux 对齐）；顺序不变，Mac 渲染不受影响
 const SKINS = {
   glass: {
     bg: '#0A0A0C', ink: '#F3EFE6', accent: '#D6B25E', red: '#D9755E',
     hair: 'rgba(255,255,255,0.18)', hairStrong: 'rgba(255,255,255,0.32)', tint: '255,255,255',
-    font: 'PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif',
-    display: 'PingFang SC, Hiragino Sans GB, sans-serif',
+    font: 'PingFang SC, Hiragino Sans GB, Microsoft YaHei, Noto Sans CJK SC, Noto Sans SC, sans-serif',
+    display: 'PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, Noto Sans SC, sans-serif',
   },
   blueprint: {
     bg: '#070B14', ink: '#EAF2FF', accent: '#8FD3FF', red: '#FF8A7A',
     hair: 'rgba(143,211,255,0.20)', hairStrong: 'rgba(143,211,255,0.38)', tint: '150,190,255',
-    font: 'PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif',
-    display: 'PingFang SC, Hiragino Sans GB, sans-serif',
+    font: 'PingFang SC, Hiragino Sans GB, Microsoft YaHei, Noto Sans CJK SC, Noto Sans SC, sans-serif',
+    display: 'PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, Noto Sans SC, sans-serif',
   },
   stage3d: {
     bg: '#0B0B0D', ink: '#F5F3EC', accent: '#CDD27A', red: '#C8424F',
     hair: 'rgba(255,255,255,0.22)', hairStrong: 'rgba(255,255,255,0.4)', tint: '255,255,255',
-    font: 'PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif',
-    display: 'PingFang SC, Hiragino Sans GB, sans-serif',
+    font: 'PingFang SC, Hiragino Sans GB, Microsoft YaHei, Noto Sans CJK SC, Noto Sans SC, sans-serif',
+    display: 'PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, Noto Sans SC, sans-serif',
   },
   // studio（2026-09-07）：人是画面、信息是叠层。海军蓝插页 + 冰蓝唯一强调色，无渐变无发光；见 docs/skin-studio-spec.md
   studio: {
     bg: '#0B1630', ink: '#FFFFFF', accent: '#7FB2FF', red: '#FF7A70',
     hair: 'rgba(255,255,255,0.14)', hairStrong: 'rgba(255,255,255,0.28)', tint: '255,255,255',
-    font: 'PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif',
-    display: 'PingFang SC, Hiragino Sans GB, sans-serif',
+    font: 'PingFang SC, Hiragino Sans GB, Microsoft YaHei, Noto Sans CJK SC, Noto Sans SC, sans-serif',
+    display: 'PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, Noto Sans SC, sans-serif',
   },
   paper: {
     bg: '#121110', ink: '#F3EAD8', accent: '#E4B25A', red: '#E07B62',
     hair: 'rgba(243,234,216,0.16)', hairStrong: 'rgba(243,234,216,0.30)', tint: '243,234,216',
-    font: 'PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif',
+    font: 'PingFang SC, Hiragino Sans GB, Microsoft YaHei, Noto Sans CJK SC, Noto Sans SC, sans-serif',
     display: 'Songti SC, STSong, Noto Serif SC, serif',
   },
 } as const;
@@ -63,7 +64,7 @@ export const PAPER = SKIN === 'paper' ? '#F3EAD8' : '#F5F4F0';
 export const PAPER_INK = '#1C1C1E';
 export const FONT = T.font;
 export const DISPLAY_FONT = T.display;
-export const NUM_FONT = 'SF Pro Display, Inter, PingFang SC, sans-serif';
+export const NUM_FONT = 'SF Pro Display, Inter, PingFang SC, Noto Sans CJK SC, Noto Sans SC, sans-serif';
 
 export const HAIRLINE = T.hair;
 export const HAIRLINE_STRONG = T.hairStrong;

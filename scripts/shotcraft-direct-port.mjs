@@ -32,6 +32,22 @@ const LOCALIZATION_PATCH_FILE = "src/aifl/PaperTitleCard.tsx";
 const CONTINUOUS_SCENE_AROLL = "jobs/gmv-max-shotcraft-direct-port-full-20260902/assets/aroll.mp4";
 const CONTINUOUS_ROUTE_INPUT = "jobs/gmv-max-shotcraft-direct-port-full-20260902/data/visual-route-input.json";
 const CONTINUOUS_ROUTE_OUTPUT = "jobs/gmv-max-shotcraft-direct-port-full-20260902/data/visual-route.json";
+// 上面三个是内部参照样片 job，没有导出到公开仓库；缺席时连续场景路由校验整体跳过，VisualRoute.ts 写空路由（2026-09-18 公开仓库一帧渲不出来的根因）
+let warnedMissingReference = false;
+function readContinuousRouteInput(root) {
+  const file = path.join(root, CONTINUOUS_ROUTE_INPUT);
+  if (fs.existsSync(file)) return readJson(file);
+  if (!warnedMissingReference) {
+    warnedMissingReference = true;
+    console.warn(`未找到内部参照 job（${path.dirname(path.dirname(CONTINUOUS_ROUTE_INPUT))}），跳过连续场景路由校验`);
+  }
+  return null;
+}
+// 参照 job 缺席时的空路由：ContinuousRelationScene 只做 VISUAL_ROUTE.scenes.find，空数组即可
+function continuousRouteModule(root) {
+  const input = readContinuousRouteInput(root);
+  return input ? visualRouteModuleSource(buildVisualRoute(input)) : visualRouteModuleSource({ schemaVersion: 1, source: "absent", scenes: [] });
+}
 // 叙事舞台当前绑定的 job（换视频 = 换这里 + 该 job 的 data/scene-plan.json）
 // 当前 job 有粘性：环境变量 > 上次准备工作区时记下的 job > 默认样片。
 // 出处：2026-09-02 事故——测试套件在未设环境变量的 shell 里跑 prepare，把正在渲染的工作区换回了默认 job。
@@ -50,8 +66,15 @@ export function prepareInkPressWorkspace({ root = projectRoot() } = {}) {
   if (fs.existsSync(workRoot)) {
     const markerPath = path.join(workRoot, MARKER);
     if (!fs.existsSync(markerPath)) {
-      throw new Error(`拒绝覆盖没有工厂标记的目录: ${workRoot}`);
+      // narrative-stage-plan CLI 会在工作区还没准备时就把 NarrativePlan.ts 写进 src/factory/，留下一个没有标记也没有 package.json 的半目录；
+      // 那不是别人的工作区，是本工厂自己的残留，清掉重来（2026-09-18 Linux 对齐容器与 Mac 首次准备都被它挡死）。有 package.json 的仍拒绝覆盖
+      if (fs.existsSync(path.join(workRoot, "package.json"))) throw new Error(`拒绝覆盖没有工厂标记的目录: ${workRoot}`);
+      console.warn(`清理无标记的半成品工作区（仅含计划模块残留）: ${workRoot}`);
+      fs.rmSync(workRoot, { recursive: true, force: true });
     }
+  }
+  if (fs.existsSync(workRoot)) {
+    const markerPath = path.join(workRoot, MARKER);
     const current = readJson(markerPath);
     if (current.signature === desired) {
       // 复用工作区也必须重挂素材：A-roll 是硬链接，重剪后是新 inode，旧链接指着上一版画面
@@ -142,11 +165,13 @@ export function verifyInkPressWorkspace({ root = projectRoot() } = {}) {
     if (sourceFiles.has(relative) || GENERATED_FILES.has(relative)) continue;
     failures.push(`适配工作区出现未登记文件: ${relative}`);
   }
+  // 连续场景 A-roll 是可选挂载（参照 job 与当前 job 都没有时跳过），不算缺文件
+  const arollOptional = !fs.existsSync(path.join(root, CONTINUOUS_SCENE_AROLL)) && !fs.existsSync(path.join(root, NARRATIVE_JOB, "assets", "aroll.mp4"));
   for (const relative of GENERATED_FILES) {
+    if (arollOptional && relative === "public/factory/aroll.mp4") continue;
     if (!fs.existsSync(path.join(workRoot, relative))) failures.push(`缺少适配器文件: ${relative}`);
   }
-  const expectedRoute = buildVisualRoute(readJson(path.join(root, CONTINUOUS_ROUTE_INPUT)));
-  const expectedRouteModule = visualRouteModuleSource(expectedRoute);
+  const expectedRouteModule = continuousRouteModule(root);
   const routeModule = path.join(workRoot, "src", "factory", "VisualRoute.ts");
   if (fs.existsSync(routeModule) && fs.readFileSync(routeModule, "utf8") !== expectedRouteModule) {
     failures.push("VisualRoute.ts 与当前语义路由输入不一致");
@@ -197,9 +222,9 @@ function writeGeneratedAdapter(workRoot, root) {
     path.join(root, "vendor/video-shotcraft/scene-recipes/_fixtures/Motion.tsx"),
     path.join(factoryDir, "Motion.tsx")
   );
-  const routePlan = buildVisualRoute(readJson(path.join(root, CONTINUOUS_ROUTE_INPUT)));
-  writeJson(path.join(root, CONTINUOUS_ROUTE_OUTPUT), routePlan);
-  fs.writeFileSync(path.join(factoryDir, "VisualRoute.ts"), visualRouteModuleSource(routePlan));
+  const routeInput = readContinuousRouteInput(root);
+  if (routeInput) writeJson(path.join(root, CONTINUOUS_ROUTE_OUTPUT), buildVisualRoute(routeInput));
+  fs.writeFileSync(path.join(factoryDir, "VisualRoute.ts"), continuousRouteModule(root));
   const stageDir = path.join(factoryDir, "stage");
   fs.mkdirSync(stageDir, { recursive: true });
   for (const file of STAGE_FILES) {
@@ -260,7 +285,9 @@ function writeGeneratedAdapter(workRoot, root) {
   const legacyMediaSource = path.join(root, CONTINUOUS_SCENE_AROLL);
   const mediaSource = fs.existsSync(legacyMediaSource) ? legacyMediaSource : jobAroll;
   if (!fs.existsSync(mediaSource)) {
-    throw new Error(`缺少连续场景 A-roll；已检查旧样片与当前 job: ${legacyMediaSource}, ${jobAroll}`);
+    // 参照样片与当前 job 都没有 A-roll（型录 job / 公开仓库）：工作区照常准备，缺片由渲染那一步自己报
+    console.warn(`未找到连续场景 A-roll（参照 job 与当前 job 都没有），跳过挂载: ${jobAroll}`);
+    return;
   }
   const mediaDir = path.join(workRoot, "public", "factory");
   const mediaTarget = path.join(mediaDir, "aroll.mp4");
@@ -324,7 +351,7 @@ function workspaceSignature(provenance, root) {
     upstreamRevision: provenance.revision,
     files: provenance.files,
     templates,
-    routeInput: sha256(path.join(root, CONTINUOUS_ROUTE_INPUT)),
+    routeInput: fs.existsSync(path.join(root, CONTINUOUS_ROUTE_INPUT)) ? sha256(path.join(root, CONTINUOUS_ROUTE_INPUT)) : "absent",
     narrativeJob: NARRATIVE_JOB,
     narrativePlan: sha256(path.join(root, NARRATIVE_JOB, "data", "scene-plan.json")),
     narrativeCaptions: sha256(path.join(root, NARRATIVE_JOB, "data", "captions.json")),

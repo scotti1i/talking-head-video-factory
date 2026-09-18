@@ -6,17 +6,7 @@
 // ============================================================
 import fs from "node:fs";
 import path from "node:path";
-import {
-  escapeHtml,
-  fmtTime,
-  parseArgs,
-  projectRoot,
-  readJson,
-  readJsonArray,
-  resolveJob,
-  run,
-  videoDuration
-} from "./lib.mjs";
+import { escapeHtml, fmtTime, parseArgs, projectRoot, readJson, readJsonArray, resolveCjkFontSource, resolveJob, run, videoDuration } from "./lib.mjs";
 import {
   COMPONENT_FORMATS,
   catalogById,
@@ -418,8 +408,7 @@ function stageAssets() {
 }
 
 function stageCjkSubset() {
-  const source = "/System/Library/Fonts/Hiragino Sans GB.ttc";
-  if (!fs.existsSync(source)) throw new Error(`缺少确定性中文字体源: ${source}`);
+  const source = resolveCjkFontSource();
   const textFile = path.join(jobDir, "tmp", "factory-cjk-chars.txt");
   const output = path.join(jobDir, "assets", "fonts", "FactoryCJK.woff2");
   const text = JSON.stringify({ title: config.title, beats, captions, broll, intro });

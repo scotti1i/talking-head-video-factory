@@ -204,3 +204,20 @@ export function seconds(value) {
 export function fmtTime(value) {
   return seconds(value).toFixed(2);
 }
+
+// ---------- 确定性中文字体源（pyftsubset 子集化用）：FACTORY_CJK_FONT → apt fonts-noto-cjk → macOS Hiragino
+// 出处：2026-09-18 Linux 对齐容器 smoke 炸在写死的 /System/Library/Fonts/Hiragino Sans GB.ttc
+export const CJK_FONT_CANDIDATES = Object.freeze([
+  process.env.FACTORY_CJK_FONT,
+  "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+  "/usr/share/fonts/noto-cjk/NotoSansCJK-Regular.ttc",
+  "/System/Library/Fonts/Hiragino Sans GB.ttc"
+].filter(Boolean));
+
+export function resolveCjkFontSource() {
+  const source = CJK_FONT_CANDIDATES.find((candidate) => fs.existsSync(candidate));
+  if (!source) {
+    throw new Error(`缺少确定性中文字体源；设置 FACTORY_CJK_FONT，或安装候选字体（Linux: sudo apt install fonts-noto-cjk）: ${CJK_FONT_CANDIDATES.join(", ")}`);
+  }
+  return source;
+}

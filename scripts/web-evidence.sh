@@ -5,10 +5,18 @@
 set -euo pipefail
 URL="$1"; OUT="$2"; W="${3:-1440}"; H="${4:-1600}"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-# Remotion 内置 Chrome 在工作区重建时可能被清掉（2026-09-06 Codex 重建后就没了），退到系统 Chrome
-CHROME="$(ls -d "$ROOT"/renders/work-shotcraft/ink-press/node_modules/.remotion/chrome-headless-shell/mac-arm64/*/chrome-headless-shell 2>/dev/null | head -1)"
+# Chrome 解析顺序：FACTORY_CHROME 环境变量 → Remotion 内置 chrome-headless-shell（mac-arm64 / linux64 任一平台目录）→ 系统 Chrome
+# Remotion 内置 Chrome 在工作区重建时可能被清掉（2026-09-06 Codex 重建后就没了），退到系统 Chrome；
+# Linux / WSL 候选 google-chrome / chromium / chromium-browser（2026-09-18 Linux 对齐）
+CHROME="${FACTORY_CHROME:-}"
+[ -n "$CHROME" ] && [ ! -x "$CHROME" ] && CHROME="$(command -v "$CHROME" 2>/dev/null || true)"
+[ -x "$CHROME" ] || CHROME="$(ls -d "$ROOT"/renders/work-shotcraft/ink-press/node_modules/.remotion/chrome-headless-shell/*/*/chrome-headless-shell 2>/dev/null | head -1)"
 [ -x "$CHROME" ] || CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-[ -x "$CHROME" ] || { echo "找不到 Chrome：Remotion 内置的没了，系统 Chrome 也没有" >&2; exit 1; }
+for candidate in google-chrome google-chrome-stable chromium chromium-browser; do
+  [ -x "$CHROME" ] && break
+  CHROME="$(command -v "$candidate" 2>/dev/null || true)"
+done
+[ -x "$CHROME" ] || { echo "找不到 Chrome：Remotion 内置的没了，系统 Chrome / chromium 也没有；可用 FACTORY_CHROME=/path/to/chrome 指定" >&2; exit 1; }
 mkdir -p "$(dirname "$OUT")"
 "$CHROME" --headless --disable-gpu --hide-scrollbars --no-sandbox --lang=en-US \
   --user-agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36" \

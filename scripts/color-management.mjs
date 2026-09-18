@@ -1,3 +1,4 @@
+import { spawnSync } from "node:child_process";
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
@@ -9,9 +10,14 @@ export const COLOR_POLICY_VERSION = "hdr-to-sdr-rec709-v2";
 
 const HDR_TRANSFERS = new Set(["arib-std-b67", "smpte2084"]);
 const SDR_TRANSFERS = new Set(["bt709", "iec61966-2-1", "smpte170m"]);
-const AVCONVERT = "/usr/bin/avconvert";
+// avconvert 是 macOS 自带的 Apple tone-map，只在 darwin 用；其他平台一律走带 zscale 的 ffmpeg
+const AVCONVERT = process.platform === "darwin" ? "/usr/bin/avconvert" : null;
 const SDR_PRESET = "PresetHighestQuality";
-const FFMPEG_FULL = "/opt/homebrew/opt/ffmpeg-full/bin/ffmpeg";
+const FFMPEG_FULL_HOMEBREW = "/opt/homebrew/opt/ffmpeg-full/bin/ffmpeg";
+// 带 zscale 的 ffmpeg 解析顺序：环境变量 FACTORY_FFMPEG_FULL → Homebrew ffmpeg-full → PATH 里的 ffmpeg（须编入 zscale，apt 版默认有）
+// 出处：2026-09-18 Linux / WSL 对齐——此前写死 /opt/homebrew，Linux 上 HDR 素材直接报「缺少 ffmpeg-full」
+const FFMPEG_FULL_RESOLVED = resolveFfmpegFull();
+const FFMPEG_FULL = FFMPEG_FULL_RESOLVED.path;
 const FFMPEG_SDR_PRESET = "zscale-hable-rec709-superfast-crf16";
 const FFMPEG_SDR_FILTER = [
   "zscale=t=linear",
@@ -21,6 +27,39 @@ const FFMPEG_SDR_FILTER = [
   "zscale=t=bt709:m=bt709:r=tv",
   "format=yuv420p"
 ].join(",");
+
+// trusted=true 表示人为指定 / 已知带 zscale，不再探；PATH 里捡来的 ffmpeg 要在用到时探一次
+function resolveFfmpegFull({ env = process.env, platform = process.platform } = {}) {
+  if (env.FACTORY_FFMPEG_FULL) return { path: env.FACTORY_FFMPEG_FULL, trusted: true };
+  if (platform === "darwin" && fs.existsSync(FFMPEG_FULL_HOMEBREW)) return { path: FFMPEG_FULL_HOMEBREW, trusted: true };
+  return { path: findOnPath("ffmpeg", env), trusted: false };
+}
+
+function findOnPath(command, env = process.env) {
+  const exts = process.platform === "win32" ? [".exe", ".cmd", ".bat", ""] : [""];
+  for (const dir of String(env.PATH || "").split(path.delimiter).filter(Boolean)) {
+    for (const ext of exts) {
+      const candidate = path.join(dir, command + ext);
+      try {
+        fs.accessSync(candidate, fs.constants.X_OK);
+        if (fs.statSync(candidate).isFile()) return candidate;
+      } catch {}
+    }
+  }
+  return null;
+}
+
+// PATH 里的 ffmpeg 不一定带 zscale（自编译 / 精简版）；只在真要 tone-map 时探一次，结果按路径缓存
+// 调用方显式传入的 ffmpegFullPath（含测试桩）一律信任，只探自动从 PATH 捡来的那份
+const zscaleSupport = new Map();
+function ffmpegHasZscale(ffmpegPath) {
+  if (ffmpegPath !== FFMPEG_FULL || FFMPEG_FULL_RESOLVED.trusted) return true;
+  if (!zscaleSupport.has(ffmpegPath)) {
+    const probe = spawnSync(ffmpegPath, ["-hide_banner", "-filters"], { encoding: "utf8", stdio: "pipe" });
+    zscaleSupport.set(ffmpegPath, probe.status === 0 && /\bzscale\b/.test(probe.stdout || ""));
+  }
+  return zscaleSupport.get(ffmpegPath);
+}
 
 export function normalizeColorMode(value = "auto-sdr") {
   const mode = String(value || "auto-sdr");
@@ -114,9 +153,9 @@ export function prepareSdrRec709Source(options) {
     throw new Error(`素材缺少完整色彩标记，auto-sdr 拒绝只改标签: ${sourcePath}；人工确认后可显式使用 --color-mode legacy`);
   }
 
-  const useFfmpegFull = Boolean(ffmpegFullPath && fs.existsSync(ffmpegFullPath));
-  if (!useFfmpegFull && (platform !== "darwin" || !fs.existsSync(avconvertPath))) {
-    throw new Error(`HDR 素材需要显式 tone-map 到 Rec.709；当前环境缺少带 zscale 的 ffmpeg-full 和 ${avconvertPath}`);
+  const useFfmpegFull = Boolean(ffmpegFullPath && fs.existsSync(ffmpegFullPath) && ffmpegHasZscale(ffmpegFullPath));
+  if (!useFfmpegFull && (platform !== "darwin" || !avconvertPath || !fs.existsSync(avconvertPath))) {
+    throw new Error(`HDR 素材需要显式 tone-map 到 Rec.709；当前环境缺少带 zscale 的 ffmpeg（可用 FACTORY_FFMPEG_FULL 指定）${platform === "darwin" ? ` 和 ${avconvertPath}` : ""}`);
   }
   const backend = useFfmpegFull ? ffmpegFullPath : avconvertPath;
   const selectedPreset = useFfmpegFull ? FFMPEG_SDR_PRESET : SDR_PRESET;

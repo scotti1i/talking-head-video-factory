@@ -1,0 +1,8 @@
+# 只给 Linux 对齐容器的构建上下文用：镜像只 COPY package*.json，大目录不必送进 daemon
+.git
+node_modules
+renders
+jobs/*/assets
+jobs/*/renders
+jobs/*/qa
+deploy/linux-parity/out
