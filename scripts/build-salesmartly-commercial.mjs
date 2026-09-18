@@ -387,7 +387,7 @@ writeJson(path.join(job, "project.json"), {
   delivery: {
     includeCover: true,
     coverFile,
-    downloadsRoot: "~/Downloads"
+    downloadsRoot: path.join(process.env.HOME || "", "Downloads")
   },
   qa: {
     sampleTimes: qaSampleTimes

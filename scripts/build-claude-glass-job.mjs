@@ -245,7 +245,7 @@ ensureDir(path.join(job, "qa"));
 copyOrLink(path.join(sourceJob, "assets", "aroll.mp4"), path.join(job, "assets", "aroll.mp4"));
 for (const font of ["LXGWWenKaiTC-400-latin.woff2", "Inter-700-latin.woff2"]) {
   copyOrLink(
-    path.join("~/.agents/skills/talking-head-recut/assets/fonts", font),
+    path.join(process.env.HOME || "", ".agents/skills/talking-head-recut/assets/fonts", font),
     path.join(job, "assets", "fonts", font)
   );
 }

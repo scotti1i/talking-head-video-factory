@@ -48,3 +48,7 @@ release/
 themes/_shared/fonts/SampleReplicaBlack-LatinCyrillic.woff2
 deploy/linux-parity/out/
 deploy/linux-parity/.lock-sha
+# 型录 job：logo / 证据页 / B-roll 素材纳入版本管理（合成用的静音 aroll 除外）
+!jobs/stage-catalog-20260903/assets/
+!jobs/stage-catalog-20260903/assets/**
+jobs/stage-catalog-20260903/assets/aroll.mp4

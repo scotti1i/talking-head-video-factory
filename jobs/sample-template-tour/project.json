@@ -29,6 +29,6 @@
   },
   "delivery": {
     "includeCover": false,
-    "downloadsRoot": "~/talking-head-video-factory/out"
+    "downloadsRoot": ""
   }
 }

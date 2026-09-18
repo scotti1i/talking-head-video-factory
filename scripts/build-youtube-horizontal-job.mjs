@@ -7,7 +7,7 @@ const sourceJob = path.join(root, "jobs", "dji-20260704-balanced-face-safe");
 const job = path.join(root, "jobs", "dji-20260704-youtube-horizontal");
 const arollAsset = "assets/aroll-front-focus.mp4";
 const coverName = "youtube-horizontal-cover.png";
-const coverSource = "~/Downloads/2026-07-05-AI不是给普通员工提效-抖音成片-前段聚焦Fable5全字幕版/ChatGPT Image Jul 5, 2026, 02_26_00 AM.png";
+const coverSource = path.join(process.env.HOME || "", "Downloads/2026-07-05-AI不是给普通员工提效-抖音成片-前段聚焦Fable5全字幕版/ChatGPT Image Jul 5, 2026, 02_26_00 AM.png");
 const duration = videoDuration(path.join(sourceJob, arollAsset));
 const captions = readJson(path.join(sourceJob, "data", "captions.json"));
 

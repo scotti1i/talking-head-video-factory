@@ -18,7 +18,7 @@ const root = projectRoot();
 const jobDir = resolveJob(args.job);
 const sourceOutDir = args.sourceOutDir
   ? path.resolve(args.sourceOutDir)
-  : "~/Documents/seedlab-next/out/talking-head-20260607";
+  : path.join(process.env.HOME || "", "Documents/seedlab-next/out/talking-head-20260607");
 const overlayOnly = Boolean(args.overlayOnly || args["overlay-only"]);
 const variantId = overlayOnly ? "youtube-horizontal-v2-overlay" : "youtube-horizontal-v2";
 const variantDir = path.join(jobDir, "variants", variantId);
