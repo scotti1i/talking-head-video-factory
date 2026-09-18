@@ -1,0 +1,6 @@
+# 16GB 内存机器的 WSL 配置：复制为 %USERPROFILE%\.wslconfig，然后在 PowerShell 跑 wsl --shutdown 生效
+# 给 WSL 12GB 内存 + 8GB swap，Remotion 渲染时不容易被内存不足杀掉
+[wsl2]
+memory=12GB
+swap=8GB
+localhostForwarding=true

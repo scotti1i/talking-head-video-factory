@@ -39,6 +39,12 @@
 | Claude Code 或 Codex | 唯一日常入口是 skill `talkinghead-edit` |
 | 可选 | 即梦 CLI（生成 B-roll）、APIMart（兜底）、能听音频的模型（审听通道） |
 
+### Windows 安装
+
+Windows 走 WSL2（Ubuntu），学员照抄三步：管理员 PowerShell 跑 `Install-Host.ps1` → 重启进 Ubuntu → 跑 `Bootstrap-Ubuntu.sh`，结尾打印 `SETUP PASS`。全文见 [deploy/windows/README.md](deploy/windows/README.md)。不需要 NVIDIA 显卡。
+
+Linux 对齐容器：发版前在 Mac 上跑 [`deploy/linux-parity/run.sh`](deploy/linux-parity/run.sh)，用与学员 WSL 同一套 Ubuntu 24.04 + apt ffmpeg + Noto CJK + Node 22 跑 `npm test`、`smoke` 与叙事舞台静帧；上次结果见 [deploy/linux-parity/LAST-RUN.md](deploy/linux-parity/LAST-RUN.md)。
+
 ```bash
 git clone https://github.com/scotti1i/talking-head-video-factory.git ~/talking-head-video-factory
 cd ~/talking-head-video-factory
